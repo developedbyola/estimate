@@ -22,7 +22,7 @@ const t = initTRPC.context<Context>().create({
 });
 
 const isAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.user) {
+  if (!ctx.actor) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Unauthorized access to this route',
@@ -30,7 +30,7 @@ const isAuthed = t.middleware(({ ctx, next }) => {
   }
   return next({
     ctx: {
-      user: ctx.user,
+      actor: ctx.actor,
     },
   });
 });

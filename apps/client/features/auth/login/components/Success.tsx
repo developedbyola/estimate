@@ -1,49 +1,68 @@
 import React from 'react';
-import { useRedirect } from '@/hooks/useRedirect';
-import {
-  ActivityIndicator,
-  Box,
-  Text,
-  useOverlayContext,
-  // useFlowContext,
-} from '@/components';
 import { trpc } from '@/lib/trpc';
+import { Alert } from 'react-native';
+import { useRedirect } from '@/hooks/useRedirect';
+import { ActivityIndicator, Box, Text, useOverlayContext } from '@/components';
 
 const Success = () => {
+  const me = trpc.auth.me.useQuery();
   const overlayContext = useOverlayContext();
-  // const flowContext = useFlowContext();
-  const login = trpc.auth.login.useMutation();
 
-  useRedirect('/app', {
-    delay: 2000,
-    condition: true,
-    onComplete: () => {
-      overlayContext.onOpenChange(false);
+  const addDevice = trpc.sessions.addDevice.useMutation({
+    onError: (error) => {
+      Alert.alert('Error adding device', error.message, [
+        { text: 'Cancel' },
+        {
+          text: 'Retry',
+          isPreferred: true,
+          onPress: () => addDevice.mutate(),
+        },
+      ]);
     },
   });
 
+  useRedirect('/app', {
+    condition: me.isSuccess && addDevice.isSuccess,
+    onComplete: () => overlayContext.onOpenChange(false),
+  });
+
+  React.useEffect(() => {
+    if (me.isSuccess) {
+      addDevice.mutate();
+    }
+    if (me.isError) {
+      Alert.alert('Error loading profile', me.error.message, [
+        { text: 'Cancel' },
+        { text: 'Retry', isPreferred: true, onPress: () => me.refetch() },
+      ]);
+    }
+  }, [me.isSuccess, me.isError]);
+
   return (
-    <Box
-      px='xl'
-      my='5xl'
-      style={{ justifyContent: 'space-between', flex: 1 }}
-    >
-      <ActivityIndicator size={'large'} />
-      <Box py='xl' />
-      <Box py='sm' />
-      <Text
-        size='sm'
-        align='center'
-        leading='sm'
-        style={{
-          maxWidth: 320,
-          marginInline: 'auto',
-        }}
+    <React.Fragment>
+      <Box
+        px='xl'
+        my='5xl'
+        style={{ justifyContent: 'center', flex: 1 }}
       >
-        You're in! Getting your estimates ready. You’ll be redirected to your
-        dashboard shortly.
-      </Text>
-    </Box>
+        <ActivityIndicator />
+      </Box>
+      <Box
+        px='lg'
+        pb='6xl'
+        mx='auto'
+        style={{ maxWidth: 320, width: '100%' }}
+      >
+        <Text
+          size='sm'
+          leading='sm'
+          align='center'
+        >
+          We’ve verified it’s really you. Everything’s locked down tight, so you
+          can browse with peace of mind. Happy exploring!
+        </Text>
+      </Box>
+    </React.Fragment>
   );
 };
 

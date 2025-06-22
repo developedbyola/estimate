@@ -1,12 +1,8 @@
 import { z } from 'zod';
 import argon2 from 'argon2';
-import { publicProcedure, protectedProcedure, router } from '../middleware';
-import {
-  signAccessToken,
-  signRefreshToken,
-  verifyRefreshToken,
-} from '../../utils/jwt';
 import { env } from '@/configs/env';
+import { auth } from '../../utils/auth';
+import { publicProcedure, protectedProcedure, router } from '../middleware';
 
 // Strong password validation schema
 const passwordSchema = z
@@ -21,33 +17,33 @@ const passwordSchema = z
 export const authRouter = router({
   me: protectedProcedure.query(async ({ ctx }) => {
     try {
-      const userFromDB = await ctx.supabase
+      const user = await ctx.supabase
         .from('users')
         .select('id, created_at, name, email')
-        .eq('id', ctx.user.id)
+        .eq('id', ctx.actor.userId)
         .single();
 
-      if (userFromDB.error) {
-        return ctx.error({
+      if (!user.data) {
+        return ctx.fail({
           code: 'NOT_FOUND',
           message:
             'Your account could not be found. Please try logging in again or contact support if the issue persists.',
         });
       }
 
-      return ctx.success(
+      return ctx.ok(
         {
           user: {
-            id: userFromDB.data.id,
-            name: userFromDB.data.name,
-            email: userFromDB.data.email,
-            createdAt: userFromDB.data.created_at,
+            id: user.data.id,
+            name: user.data.name,
+            email: user.data.email,
+            createdAt: user.data.created_at,
           },
         },
         { httpStatus: 200, path: 'auth.me' }
       );
     } catch (err) {
-      return ctx.error(err);
+      return ctx.fail(err);
     }
   }),
 
@@ -62,33 +58,79 @@ export const authRouter = router({
       const { email, password } = input;
 
       try {
+        // Get user from database
         const user = await ctx.supabase
           .from('users')
           .select('id, created_at, name, email, password')
           .eq('email', email)
           .single();
 
-        if (user.error) {
-          return ctx.error({
+        // Check if user exists
+        if (!user.data) {
+          return ctx.fail({
             code: 'UNAUTHORIZED',
             message:
               'The email or password you entered is incorrect. Please check your credentials and try again.',
           });
         }
 
+        // Check if password is valid
         const isPasswordValid = await argon2.verify(
           user.data.password,
           password
         );
 
+        // Check if password is valid
         if (!isPasswordValid) {
-          return ctx.error({
+          return ctx.fail({
             code: 'UNAUTHORIZED',
             message:
               "The password you entered is incorrect. Please try again or reset your password if you've forgotten it.",
           });
         }
 
+        // Get session data
+        const {
+          deviceName,
+          deviceType,
+          osVersion,
+          appVersion,
+          ipAddress,
+          fingerprint,
+          expiresAt,
+        } = await auth.session(ctx.honoContext);
+
+        // Create session
+        const session = await ctx.supabase
+          .from('user_sessions')
+          .upsert(
+            {
+              fingerprint,
+              is_active: true,
+              os_version: osVersion,
+              user_id: user.data.id,
+              ip_address: ipAddress,
+              expires_at: expiresAt,
+              device_name: deviceName,
+              device_type: deviceType,
+              app_version: appVersion,
+            },
+            { onConflict: 'fingerprint' }
+          )
+          .select('id')
+          .single();
+
+        // Check if session was created
+        if (!session.data) {
+          console.error('Session creation failed:', session.error);
+          return ctx.fail({
+            code: 'INTERNAL_SERVER_ERROR',
+            message:
+              'We encountered an unexpected error while adding your device. Please try again or contact support if the issue continues.',
+          });
+        }
+
+        // Get user data
         const userData = {
           id: user.data.id,
           name: user.data.name,
@@ -96,26 +138,35 @@ export const authRouter = router({
           createdAt: user.data.created_at,
         };
 
-        const accessToken = await signAccessToken(userData);
-        const refreshToken = await signRefreshToken(userData);
-
-        ctx.cookie.setCookie(ctx.hono, 'refresh_token', refreshToken, {
-          path: '/',
-          httpOnly: false,
-          sameSite: 'lax',
-          maxAge: 60 * 60 * 24 * 90,
-          secure: env.NODE_ENV === 'production',
+        // Sign access token
+        const accessToken = await auth.jwt.sign({
+          type: 'access',
+          payload: {
+            userId: userData.id,
+            sessionId: session.data.id,
+          },
         });
 
-        return ctx.success(
-          {
-            accessToken,
-            user: userData,
+        // Sign refresh token
+        const refreshToken = await auth.jwt.sign({
+          type: 'refresh',
+          payload: {
+            userId: userData.id,
+            sessionId: session.data.id,
           },
+        });
+
+        // Set refresh token cookie
+        auth.cookie(ctx.honoContext).set('refresh_token', refreshToken);
+
+        // Return access token and user data
+        return ctx.ok(
+          { accessToken, user: userData },
           { httpStatus: 200, path: 'auth.login' }
         );
       } catch (err) {
-        return ctx.error(err);
+        console.log(err);
+        return ctx.fail(err);
       }
     }),
 
@@ -140,7 +191,7 @@ export const authRouter = router({
           .single();
 
         if (previousUser.data) {
-          return ctx.error({
+          return ctx.fail({
             code: 'CONFLICT',
             message:
               'An account with this email already exists. Please use a different email or try logging in instead.',
@@ -156,14 +207,14 @@ export const authRouter = router({
           .single();
 
         if (user.error) {
-          return ctx.error({
+          return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
             message:
               'We encountered an issue creating your account. Please try again in a few moments.',
           });
         }
 
-        return ctx.success(
+        return ctx.ok(
           {
             user: {
               id: user.data.id,
@@ -175,59 +226,135 @@ export const authRouter = router({
           { httpStatus: 200, path: 'auth.register' }
         );
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 
   refresh: publicProcedure.mutation(async ({ ctx }) => {
     try {
-      const refreshToken = ctx.cookie.getCookie(ctx.hono, 'refresh_token');
+      const refreshToken = auth.cookie(ctx.honoContext).get('refresh_token');
 
+      // If no refresh token is found, return an error
       if (!refreshToken) {
-        return ctx.error({
+        return ctx.fail({
           code: 'UNAUTHORIZED',
           message: 'Your session has expired. Please log in again.',
         });
       }
 
-      const user = await verifyRefreshToken(refreshToken);
-      const accessToken = await signAccessToken(user);
+      // Verify the refresh token
+      const { userId, sessionId } = (await auth.jwt.verify(
+        'refresh',
+        refreshToken
+      )) as any;
 
-      ctx.cookie.setCookie(ctx.hono, 'refresh_token', refreshToken, {
-        path: '/',
-        httpOnly: false,
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 90,
-        secure: env.NODE_ENV === 'production',
+      const session = await ctx.supabase
+        .from('user_sessions')
+        .select('*')
+        .eq('id', sessionId)
+        .eq('user_id', userId)
+        .single();
+
+      // If no session is found, return an error
+      if (!session.data) {
+        return ctx.fail({
+          code: 'UNAUTHORIZED',
+          message: 'No session was found.',
+        });
+      }
+
+      // If the session is not active, return an error
+      if (!session.data.is_active) {
+        return ctx.fail({
+          code: 'UNAUTHORIZED',
+          message: "You're logged out of this device. Try logging in again.",
+        });
+      }
+
+      // If the session has expired, return an error
+      if (session.data.expires_at < Date.now()) {
+        return ctx.fail({
+          code: 'UNAUTHORIZED',
+          message: '',
+        });
+      }
+
+      // Create a new access token
+      const accessToken = await auth.jwt.sign({
+        type: 'access',
+        payload: {
+          userId,
+          sessionId,
+        },
       });
 
-      return ctx.success(
-        { accessToken },
-        { httpStatus: 200, path: 'auth.refresh' }
+      // Set the refresh token cookie
+      auth.cookie(ctx.honoContext).set('refresh_token', refreshToken);
+
+      return ctx.ok({ accessToken }, { httpStatus: 200, path: 'auth.refresh' });
+    } catch (err) {
+      return ctx.fail(err);
+    }
+  }),
+
+  sessions: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const sessions = await ctx.supabase
+        .from('user_sessions')
+        .select('*')
+        .eq('user_id', ctx.actor.userId)
+        .order('created_at', { ascending: false });
+
+      return ctx.ok(
+        {
+          sessions: sessions.data,
+        },
+        { httpStatus: 200, path: 'auth.sessions' }
       );
     } catch (err) {
-      return ctx.error(err);
+      return ctx.fail(err);
     }
   }),
 
   logout: publicProcedure.mutation(async ({ ctx }) => {
     try {
-      const refreshToken = ctx.cookie.getCookie(ctx.hono, 'refresh_token');
+      // Get the refresh token
+      const refreshToken = auth.cookie(ctx.honoContext).get('refresh_token');
 
+      // If no refresh token is found, return an error
       if (!refreshToken) {
-        return ctx.error({
+        return ctx.fail({
           code: 'UNAUTHORIZED',
           message: 'Your session has expired. Please log in again.',
         });
       }
 
-      ctx.cookie.deleteCookie(ctx.hono, 'refresh_token');
-      return ctx.success(
+      const actor = await auth.jwt.verify('refresh', refreshToken);
+
+      const session = await ctx.supabase
+        .from('user_sessions')
+        .update({ is_active: false })
+        .eq('id', actor.sessionId)
+        .select('id')
+        .single();
+
+      if (!session.data) {
+        return ctx.fail({
+          code: 'UNAUTHORIZED',
+          message: 'Your session has expired. Please log in again.',
+        });
+      }
+
+      // Delete the refresh token cookie
+      auth.cookie(ctx.honoContext).delete('refresh_token');
+
+      return ctx.ok(
         { success: true },
         { httpStatus: 200, path: 'auth.logout' }
       );
     } catch (err) {
-      return ctx.error(err);
+      console.log(err);
+      return ctx.fail(err);
     }
   }),
 });

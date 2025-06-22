@@ -7,22 +7,22 @@ export const userFarmsRouter = router({
       const farms = await ctx.supabase
         .from('user_farms')
         .select('*')
-        .eq('user_id', ctx.user.id)
+        .eq('user_id', ctx.actor.userId)
         .order('created_at', { ascending: false });
 
       if (farms.error) {
-        return ctx.error({
+        return ctx.fail({
           code: 'NOT_FOUND',
           message:
             "We couldn't find any farms in your account. Try adding a new farm to get started!",
         });
       }
 
-      return ctx.success({
+      return ctx.ok({
         farms: farms.data,
       });
     } catch (err) {
-      return ctx.error(err);
+      return ctx.fail(err);
     }
   }),
 
@@ -34,22 +34,22 @@ export const userFarmsRouter = router({
           .from('user_farms')
           .select('*')
           .eq('id', input.farmId)
-          .eq('user_id', ctx.user.id)
+          .eq('user_id', ctx.actor.userId)
           .single();
 
         if (farm.error) {
-          return ctx.error({
+          return ctx.fail({
             code: 'NOT_FOUND',
             message:
               "We couldn't find the farm you're looking for. It may have been moved or deleted.",
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           farm: farm.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 
@@ -97,22 +97,22 @@ export const userFarmsRouter = router({
             categoryId: input.categoryId,
           })
           .eq('id', input.farmId)
-          .eq('user_id', ctx.user.id)
+          .eq('user_id', ctx.actor.userId)
           .select('*')
           .single();
 
         if (!farm.data) {
-          return ctx.error({
+          return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
             message: 'No farm found',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           farm: farm.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 
@@ -124,22 +124,22 @@ export const userFarmsRouter = router({
           .from('user_farms')
           .delete()
           .eq('id', input.farmId)
-          .eq('user_id', ctx.user.id)
+          .eq('user_id', ctx.actor.userId)
           .select('*')
           .single();
 
         if (!farm.data) {
-          return ctx.error({
+          return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
             message: 'No farm found',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           farm: farm.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 
@@ -178,7 +178,7 @@ export const userFarmsRouter = router({
             city: input.city,
             size: input.size,
             state: input.state,
-            user_id: ctx.user.id,
+            user_id: ctx.actor.userId,
             address: input.address,
             size_unit: input.size_unit,
             category_id: input.categoryId,
@@ -187,18 +187,18 @@ export const userFarmsRouter = router({
           .single();
 
         if (!farm.data) {
-          return ctx.error({
+          return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
             message:
               "We couldn't create your farm at this time. Please check your information and try again.",
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           farm: farm.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 });

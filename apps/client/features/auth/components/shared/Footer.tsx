@@ -28,7 +28,7 @@ const Footer = ({ authType }: Props) => {
       onNextStep();
     },
     onError: (error) => {
-      Alert.alert(error.message);
+      Alert.alert('Login failed', error.message, [{ text: 'Cancel' }]);
     },
   });
 
@@ -37,7 +37,7 @@ const Footer = ({ authType }: Props) => {
       onNextStep();
     },
     onError: (error) => {
-      Alert.alert(error.message);
+      Alert.alert('Registration failed', error.message, [{ text: 'Cancel' }]);
     },
   });
 
@@ -69,8 +69,8 @@ const Footer = ({ authType }: Props) => {
             }
             if (authType === 'register') {
               register.mutate({
-                email: data.email ?? '',
-                name: data.name ?? '',
+                email: data.email?.toLowerCase() ?? '',
+                name: data.name?.toLowerCase() ?? '',
                 password: values.password ?? '',
               });
             }

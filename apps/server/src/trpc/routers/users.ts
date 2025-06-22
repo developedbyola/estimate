@@ -27,14 +27,14 @@ export const usersRouter = router({
           .single();
 
         if (!user.data) {
-          return ctx.error({
+          return ctx.fail({
             message:
               'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
             code: 'NOT_FOUND',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           user: user.data,
         });
       } catch (err) {}
@@ -59,23 +59,23 @@ export const usersRouter = router({
         const user = await ctx.supabase
           .from('users')
           .update({ name: input.name })
-          .eq('id', ctx.user.id)
+          .eq('id', ctx.actor.userId)
           .select('id, name, created_at')
           .single();
 
         if (!user.data) {
-          return ctx.error({
+          return ctx.fail({
             message:
               'We encountered an issue while updating your profile. Please try again in a few moments.',
             code: 'INTERNAL_SERVER_ERROR',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           user: user.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 
@@ -91,11 +91,11 @@ export const usersRouter = router({
         const user = await ctx.supabase
           .from('users')
           .select('password')
-          .eq('id', ctx.user.id)
+          .eq('id', ctx.actor.userId)
           .single();
 
         if (!user.data) {
-          return ctx.error({
+          return ctx.fail({
             message:
               'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
             code: 'NOT_FOUND',
@@ -108,7 +108,7 @@ export const usersRouter = router({
         );
 
         if (!isSamePassword) {
-          return ctx.error({
+          return ctx.fail({
             message: 'The password you entered is incorrect. Please try again.',
             code: 'UNAUTHORIZED',
           });
@@ -122,24 +122,24 @@ export const usersRouter = router({
           .update({
             password: hashedPassword,
           })
-          .eq('id', ctx.user.id)
+          .eq('id', ctx.actor.userId)
           .select('id, name, created_at')
           .single();
 
         if (updatedUser.error) {
           console.error('Password update error:', updatedUser.error);
-          return ctx.error({
+          return ctx.fail({
             message:
               'We encountered an issue while updating your password. Please try again later.',
             code: 'INTERNAL_SERVER_ERROR',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           success: true,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 
@@ -158,11 +158,11 @@ export const usersRouter = router({
         const user = await ctx.supabase
           .from('users')
           .select('password')
-          .eq('id', ctx.user.id)
+          .eq('id', ctx.actor.userId)
           .single();
 
         if (!user.data) {
-          return ctx.error({
+          return ctx.fail({
             message:
               'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
             code: 'NOT_FOUND',
@@ -175,7 +175,7 @@ export const usersRouter = router({
         );
 
         if (!isSamePassword) {
-          return ctx.error({
+          return ctx.fail({
             message: 'The password you entered is incorrect. Please try again.',
             code: 'UNAUTHORIZED',
           });
@@ -186,11 +186,11 @@ export const usersRouter = router({
           .from('users')
           .select('id')
           .eq('email', input.email)
-          .neq('id', ctx.user.id)
+          .neq('id', ctx.actor.userId)
           .single();
 
         if (existingUser.data) {
-          return ctx.error({
+          return ctx.fail({
             message:
               'This email address is already associated with another account. Please use a different email address.',
             code: 'CONFLICT',
@@ -203,24 +203,24 @@ export const usersRouter = router({
           .update({
             email: input.email,
           })
-          .eq('id', ctx.user.id)
+          .eq('id', ctx.actor.userId)
           .select('id, name, created_at')
           .single();
 
         if (updateError) {
           console.error('Email update error:', updateError);
-          return ctx.error({
+          return ctx.fail({
             message:
               'We encountered an issue while updating your email address. Please try again later.',
             code: 'INTERNAL_SERVER_ERROR',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           success: true,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 });

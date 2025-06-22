@@ -7,21 +7,21 @@ export const userCategoriesRouter = router({
       const categories = await ctx.supabase
         .from('user_categories')
         .select('*')
-        .eq('user_id', ctx.user.id);
+        .eq('user_id', ctx.actor.userId);
 
       if (categories.error) {
-        return ctx.error({
+        return ctx.fail({
           code: 'NOT_FOUND',
           message:
             "We couldn't find any categories in your account. Try creating one to get started!",
         });
       }
 
-      return ctx.success({
+      return ctx.ok({
         categories: categories.data,
       });
     } catch (err) {
-      return ctx.error(err);
+      return ctx.fail(err);
     }
   }),
   get: protectedProcedure
@@ -32,22 +32,22 @@ export const userCategoriesRouter = router({
           .from('user_categories')
           .select('*')
           .eq('id', input.categoryId)
-          .eq('user_id', ctx.user.id)
+          .eq('user_id', ctx.actor.userId)
           .single();
 
         if (category.error) {
-          return ctx.error({
+          return ctx.fail({
             code: 'NOT_FOUND',
             message:
               "We couldn't find the category you're looking for. It may have been moved or deleted.",
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           category: category.data,
         });
       } catch (err) {
-        return ctx.error({
+        return ctx.fail({
           message:
             'An unexpected error occurred while fetching the category. Please try again later.',
           code: 'INTERNAL_SERVER_ERROR',
@@ -68,24 +68,28 @@ export const userCategoriesRouter = router({
       try {
         const category = await ctx.supabase
           .from('user_categories')
-          .insert({ name: input.name, icon: input.icon, user_id: ctx.user.id })
+          .insert({
+            name: input.name,
+            icon: input.icon,
+            user_id: ctx.actor.userId,
+          })
           .select('*')
           .single();
 
         if (!category.data) {
           console.error('Category creation failed:', category.error);
-          return ctx.error({
+          return ctx.fail({
             message:
               "We couldn't create your category. Please check your connection and try again.",
             code: 'BAD_REQUEST',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           category: category.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
   update: protectedProcedure
@@ -106,23 +110,23 @@ export const userCategoriesRouter = router({
           .from('user_categories')
           .update({ name: input.name, icon: input.icon })
           .eq('id', input.categoryId)
-          .eq('user_id', ctx.user.id)
+          .eq('user_id', ctx.actor.userId)
           .select('*')
           .single();
 
         if (!category.data) {
-          return ctx.error({
+          return ctx.fail({
             message:
               'An unexpected error occurred while updating the category. Please try again.',
             code: 'INTERNAL_SERVER_ERROR',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           category: category.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
   delete: protectedProcedure
@@ -135,23 +139,23 @@ export const userCategoriesRouter = router({
           .from('user_categories')
           .delete()
           .eq('id', input.categoryId)
-          .eq('user_id', ctx.user.id)
+          .eq('user_id', ctx.actor.userId)
           .select('*')
           .single();
 
         if (!category.data) {
-          return ctx.error({
+          return ctx.fail({
             message:
               'An unexpected error occurred while deleting the category. Please try again.',
             code: 'INTERNAL_SERVER_ERROR',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           category: category.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 });

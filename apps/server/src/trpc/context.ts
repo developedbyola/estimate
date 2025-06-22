@@ -1,12 +1,12 @@
+import { auth } from '@/utils/auth';
 import * as Cookie from 'hono/cookie';
-import { type Context as HonoContext } from 'hono';
-import { verifyAccessToken } from '@/utils/jwt';
+import { TRPCError } from '@trpc/server';
 import { supabaseClient } from '@/lib/supabase';
 import { createResponse } from '@/utils/response';
-import { TRPCError } from '@trpc/server';
+import { type Context as HonoContext } from 'hono';
 
 export const createContext = async (c: HonoContext) => {
-  let user = null;
+  let actor = null;
   const { success, error } = createResponse();
   const Authorization = c.req.header('Authorization');
 
@@ -14,9 +14,9 @@ export const createContext = async (c: HonoContext) => {
 
   if (accessToken) {
     try {
-      user = await verifyAccessToken(accessToken);
+      actor = await auth.jwt.verify('access', accessToken);
 
-      if (!user) {
+      if (!actor) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Unauthorized access to this route',
@@ -28,14 +28,13 @@ export const createContext = async (c: HonoContext) => {
   }
 
   return {
-    user,
-    error,
-    success,
-    hono: c,
+    fail: error,
+    ok: success,
     res: c.res,
     req: c.req,
-    accessToken,
     cookie: Cookie,
+    honoContext: c,
+    actor: actor!,
     supabase: supabaseClient,
   };
 };

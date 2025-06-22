@@ -7,22 +7,22 @@ export const userEstimatesRouter = router({
       const estimates = await ctx.supabase
         .from('user_estimates')
         .select('*')
-        .eq('user_id', ctx.user.id)
+        .eq('user_id', ctx.actor.userId)
         .order('created_at', { ascending: false });
 
       if (estimates.error) {
-        return ctx.error({
+        return ctx.fail({
           code: 'NOT_FOUND',
           message:
             "We couldn't find any saved estimates in your account. Try creating a new estimate to get started!",
         });
       }
 
-      return ctx.success({
+      return ctx.ok({
         estimates: estimates.data,
       });
     } catch (err) {
-      return ctx.error(err);
+      return ctx.fail(err);
     }
   }),
   get: protectedProcedure
@@ -33,22 +33,22 @@ export const userEstimatesRouter = router({
           .from('user_estimates')
           .select('*')
           .eq('id', input.estimateId)
-          .eq('user_id', ctx.user.id)
+          .eq('user_id', ctx.actor.userId)
           .single();
 
         if (estimate.error) {
-          return ctx.error({
+          return ctx.fail({
             code: 'NOT_FOUND',
             message:
               "We couldn't find the estimate you're looking for. It may have been moved or deleted.",
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           estimate: estimate.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
   create: protectedProcedure
@@ -77,24 +77,24 @@ export const userEstimatesRouter = router({
             farm_id: input.farmId,
             description: input.description,
             calculations: input.calculations,
-            user_id: ctx.user.id,
+            user_id: ctx.actor.userId,
           })
           .select('*')
           .single();
 
         if (!estimate.data) {
-          return ctx.error({
+          return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
             message:
               'We encountered an issue while saving your estimate. Please check your information and try again.',
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           estimate: estimate.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
   update: protectedProcedure
@@ -130,18 +130,18 @@ export const userEstimatesRouter = router({
           .single();
 
         if (!estimate.data) {
-          return ctx.error({
+          return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
             message:
               "We couldn't update your estimate. Please check your changes and try again.",
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           estimate: estimate.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
   delete: protectedProcedure
@@ -160,18 +160,18 @@ export const userEstimatesRouter = router({
           .single();
 
         if (!estimate.data) {
-          return ctx.error({
+          return ctx.fail({
             code: 'NOT_FOUND',
             message:
               "The estimate you're trying to delete couldn't be found. It may have already been removed.",
           });
         }
 
-        return ctx.success({
+        return ctx.ok({
           estimate: estimate.data,
         });
       } catch (err) {
-        return ctx.error(err);
+        return ctx.fail(err);
       }
     }),
 });
