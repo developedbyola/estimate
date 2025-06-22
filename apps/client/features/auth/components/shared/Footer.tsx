@@ -33,6 +33,7 @@ const Footer = ({ mutate }: Props) => {
           })}
         >
           <Action.Label>Continue</Action.Label>
+          <Action.Loader />
         </Action.Root>
         <Action.Root
           variant='surface'
