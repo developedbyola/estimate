@@ -8,7 +8,7 @@ type Props = {
 
 const Footer = ({ mutate }: Props) => {
   const { onOpenChange } = useOverlayContext();
-  const { onNextStep, setData } = useFlowContext();
+  const { onNextStep, isLastStep, setData } = useFlowContext();
   const { reset, handleSubmit } = useFormContext();
 
   return (

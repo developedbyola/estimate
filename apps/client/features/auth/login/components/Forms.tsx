@@ -14,6 +14,7 @@ import { Space } from '@/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { emailSchema, passwordSchema } from '../schemas';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { trpc } from '@/lib/trpc';
 
 const EmailForm = () => {
   const form = useFormContext();
@@ -76,6 +77,7 @@ const flows = [
 
 const Forms = () => {
   const flowContext = useFlowContext();
+  const login = trpc.auth.login.useMutation();
 
   return (
     <Box style={{ flex: 1 }}>
