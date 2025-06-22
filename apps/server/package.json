@@ -22,7 +22,7 @@
     "types": "tsc -p tsconfig.build.json",
     "build:all": "bun run build && bun run types",
     "clean": "rm -rf dist",
-    "deploy": "wrangler deploy"
+    "deploy": "npx wrangler deploy"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
