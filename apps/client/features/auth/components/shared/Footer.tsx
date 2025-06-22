@@ -1,10 +1,10 @@
+import { Space } from '@/constants';
 import { useFormContext } from 'react-hook-form';
 import { Action, Box, useFlowContext, useOverlayContext } from '@/components';
-import { Space } from '@/constants';
 
 const Footer = () => {
-  const { onNextStep, setData } = useFlowContext();
   const { onOpenChange } = useOverlayContext();
+  const { onNextStep, setData } = useFlowContext();
   const { reset, handleSubmit } = useFormContext();
 
   return (
@@ -18,8 +18,8 @@ const Footer = () => {
         mx='auto'
         style={{
           width: '100%',
-          gap: Space.base,
           maxWidth: 320,
+          gap: Space.base,
         }}
       >
         <Action.Root
