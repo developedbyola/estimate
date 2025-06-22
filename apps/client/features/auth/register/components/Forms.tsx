@@ -9,7 +9,7 @@ import {
 } from '@/components';
 import React from 'react';
 import { Space } from '@/constants';
-import Footer from '../../shared/Footer';
+import Footer from '../../components/shared/Footer';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { emailSchema, nameSchema, passwordSchema } from '../schemas';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';

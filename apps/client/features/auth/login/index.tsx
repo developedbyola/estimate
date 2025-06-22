@@ -1,7 +1,7 @@
 import React from 'react';
-import Forms from './components/Forms';
-import AuthModal from '../shared/Modal';
 import { Flow } from '@/components';
+import Forms from './components/Forms';
+import AuthModal from '../components/shared/Modal';
 
 type LoginFeatureProps = { children: React.ReactNode };
 
