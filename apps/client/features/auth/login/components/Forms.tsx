@@ -129,7 +129,7 @@ const Forms = () => {
                 {flow.content}
               </Box>
 
-              <Footer />
+              <Footer authType='login' />
             </Flow.Content>
           </FormProvider>
         );

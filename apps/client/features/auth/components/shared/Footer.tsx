@@ -1,14 +1,17 @@
 import { Space } from '@/constants';
 import { useFormContext } from 'react-hook-form';
-import { Action, Box, useOverlayContext } from '@/components';
+import { Action, Box, useFlowContext, useOverlayContext } from '@/components';
 
 type Props = {
-  children?: React.ReactNode;
+  authType?: 'login' | 'register';
 };
 
-const Footer = ({ children }: Props) => {
-  const { reset } = useFormContext();
+const Footer = ({ authType }: Props) => {
   const { onOpenChange } = useOverlayContext();
+  const { reset, handleSubmit } = useFormContext();
+  const { onNextStep, isLastStep, setData } = useFlowContext();
+
+  const submissionType = authType === 'login' ? 'login' : 'register';
 
   return (
     <Box
@@ -25,7 +28,17 @@ const Footer = ({ children }: Props) => {
           gap: Space.base,
         }}
       >
-        {children}
+        <Action.Root
+          onPress={handleSubmit((values) => {
+            setData(values);
+            onNextStep();
+            if (submissionType === 'login') {
+            }
+          })}
+        >
+          <Action.Label>Continue</Action.Label>
+          <Action.Loader />
+        </Action.Root>
         <Action.Root
           variant='surface'
           onPress={() => {
