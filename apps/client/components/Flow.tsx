@@ -6,7 +6,7 @@ import { GestureResponderEvent } from 'react-native';
 type FlowContext<T extends object> = {
   data: T;
   count: number;
-  value: number;
+  currentStep: number;
   isLastStep: boolean;
   onNextStep: () => void;
   canGoToNextStep: boolean;
@@ -16,7 +16,7 @@ type FlowContext<T extends object> = {
   skipToStep: (step: number) => void;
   setData: (newData: T) => void;
   reset: () => void;
-  percent: number;
+  progress: number;
   isCompleted: boolean;
 };
 
@@ -25,28 +25,36 @@ export const flowContext = React.createContext<FlowContext<any> | null>(null);
 export const useFlow = <T extends object>(
   value?: Partial<FlowContext<T>>
 ): FlowContext<T> => {
-  const [step, setStep] = React.useState(value?.value ?? 0);
+  const [currentStep, setCurrentStep] = React.useState(value?.currentStep ?? 0);
   const [data, setData] = React.useState<T>(value?.data ?? ({} as T));
+  const [showSuccess, setShowSuccess] = React.useState(false);
   const count = value?.count ?? 0;
 
-  const isLastStep = step === count - 1;
-  const canGoToNextStep = step < count - 1;
-  const canGoToPreviousStep = step > 0;
-  const percent = count > 0 ? (step + 1) / count : 0;
-  const isCompleted = step > count - 1;
+  const isLastStep = currentStep === count - 1;
+  const canGoToNextStep = currentStep < count - 1;
+  const canGoToPreviousStep = currentStep > 0;
+  const progress = count > 0 ? (currentStep + 1) / count : 0;
+  const isCompleted = showSuccess;
 
   const handleNextStep = () => {
-    setStep((prev) => prev + 1);
+    if (isLastStep) {
+      setShowSuccess(true);
+    } else if (canGoToNextStep) {
+      setCurrentStep((prev) => prev + 1);
+    }
   };
 
   const handlePreviousStep = () => {
-    if (!canGoToPreviousStep) return;
-    setStep((prev) => prev - 1);
+    if (canGoToPreviousStep) {
+      setCurrentStep((prev) => prev - 1);
+    }
+    setShowSuccess(false);
   };
 
   const handleSkipToStep = (stepIndex: number) => {
     if (stepIndex >= 0 && stepIndex < count) {
-      setStep(stepIndex);
+      setCurrentStep(stepIndex);
+      setShowSuccess(false);
     }
   };
 
@@ -55,20 +63,22 @@ export const useFlow = <T extends object>(
   };
 
   const handleSetStep = (newStep: number) => {
-    setStep(newStep);
+    setCurrentStep(newStep);
+    setShowSuccess(false);
   };
 
   const reset = () => {
     setData({} as T);
-    setStep(value?.value || 0);
+    setCurrentStep(value?.currentStep || 0);
+    setShowSuccess(false);
   };
 
   return {
     data,
     count,
     reset,
-    percent,
-    value: step,
+    progress,
+    currentStep,
     isCompleted,
     isLastStep,
     canGoToNextStep,
@@ -85,7 +95,7 @@ export const useFlowContext = <T extends object>() => {
   const context = React.useContext(flowContext);
 
   if (!context) {
-    throw new Error('useStep must be used within a StepProvider');
+    throw new Error('useFlow must be used within a FlowProvider');
   }
 
   return context as FlowContext<T>;
@@ -132,7 +142,7 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
 
   const context = useFlow({
     count,
-    value: initialStep,
+    currentStep: initialStep,
     data: initialData,
   });
 
@@ -149,7 +159,7 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
     </Provider>
   );
 });
-Root.displayName = 'Step.Root';
+Root.displayName = 'Flow.Root';
 
 type ContentRef = React.ComponentRef<typeof Box>;
 type ContentProps = Omit<React.ComponentProps<typeof Box>, 'index'> & {
@@ -157,9 +167,9 @@ type ContentProps = Omit<React.ComponentProps<typeof Box>, 'index'> & {
 };
 const Content = React.forwardRef<ContentRef, ContentProps>((props, ref) => {
   const { index, style, ...restProps } = props;
-  const { value } = useFlowContext();
+  const { currentStep, isCompleted } = useFlowContext();
 
-  if (value !== index) return null;
+  if (currentStep !== index || isCompleted) return null;
 
   return (
     <Box
@@ -169,7 +179,7 @@ const Content = React.forwardRef<ContentRef, ContentProps>((props, ref) => {
     />
   );
 });
-Content.displayName = 'Step.Content';
+Content.displayName = 'Flow.Content';
 
 type SuccessRef = React.ComponentRef<typeof Box>;
 type SuccessProps = React.ComponentProps<typeof Box>;
@@ -187,7 +197,7 @@ const Success = React.forwardRef<SuccessRef, SuccessProps>((props, ref) => {
     />
   );
 });
-Success.displayName = 'Step.Success';
+Success.displayName = 'Flow.Success';
 
 type PreviousButtonRef = React.ComponentRef<typeof AsChild>;
 type PreviousButtonProps = React.ComponentProps<typeof AsChild>;
@@ -212,18 +222,26 @@ const PreviousButton = React.forwardRef<PreviousButtonRef, PreviousButtonProps>(
     );
   }
 );
-PreviousButton.displayName = 'Step.PreviousButton';
+PreviousButton.displayName = 'Flow.PreviousButton';
 
 type NextButtonRef = React.ComponentRef<typeof AsChild>;
-type NextButtonProps = React.ComponentProps<typeof AsChild>;
+type NextButtonProps = React.ComponentProps<typeof AsChild> & {
+  onComplete?: () => void | Promise<void>;
+};
 const NextButton = React.forwardRef<NextButtonRef, NextButtonProps>(
   (props, ref) => {
-    const { onPress, ...restProps } = props;
-    const { onNextStep, canGoToNextStep } = useFlowContext();
+    const { onPress, onComplete, ...restProps } = props;
+    const { onNextStep, canGoToNextStep, isCompleted, isLastStep } =
+      useFlowContext();
 
-    const handlePress = (event: GestureResponderEvent) => {
+    const handlePress = async (event: GestureResponderEvent) => {
       onPress?.(event);
-      onNextStep();
+
+      if (isLastStep && !isCompleted) {
+        await Promise.resolve(onComplete?.());
+      } else {
+        onNextStep();
+      }
     };
 
     return (
@@ -231,13 +249,13 @@ const NextButton = React.forwardRef<NextButtonRef, NextButtonProps>(
         ref={ref}
         asChild={true}
         onPress={handlePress}
-        disabled={!canGoToNextStep}
+        disabled={!canGoToNextStep && !isLastStep}
         {...restProps}
       />
     );
   }
 );
-NextButton.displayName = 'Step.NextButton';
+NextButton.displayName = 'Flow.NextButton';
 
 const Flow = {
   Root,

@@ -1,7 +1,7 @@
 import React from 'react';
 import Text from './Text';
 import { Ionicons } from '@expo/vector-icons';
-import { Border, Space, Typography } from '@/constants';
+import { Border, Space } from '@/constants';
 import {
   Pressable,
   GestureResponderEvent,
@@ -107,12 +107,12 @@ type RootProps = React.ComponentProps<typeof Pressable> &
 const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
   const {
     style,
-    disabled,
     onPressIn,
     onPressOut,
     size = 'base',
     variant = 'primary',
     loading = false,
+    disabled = loading,
     ...restProps
   } = props;
 
@@ -166,11 +166,13 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
         disabled={disabled}
         style={(state) => [
           {
+            gap: Space.sm,
             alignItems: 'center',
+            flexDirection: 'row',
             justifyContent: 'center',
-            opacity: disabled ? 0.5 : 1,
             paddingInline: Space['2xl'],
             borderRadius: Border.radius['full'],
+            opacity: disabled || loading ? 0.5 : 1,
           },
           {
             ...sizes[size],
@@ -187,8 +189,7 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
 type LoaderRef = React.ComponentRef<typeof ActivityIndicator>;
 type LoaderComponent = React.ComponentProps<typeof ActivityIndicator>;
 const Loader = React.forwardRef<LoaderRef, LoaderComponent>((props, ref) => {
-  const Colors = useThemeColors();
-  const { style, ...restProps } = props;
+  const { style, color = 'white', ...restProps } = props;
   const { loading } = useActionContext();
 
   if (!loading) return null;
@@ -196,7 +197,7 @@ const Loader = React.forwardRef<LoaderRef, LoaderComponent>((props, ref) => {
   return (
     <ActivityIndicator
       ref={ref}
-      color={Colors.text.muted}
+      color={color}
       {...restProps}
     />
   );

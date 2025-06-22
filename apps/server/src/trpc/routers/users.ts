@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import { protectedProcedure, publicProcedure, router } from '../middleware';
 
 const passwordSchema = z
@@ -102,9 +102,9 @@ export const usersRouter = router({
           });
         }
 
-        const isSamePassword = await bcrypt.compare(
-          input.currentPassword,
-          user.data.password
+        const isSamePassword = await argon2.verify(
+          user.data.password,
+          input.currentPassword
         );
 
         if (!isSamePassword) {
@@ -114,7 +114,7 @@ export const usersRouter = router({
           });
         }
 
-        const hashedPassword = await bcrypt.hash(input.newPassword, 12);
+        const hashedPassword = await argon2.hash(input.newPassword);
 
         // Update password using Supabase Auth
         const updatedUser = await ctx.supabase
@@ -169,9 +169,9 @@ export const usersRouter = router({
           });
         }
 
-        const isSamePassword = await bcrypt.compare(
-          input.password,
-          user.data.password
+        const isSamePassword = await argon2.verify(
+          user.data.password,
+          input.password
         );
 
         if (!isSamePassword) {

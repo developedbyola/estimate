@@ -3,9 +3,9 @@ config();
 
 import { Hono } from 'hono';
 import { appRouter } from '@/trpc';
-import { env } from '@/configs/env';
 import { trpcServer } from '@hono/trpc-server';
 import { createContext } from '@/trpc/context';
+import { env } from './configs/env';
 
 const app = new Hono();
 
@@ -18,14 +18,8 @@ app.use(
     createContext: (_opts, c) => createContext(c),
   })
 );
-
-if (process.env.NODE_ENV !== 'production') {
-  const { serve } = await import('@hono/node-server');
-  const port = Number(env.PORT);
-  console.log(`Server is running on port ${port}`);
-  serve({ fetch: app.fetch, port });
-}
-
 app.get('/', (c) => c.text('Hono + tRPC server is running!'));
+
+console.log(`Server is running on port ${env.PORT}`);
 
 export default app;

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import { publicProcedure, protectedProcedure, router } from '../middleware';
 import {
   signAccessToken,
@@ -76,9 +76,9 @@ export const authRouter = router({
           });
         }
 
-        const isPasswordValid = await bcrypt.compare(
-          password,
-          user.data.password
+        const isPasswordValid = await argon2.verify(
+          user.data.password,
+          password
         );
 
         if (!isPasswordValid) {
@@ -147,7 +147,7 @@ export const authRouter = router({
           });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 12);
+        const hashedPassword = await argon2.hash(password);
 
         const user = await ctx.supabase
           .from('users')

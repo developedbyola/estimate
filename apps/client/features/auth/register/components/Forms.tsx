@@ -148,7 +148,7 @@ const Farms = () => {
               {flow.content}
             </Box>
 
-            <Footer />
+            <Footer authType='register' />
           </Flow.Content>
         </FormProvider>
       ))}
