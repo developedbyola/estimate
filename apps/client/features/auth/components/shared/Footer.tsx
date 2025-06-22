@@ -30,6 +30,7 @@ const Footer = ({ mutate }: Props) => {
           onPress={handleSubmit((values) => {
             setData(values);
             onNextStep();
+            mutate?.();
           })}
         >
           <Action.Label>Continue</Action.Label>
