@@ -18,7 +18,7 @@ const Footer = () => {
         mx='auto'
         style={{
           width: '100%',
-          gap: Space.xs,
+          gap: Space.base,
           maxWidth: 320,
         }}
       >
