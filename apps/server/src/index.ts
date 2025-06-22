@@ -25,3 +25,7 @@ if (process.env.NODE_ENV !== 'production') {
   console.log(`Server is running on port ${port}`);
   serve({ fetch: app.fetch, port });
 }
+
+app.get('/', (c) => c.text('Hono + tRPC server is running!'));
+
+export default app;
