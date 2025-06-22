@@ -4,11 +4,7 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
-    "@types/bun": "latest",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/request-ip": "^0.0.41",
-    "typescript": "^5.8.3"
+    "@types/bun": "latest"
   },
   "scripts": {
     "dev": "bun --watch src/index.ts",
@@ -25,7 +21,10 @@
     "deploy": "npx wrangler deploy"
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@hono/node-server": "^1.14.4",
+    "@types/jsonwebtoken": "^9.0.10",
+    "typescript": "^5.8.3",
     "@hono/trpc-server": "^0.3.4",
     "@supabase/supabase-js": "^2.50.0",
     "@trpc/server": "^11.4.2",
