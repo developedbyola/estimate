@@ -104,7 +104,7 @@ export const auth = {
       osVersion: ua.os.version || 'unknown',
       deviceType: ua.device.type || 'unknown',
       deviceName: ua.device.type || 'unknown',
-      expiresAt: DEFAULT_EXPIRES.refresh,
+      expiresAt: Date.now() + DEFAULT_EXPIRES.refresh * 1000,
     };
   },
 

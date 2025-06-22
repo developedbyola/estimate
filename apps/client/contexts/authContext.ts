@@ -22,7 +22,6 @@ export type Session = {
 
 export type Auth = {
   user: User | null;
-  session: Session | null;
   isAuthenticated: boolean;
 };
 
@@ -31,12 +30,12 @@ type State = Auth;
 export type Action =
   | {
       type: 'LOGIN';
-      payload: Pick<Auth, 'user' | 'session'>;
+      payload: Pick<Auth, 'user'>;
     }
   | { type: 'LOGOUT'; payload: never };
 
 export type AuthContext = State & {
-  setAuth: (action: Action) => Promise<void>;
+  setAuth: React.ActionDispatch<[Action]>;
 };
 
 export const AuthContext = React.createContext<AuthContext | null>(null);
@@ -53,7 +52,6 @@ export const authReducer = (state: State, action: Action): State => {
       return {
         ...state,
         user: null,
-        session: null,
         isAuthenticated: false,
       };
     default:

@@ -253,29 +253,17 @@ export const authRouter = router({
         .select('*')
         .eq('id', sessionId)
         .eq('user_id', userId)
+        .is('is_active', true)
         .single();
 
-      // If no session is found, return an error
-      if (!session.data) {
-        return ctx.fail({
-          code: 'UNAUTHORIZED',
-          message: 'No session was found.',
-        });
-      }
+      const isSessionNotFound = !session.data;
+      const isSessionInactive = !session.data.is_active;
+      const isSessionExpired = session.data.expires_at < Date.now();
 
-      // If the session is not active, return an error
-      if (!session.data.is_active) {
+      if (isSessionNotFound || isSessionInactive || isSessionExpired) {
         return ctx.fail({
           code: 'UNAUTHORIZED',
-          message: "You're logged out of this device. Try logging in again.",
-        });
-      }
-
-      // If the session has expired, return an error
-      if (session.data.expires_at < Date.now()) {
-        return ctx.fail({
-          code: 'UNAUTHORIZED',
-          message: '',
+          message: 'Your session has expired. Please log in again.',
         });
       }
 
@@ -316,6 +304,34 @@ export const authRouter = router({
     }
   }),
 
+  revokeSession: protectedProcedure
+    .input(z.object({ sessionId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const session = await ctx.supabase
+          .from('user_sessions')
+          .update({ is_active: false })
+          .eq('id', input.sessionId)
+          .eq('user_id', ctx.actor.userId)
+          .select('*')
+          .single();
+
+        if (!session.data) {
+          return ctx.fail({
+            code: 'INTERNAL_SERVER_ERROR',
+            message:
+              'We encountered an issue while revoking your session. Please try again later.',
+          });
+        }
+
+        return ctx.ok({
+          success: true,
+        });
+      } catch (err) {
+        return ctx.fail(err);
+      }
+    }),
+
   logout: publicProcedure.mutation(async ({ ctx }) => {
     try {
       // Get the refresh token
@@ -335,7 +351,8 @@ export const authRouter = router({
         .from('user_sessions')
         .update({ is_active: false })
         .eq('id', actor.sessionId)
-        .select('id')
+        .eq('user_id', actor.userId)
+        .select('*')
         .single();
 
       if (!session.data) {
