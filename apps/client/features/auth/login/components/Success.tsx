@@ -1,14 +1,25 @@
 import React from 'react';
 import { useRedirect } from '@/hooks/useRedirect';
-import { ActivityIndicator, Box, Text, useOverlayContext } from '@/components';
+import {
+  ActivityIndicator,
+  Box,
+  Text,
+  useOverlayContext,
+  // useFlowContext,
+} from '@/components';
+import { trpc } from '@/lib/trpc';
 
 const Success = () => {
-  const overlay = useOverlayContext();
+  const overlayContext = useOverlayContext();
+  // const flowContext = useFlowContext();
+  const login = trpc.auth.login.useMutation();
 
   useRedirect('/app', {
     delay: 2000,
     condition: true,
-    onComplete: () => overlay.onOpenChange(false),
+    onComplete: () => {
+      overlayContext.onOpenChange(false);
+    },
   });
 
   return (
