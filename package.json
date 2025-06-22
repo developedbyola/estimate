@@ -1,0 +1,20 @@
+{
+  "name": "farm",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "workspaces": [
+    "apps/*",
+    "examples/*",
+    "packages/*"
+  ],
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "expo-linear-gradient": "^14.1.5"
+  }
+}
