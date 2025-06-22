@@ -11,8 +11,10 @@ import {
 } from 'react-native';
 import AsChild from './AsChild';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { ActivityIndicator } from '.';
 
 type ActionContext = {
+  loading: boolean;
   state: PressableStateCallbackType;
   size: '2xs' | 'xs' | 'sm' | 'base' | 'lg' | 'xl';
   variant: 'primary' | 'ghost' | 'surface' | 'outline';
@@ -31,6 +33,7 @@ export const useAction = (value?: Partial<ActionContext>): ActionContext => {
     },
     size: newValue.size || 'base',
     variant: newValue.variant || 'primary',
+    loading: newValue.loading || false,
   };
 };
 
@@ -63,8 +66,6 @@ const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
     hovered: value?.state.hovered || false,
   });
 
-  const context = useAction(value ? { ...value, ...state } : undefined);
-
   const handlePressIn = (event: GestureResponderEvent) => {
     onPressIn?.(event);
     setState((s) => ({ ...s, hovered: true }));
@@ -86,7 +87,7 @@ const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
   };
 
   return (
-    <ActionContext.Provider value={context}>
+    <ActionContext.Provider value={value}>
       <AsChild
         ref={ref}
         asChild={asChild}
@@ -102,7 +103,7 @@ const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
 
 type RootRef = React.ComponentRef<typeof Pressable>;
 type RootProps = React.ComponentProps<typeof Pressable> &
-  Partial<Pick<ActionContext, 'size' | 'variant'>>;
+  Partial<Pick<ActionContext, 'size' | 'variant' | 'loading'>>;
 const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
   const {
     style,
@@ -111,10 +112,11 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
     onPressOut,
     size = 'base',
     variant = 'primary',
+    loading = false,
     ...restProps
   } = props;
 
-  const context = useAction({ size, variant });
+  const context = useAction({ size, variant, loading });
   const Colors = useThemeColors();
 
   const variants = (state: PressableStateCallbackType) => ({
@@ -179,6 +181,24 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
         {...restProps}
       />
     </Provider>
+  );
+});
+
+type LoaderRef = React.ComponentRef<typeof ActivityIndicator>;
+type LoaderComponent = React.ComponentProps<typeof ActivityIndicator>;
+const Loader = React.forwardRef<LoaderRef, LoaderComponent>((props, ref) => {
+  const Colors = useThemeColors();
+  const { style, ...restProps } = props;
+  const { loading } = useActionContext();
+
+  if (!loading) return null;
+
+  return (
+    <ActivityIndicator
+      ref={ref}
+      color={Colors.text.muted}
+      {...restProps}
+    />
   );
 });
 
@@ -279,6 +299,7 @@ const Icon = React.forwardRef<ActionIconRef, ActionIconProps>((props, ref) => {
 const Action = {
   Root,
   Label,
+  Loader,
   Icon,
 };
 

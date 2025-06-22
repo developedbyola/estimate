@@ -2,7 +2,11 @@ import { Space } from '@/constants';
 import { useFormContext } from 'react-hook-form';
 import { Action, Box, useFlowContext, useOverlayContext } from '@/components';
 
-const Footer = () => {
+type Props = {
+  mutate?: any;
+};
+
+const Footer = ({ mutate }: Props) => {
   const { onOpenChange } = useOverlayContext();
   const { onNextStep, setData } = useFlowContext();
   const { reset, handleSubmit } = useFormContext();
