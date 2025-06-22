@@ -3,10 +3,10 @@ import { useFormContext } from 'react-hook-form';
 import { Action, Box, useFlowContext, useOverlayContext } from '@/components';
 
 type Props = {
-  mutate?: any;
+  submissionType?: 'login' | 'register';
 };
 
-const Footer = ({ mutate }: Props) => {
+const Footer = ({ submissionType }: Props) => {
   const { onOpenChange } = useOverlayContext();
   const { onNextStep, isLastStep, setData } = useFlowContext();
   const { reset, handleSubmit } = useFormContext();
@@ -30,7 +30,8 @@ const Footer = ({ mutate }: Props) => {
           onPress={handleSubmit((values) => {
             setData(values);
             onNextStep();
-            mutate?.();
+            if (submissionType === 'login') {
+            }
           })}
         >
           <Action.Label>Continue</Action.Label>
