@@ -1,12 +1,13 @@
 import { env } from '@/configs/env';
 import { type Context } from 'hono';
 import * as Cookie from 'hono/cookie';
-import { getConnInfo } from 'hono/bun';
 import { sign, verify } from 'hono/jwt';
 import { UAParser } from 'ua-parser-js';
 import { TRPCError } from '@trpc/server';
 import { sha256 } from 'hono/utils/crypto';
 import type { JWTPayload } from 'hono/utils/jwt/types';
+import { getConnInfo as BunConnInfo } from 'hono/bun';
+import { getConnInfo as NodeConnInfo } from '@hono/node-server/conninfo';
 
 type TokenOptions = {
   type: 'access' | 'refresh';
@@ -94,7 +95,9 @@ export const auth = {
     const parser = new UAParser(userAgent);
     const ua = parser.getResult();
 
-    const ipAddress = getConnInfo(ctx).remote.address || 'unknown';
+    const conn =
+      env.NODE_ENV === 'production' ? NodeConnInfo(ctx) : BunConnInfo(ctx);
+    const ipAddress = conn?.remote?.address ?? 'unknown';
 
     return {
       userAgent,
