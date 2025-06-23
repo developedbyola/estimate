@@ -42,9 +42,16 @@ const getExpiry = (seconds: number) => Math.floor(Date.now() / 1000) + seconds;
  * @returns A promise that resolves to the created token.
  */
 
-export async function signToken({ type, payload, expiresIn }: TokenOptions) {
-  const exp = getExpiry(expiresIn ?? DEFAULT_EXPIRES[type]);
+export async function signToken({
+  type,
+  payload,
+  expiresIn = DEFAULT_EXPIRES[type],
+}: TokenOptions) {
+  const exp = getExpiry(expiresIn);
   const token = await sign({ ...payload, exp }, SECRETS[type]);
+  console.log('Token exp (UNIX sec):', exp);
+  console.log('Expires at:', new Date(exp * 1000).toISOString());
+  console.log('Now:', new Date().toISOString());
   return token;
 }
 
