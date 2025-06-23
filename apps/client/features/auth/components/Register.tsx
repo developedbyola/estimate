@@ -20,7 +20,7 @@ import { emailSchema, nameSchema, passwordSchema } from '../schemas';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 
 const Success = () => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const { onOpenChange } = useOverlayContext();
   const { data } = useFlowContext<{ name?: string }>();
 
@@ -35,8 +35,8 @@ const Success = () => {
         <Ionicons
           size={64}
           name='checkmark-circle'
-          color={Colors.success.base}
           style={{ marginInline: 'auto' }}
+          color={colors.getColor('success.base')}
         />
         <Box py='xl' />
         <Heading

@@ -1,6 +1,4 @@
 import React from 'react';
-import Box from './Box';
-import AsChild from './AsChild';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import {
   GestureResponderEvent,
@@ -14,7 +12,7 @@ import BottomSheet, {
 import { FullWindowOverlay } from 'react-native-screens';
 import { StatusBar } from 'expo-status-bar';
 import { Border } from '@/constants';
-import Blur from './Blur';
+import { Box, Blur, AsChild } from '@/components';
 
 type OverlayContext = {
   open: boolean;
@@ -184,7 +182,7 @@ const Modal = React.forwardRef<ModalRef, ModalProps>((props, ref) => {
     ...restProps
   } = props;
 
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const theme = useColorScheme() ?? 'light';
   const { open } = useOverlayContext();
 
@@ -195,9 +193,9 @@ const Modal = React.forwardRef<ModalRef, ModalProps>((props, ref) => {
         ref={ref}
         visible={open}
         animationType={animationType}
-        backdropColor={Colors.others.overlay}
         presentationStyle={presentationStyle}
         statusBarTranslucent={statusBarTranslucent}
+        backdropColor={colors.getColor('bg.overlay')}
         {...restProps}
       >
         <Blur
@@ -227,7 +225,7 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
   } = props;
   const { bottomSheet, open } = useOverlayContext();
 
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const theme = useColorScheme() ?? 'light';
 
   const memoizedSnapPoints = React.useMemo(() => snapPoints, []);
@@ -257,11 +255,14 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           enableDynamicSizing={false}
           keyboardBehavior='fillParent'
           index={memoizedSnapPoints.length - 1}
+          style={{
+            backgroundColor: colors.getColor('bg.soft'),
+          }}
           handleIndicatorStyle={{
             height: 6,
             width: 64,
             borderRadius: Border.radius.full,
-            backgroundColor: Colors.others.surface,
+            backgroundColor: colors.getColor('bg.soft'),
           }}
           backdropComponent={backdrop}
           snapPoints={memoizedSnapPoints}
@@ -273,19 +274,12 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
               {
                 flex: 1,
                 height: '100%',
-                backgroundColor: Colors.others.background,
               },
               style,
             ]}
             {...restProps}
           >
-            <Blur
-              tint={'light'}
-              intensity={100}
-              style={{ flex: 1 }}
-            >
-              {children}
-            </Blur>
+            {children}
           </BottomSheetView>
         </BottomSheet>
       </FullWindowOverlay>

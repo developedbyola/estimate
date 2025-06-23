@@ -10,7 +10,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { Action, Heading, Box, Text, Safe } from '@/components';
 
 const FarmsPage = () => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const { currency } = useCurrency();
 
   return (
@@ -19,7 +19,7 @@ const FarmsPage = () => {
       <StatusBar style='dark' />
 
       <Safe
-        bg='foreground'
+        bg='bg.soft'
         style={{ flex: 1 }}
       >
         <Box
@@ -56,7 +56,7 @@ const FarmsPage = () => {
                 <Action.Icon
                   size={22}
                   name='create-outline'
-                  color={Colors.primary.base}
+                  color={colors.getColor('primary.base')}
                 />
               </Action.Root>
             </CreateBottomSheet>
@@ -74,7 +74,7 @@ const FarmsPage = () => {
               <Action.Icon
                 size={22}
                 name='search-outline'
-                color={Colors.primary.base}
+                color={colors.getColor('primary.base')}
               />
             </Action.Root>
           </Box>
@@ -87,8 +87,8 @@ const FarmsPage = () => {
           <Text
             size='sm'
             leading='xs'
-            color='muted'
             align='center'
+            color='text.inactive'
           >
             Total Estimates
           </Text>

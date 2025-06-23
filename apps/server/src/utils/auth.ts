@@ -34,7 +34,7 @@ const DEFAULT_EXPIRES = {
 const getExpiry = (seconds: number) => Math.floor(Date.now() / 1000) + seconds;
 
 /**
- * Creates a token for a user session.
+ * Signs a token for a user session.
  * @param {TokenOptions} options - The options for creating the token.
  * @param {string} options.type - The type of token to create ('access' or 'refresh').
  * @param {object} options.payload - The payload to include in the token.
@@ -42,29 +42,31 @@ const getExpiry = (seconds: number) => Math.floor(Date.now() / 1000) + seconds;
  * @returns A promise that resolves to the created token.
  */
 
-export async function createToken({ type, payload, expiresIn }: TokenOptions) {
+export async function signToken({ type, payload, expiresIn }: TokenOptions) {
   const exp = getExpiry(expiresIn ?? DEFAULT_EXPIRES[type]);
   const token = await sign({ ...payload, exp }, SECRETS[type]);
   return token;
 }
 
 /**
- * Decodes a token and returns the payload.
+ * Verifies a token and returns the payload.
  * @param {string} type - The type of token to decode ('access' or 'refresh').
  * @param {string} token - The token to decode.
  * @return A promise that resolves to the decoded payload.
  */
-export async function decodeToken(type: 'access' | 'refresh', token: string) {
+export async function verifyToken(type: 'access' | 'refresh', token: string) {
   try {
     const decoded = await verify(token, SECRETS[type]);
     if (typeof decoded !== 'object' || decoded === null) {
-      throw new Error();
+      throw new Error('Invalid decoded data');
     }
     return decoded as JWTPayload & TokenOptions['payload'];
-  } catch {
+  } catch (err) {
+    console.log(err);
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Invalid token',
+      cause: err,
     });
   }
 }
@@ -92,8 +94,8 @@ export const auth = {
   getExpiry,
   expires: DEFAULT_EXPIRES,
   jwt: {
-    sign: createToken,
-    verify: decodeToken,
+    sign: signToken,
+    verify: verifyToken,
   },
   session: async (ctx: Context) => {
     const headers = ctx.req.raw.headers;

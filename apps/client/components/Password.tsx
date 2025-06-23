@@ -57,7 +57,7 @@ type IndicatorRef = React.ComponentRef<typeof Ionicons>;
 type IndicatorProps = Omit<React.ComponentProps<typeof Ionicons>, 'name'>;
 const Indicator = React.forwardRef<IndicatorRef, IndicatorProps>(
   (props, ref) => {
-    const themeColors = useThemeColors();
+    const colors = useThemeColors();
     const { style, size, ...restProps } = props;
     const { showPassword, setShowPassword } = usePassword();
 
@@ -69,7 +69,7 @@ const Indicator = React.forwardRef<IndicatorRef, IndicatorProps>(
         <Ionicons
           ref={ref}
           size={size || 20}
-          color={themeColors.text.muted}
+          color={colors.getColor('text.inactive')}
           name={showPassword ? 'lock-closed-outline' : 'lock-open-outline'}
           style={[{ paddingInline: Space['xl'] }, style]}
           {...restProps}

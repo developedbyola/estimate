@@ -4,13 +4,13 @@ import { Stack } from 'expo-router';
 import { trpcClient } from '@/clients/trpc';
 import { queryClient } from '@/clients/query';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { AuthProvider, UserProvider } from '@/components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { AuthProvider, UserProvider } from '@/components';
 
 const Layout = () => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
 
   return (
     <trpc.Provider
@@ -25,10 +25,10 @@ const Layout = () => {
                 <Stack
                   screenOptions={{
                     headerStyle: {
-                      backgroundColor: Colors.others.background,
+                      backgroundColor: colors.getColor('bg.base'),
                     },
                     headerTitleStyle: { fontWeight: 'bold' },
-                    headerTintColor: Colors.primary.base,
+                    headerTintColor: colors.getColor('primary.base'),
                   }}
                 >
                   <Stack.Screen

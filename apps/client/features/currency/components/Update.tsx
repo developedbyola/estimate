@@ -25,7 +25,7 @@ export const Update = ({ children }: SwitchProps) => {
         pt='lg'
         pb='6xl'
         px='lg'
-        bg='background'
+        bg='bg.base'
         style={{
           bottom: 0,
           width: '100%',

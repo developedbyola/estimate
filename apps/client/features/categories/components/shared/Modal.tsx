@@ -43,7 +43,7 @@ const Modal = ({ children, content, snapPoints, headingText }: Props) => {
           <Box
             pt='xl'
             pb='6xl'
-            bg='background'
+            bg='bg.base'
             style={{
               bottom: 0,
               width: '100%',

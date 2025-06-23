@@ -22,14 +22,14 @@ const Farm = (props: FarmProps) => {
       <Box
         px='lg'
         py='lg'
-        bg='background'
+        bg='bg.base'
         style={{
           flex: 1,
           borderRadius: Border.radius['xl'],
         }}
       >
         <Box
-          bg='foreground'
+          bg='bg.soft'
           style={{
             flex: 0,
             width: 40,
@@ -48,7 +48,7 @@ const Farm = (props: FarmProps) => {
           <Text
             size='xs'
             leading='xs'
-            color='muted'
+            color='text.inactive'
           >
             {farm.estimates} estimates
           </Text>
@@ -58,7 +58,7 @@ const Farm = (props: FarmProps) => {
           <Heading
             size='xl'
             leading='base'
-            color='subtle'
+            color='text.subtle'
           >
             {currency.symbol}
             {farm.amount.toFixed(2)}

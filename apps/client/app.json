@@ -32,7 +32,8 @@
           "backgroundColor": "#ffffff",
           "image": "./assets/images/brand/splash-screen/light.png"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,8 +1,6 @@
 import React from 'react';
 import { MotiImage } from 'moti';
-import { trpc } from '@/lib/trpc';
 import { Button } from 'react-native';
-import { Auth } from '@/features/auth';
 import { Border, Space } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
 import { Stack, useRouter } from 'expo-router';
@@ -17,6 +15,8 @@ import {
   useAuth,
   Blur,
 } from '@/components';
+import { Auth } from '@/features/auth';
+// import { useDeleteAccessToken } from '@/hooks/useTokens';
 
 const images = [
   {
@@ -46,7 +46,7 @@ const Footer = () => {
         <Blur
           px='lg'
           py='base'
-          bg='foreground'
+          bg='bg.soft'
           style={{
             overflow: 'hidden',
             flexDirection: 'row',
@@ -85,23 +85,28 @@ const Footer = () => {
       mx='auto'
       style={{ gap: Space.xs, width: '100%', maxWidth: 320 }}
     >
-      <Action.Root>
-        <Action.Label>Create account</Action.Label>
-      </Action.Root>
-      <Action.Root variant='ghost'>
-        <Action.Label>Sign in</Action.Label>
-      </Action.Root>
+      <Auth.Register>
+        <Action.Root>
+          <Action.Label>Create account</Action.Label>
+        </Action.Root>
+      </Auth.Register>
+      <Auth.Login>
+        <Action.Root variant='ghost'>
+          <Action.Label>Sign in</Action.Label>
+        </Action.Root>
+      </Auth.Login>
     </Box>
   );
 };
 
 const Index = () => {
-  const Colors = useThemeColors();
-  const healthQuery = trpc.system.health.useQuery();
+  const colors = useThemeColors();
+
+  // useDeleteAccessToken();
 
   return (
     <Box
-      bg='background'
+      bg='bg.base'
       style={{ flex: 1 }}
     >
       <Stack.Screen
@@ -157,7 +162,7 @@ const Index = () => {
                   zIndex: index,
                   aspectRatio: '3/4',
                   borderRadius: Border.radius['2xl'],
-                  backgroundColor: Colors.others.foreground,
+                  backgroundColor: colors.getColor('bg.subtle'),
                 }}
               />
             );

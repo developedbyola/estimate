@@ -49,7 +49,7 @@ const Category = () => {
 };
 
 const Name = () => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const { control } = useFormContext<{
     name: string;
   }>();
@@ -68,7 +68,7 @@ const Name = () => {
               <BottomSheetTextInput
                 value={field.value}
                 onBlur={field.onBlur}
-                placeholderTextColor={Colors.text.muted}
+                placeholderTextColor={colors.getColor('text.inactive')}
                 placeholder='Farm name e.g Maize farm'
                 style={{
                   width: '100%',
@@ -119,7 +119,7 @@ const SizeUnit = () => {
 };
 
 const Location = () => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const { control } = useFormContext<{
     state: string;
     city: string;
@@ -129,7 +129,7 @@ const Location = () => {
   return (
     <Box
       mx='auto'
-      bg='foreground'
+      bg='bg.soft'
       style={{
         flexWrap: 'wrap',
         overflow: 'hidden',
@@ -144,7 +144,7 @@ const Location = () => {
           width: '50%',
           borderRightWidth: 0.75,
           borderBottomWidth: 0.75,
-          borderColor: Colors.others.background,
+          borderColor: colors.getColor('border.base'),
         }}
       >
         <Field.Control style={{ backgroundColor: 'transparent' }}>
@@ -156,7 +156,7 @@ const Location = () => {
                 <BottomSheetTextInput
                   value={field.value}
                   onBlur={field.onBlur}
-                  placeholderTextColor={Colors.text.muted}
+                  placeholderTextColor={colors.getColor('text.inactive')}
                   placeholder='City e.g Ibadan'
                   style={{
                     width: '100%',
@@ -177,7 +177,7 @@ const Location = () => {
           width: '50%',
           borderLeftWidth: 0.75,
           borderBottomWidth: 0.75,
-          borderColor: Colors.others.background,
+          borderColor: colors.getColor('border.base'),
         }}
         control={control as any}
       >
@@ -191,7 +191,7 @@ const Location = () => {
                   value={field.value}
                   onBlur={field.onBlur}
                   placeholder='State e.g Oyo'
-                  placeholderTextColor={Colors.text.muted}
+                  placeholderTextColor={colors.getColor('text.inactive')}
                   style={{
                     width: '100%',
                     height: '100%',
@@ -209,7 +209,7 @@ const Location = () => {
         name='address'
         style={{
           borderTopWidth: 0.75,
-          borderColor: Colors.others.background,
+          borderColor: colors.getColor('border.base'),
         }}
         control={control as any}
       >
@@ -222,7 +222,7 @@ const Location = () => {
                 <BottomSheetTextInput
                   value={field.value}
                   onBlur={field.onBlur}
-                  placeholderTextColor={Colors.text.muted}
+                  placeholderTextColor={colors.getColor('text.inactive')}
                   placeholder='Address e.g Plot 5A, Bodija Street'
                   style={{
                     width: '100%',
@@ -242,7 +242,7 @@ const Location = () => {
 };
 
 const Size = () => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const { control } = useFormContext<{
     size: string;
     size_unit: string;
@@ -263,7 +263,7 @@ const Size = () => {
                 value={field.value}
                 onBlur={field.onBlur}
                 keyboardType='numeric'
-                placeholderTextColor={Colors.text.muted}
+                placeholderTextColor={colors.getColor('text.inactive')}
                 placeholder='Farm name e.g Maize farm'
                 style={{
                   width: '100%',
@@ -284,7 +284,7 @@ const Size = () => {
               return (
                 <Text
                   size='lg'
-                  color='muted'
+                  color='text.inactive'
                   style={{ textTransform: 'capitalize' }}
                 >
                   {field.value}
@@ -337,7 +337,7 @@ type Props = {
 };
 
 export const Add = ({ children }: Props) => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const form = useForm({
     mode: 'all',
     resolver: zodResolver(farmSchema),
@@ -383,7 +383,7 @@ export const Add = ({ children }: Props) => {
             }}
           >
             <Box
-              bg='foreground'
+              bg='bg.soft'
               style={{
                 overflow: 'hidden',
                 borderRadius: Border.radius.xl,
@@ -397,7 +397,9 @@ export const Add = ({ children }: Props) => {
                     content={<option.content />}
                     snapPoints={option.snapPoints}
                   >
-                    <TouchableHighlight underlayColor={Colors.others.surface}>
+                    <TouchableHighlight
+                      underlayColor={colors.getColor('bg.subtle')}
+                    >
                       <Box
                         px='lg'
                         style={{
@@ -424,13 +426,13 @@ export const Add = ({ children }: Props) => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             borderRadius: Border.radius.xl,
-                            backgroundColor: Colors.others.surface,
+                            backgroundColor: colors.getColor('bg.subtle'),
                           }}
                         >
                           <Ionicons
                             size={16}
                             name='add'
-                            color={Colors.others.inverted}
+                            color={colors.getColor('icon.base')}
                           />
                         </Box>
                       </Box>

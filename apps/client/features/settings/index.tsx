@@ -11,7 +11,7 @@ const Group = ({ group }: { group: keyof typeof Options }) => {
 
   return (
     <Blur
-      bg='background'
+      bg='bg.base'
       style={{ borderRadius: Border.radius.lg }}
     >
       {Options[group].map((option, index) => {
@@ -34,12 +34,12 @@ const Group = ({ group }: { group: keyof typeof Options }) => {
               <Ionicons
                 size={24}
                 name={option.icon}
-                color={colors.text.muted}
+                color={colors.getColor('text.inactive')}
               />
               <Text
                 size='lg'
                 leading='base'
-                color='base'
+                color='text.strong'
                 style={{ flex: 1 }}
               >
                 {option.name}
@@ -47,7 +47,7 @@ const Group = ({ group }: { group: keyof typeof Options }) => {
               <Ionicons
                 size={16}
                 name={'chevron-forward'}
-                color={colors.text.muted}
+                color={colors.getColor('text.inactive')}
               />
             </Box>
           </TouchableHighlight>
@@ -56,7 +56,6 @@ const Group = ({ group }: { group: keyof typeof Options }) => {
     </Blur>
   );
 };
-6;
 
 const SettingsFeature = () => {
   return (

@@ -27,7 +27,7 @@ import {
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 const Title = () => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const { control } = useFormContext<{ title: string }>();
 
   return (
@@ -46,7 +46,7 @@ const Title = () => {
                 onBlur={field.onBlur}
                 placeholder='e.g Maize'
                 onChangeText={field.onChange}
-                placeholderTextColor={Colors.text.muted}
+                placeholderTextColor={colors.getColor('text.inactive')}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -175,7 +175,7 @@ const options = [
 ];
 
 export const Add = ({ children }: Props) => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const form = useForm({
     mode: 'all',
     resolver: zodResolver(categorySchema),
@@ -215,7 +215,7 @@ export const Add = ({ children }: Props) => {
             style={{ maxWidth: 320, width: '100%' }}
           >
             <Box
-              bg='foreground'
+              bg='bg.soft'
               style={{
                 overflow: 'hidden',
                 borderRadius: Border.radius.xl,
@@ -229,7 +229,9 @@ export const Add = ({ children }: Props) => {
                     snapPoints={option.snapPoints}
                     headingText={option.headingText}
                   >
-                    <TouchableHighlight underlayColor={Colors.others.surface}>
+                    <TouchableHighlight
+                      underlayColor={colors.getColor('bg.subtle')}
+                    >
                       <Box
                         px='lg'
                         style={{
@@ -270,8 +272,8 @@ export const Add = ({ children }: Props) => {
                         {index === 0 ? (
                           <Text
                             size='lg'
-                            color='muted'
                             leading='sm'
+                            color='text.inactive'
                           >
                             {excerpt(values.title || 'No title', 12)}
                           </Text>
@@ -285,13 +287,13 @@ export const Add = ({ children }: Props) => {
                             marginLeft: Space.lg,
                             justifyContent: 'center',
                             borderRadius: Border.radius.xl,
-                            backgroundColor: Colors.others.surface,
+                            backgroundColor: colors.getColor('bg.subtle'),
                           }}
                         >
                           <Ionicons
                             size={16}
                             name='add'
-                            color={Colors.others.inverted}
+                            color={colors.getColor('icon.base')}
                           />
                         </Box>
                       </Box>

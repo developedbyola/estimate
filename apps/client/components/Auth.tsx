@@ -61,12 +61,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const validateAuth = async () => {
       const accessToken = await AsyncStorage.getItem('access_token');
 
-      if (accessToken) {
-        dispatch({
-          type: 'LOGIN',
-          payload: { auth: { accessToken, isAuthenticated: true } },
-        });
-      }
+      if (!accessToken) return;
+
+      dispatch({
+        type: 'LOGIN',
+        payload: { auth: { accessToken, isAuthenticated: true } },
+      });
     };
 
     validateAuth();

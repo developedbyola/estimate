@@ -6,7 +6,7 @@ import { Currency } from '@/features/currency';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 const Layout = () => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
 
   return (
     <Protected>
@@ -16,13 +16,13 @@ const Layout = () => {
             animation: 'shift',
             tabBarHideOnKeyboard: true,
             tabBarAllowFontScaling: true,
-            tabBarInactiveTintColor: Colors.text.muted,
-            tabBarActiveTintColor: Colors.primary.base,
+            tabBarActiveTintColor: colors.getColor('primary.base'),
+            tabBarInactiveTintColor: colors.getColor('text.inactive'),
             tabBarStyle: {
               height: 80,
               borderTopWidth: 1,
-              borderColor: Colors.others.foreground,
-              backgroundColor: Colors.others.background,
+              backgroundColor: colors.getColor('bg.base'),
+              borderColor: colors.getColor('border.inactive'),
             },
             tabBarLabel: (props) => {
               return (
@@ -31,7 +31,10 @@ const Layout = () => {
                   leading='sm'
                   weight='medium'
                   align='center'
-                  style={{ textTransform: 'capitalize', color: props.color }}
+                  style={{
+                    textTransform: 'capitalize',
+                    color: props.color,
+                  }}
                 >
                   {props.children}
                 </Text>

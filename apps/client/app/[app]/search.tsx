@@ -6,7 +6,7 @@ const Search = () => {
   return (
     <React.Fragment>
       <Stack.Screen options={{ title: 'Search', headerShown: false }} />
-      <Box bg='surface'>
+      <Box bg='bg.subtle'>
         <Safe>
           <Box
             px='xl'

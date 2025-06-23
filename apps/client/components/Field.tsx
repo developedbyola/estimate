@@ -76,15 +76,15 @@ type LabelRef = React.ComponentRef<typeof Heading>;
 type LabelProps = React.ComponentProps<typeof Heading>;
 const Label = React.forwardRef<LabelRef, LabelProps>((props, ref) => {
   const { style, ...restProps } = props;
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
 
   return (
     <Heading
       ref={ref}
       style={[
         {
-          color: Colors.text.subtle,
           fontSize: Typography.size.base,
+          color: colors.getColor('text.subtle'),
           fontWeight: Typography.weight.medium,
         },
         style,
@@ -124,7 +124,7 @@ type ControlRef = React.ComponentRef<typeof Box>;
 type ControlProps = React.ComponentProps<typeof Box>;
 const Control = React.forwardRef<ControlRef, ControlProps>((props, ref) => {
   const { style, ...restProps } = props;
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
 
   return (
     <Box
@@ -136,7 +136,7 @@ const Control = React.forwardRef<ControlRef, ControlProps>((props, ref) => {
           alignItems: 'center',
           position: 'relative',
           borderRadius: Border.radius['base'],
-          backgroundColor: Colors.others.foreground,
+          backgroundColor: colors.getColor('bg.soft'),
         },
         style,
       ]}
@@ -176,14 +176,14 @@ const Hint = React.forwardRef<HintRef, HintProps>((props, ref) => {
   const {
     fieldState: { error },
   } = useFieldContext();
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
 
   if (!!error === true) return null;
 
   return (
     <Text
       ref={ref}
-      style={[{ color: Colors.text.subtle }, style]}
+      style={[{ color: colors.getColor('text.subtle') }, style]}
       {...restProps}
     />
   );
@@ -193,7 +193,7 @@ type FeedbackRef = React.ComponentRef<typeof Text>;
 type FeedbackProps = React.ComponentProps<typeof Text>;
 const Feedback = React.forwardRef<FeedbackRef, FeedbackProps>((props, ref) => {
   const { style, leading = 'base', ...restProps } = props;
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const {
     fieldState: { error },
   } = useFieldContext();
@@ -204,7 +204,7 @@ const Feedback = React.forwardRef<FeedbackRef, FeedbackProps>((props, ref) => {
     <Text
       ref={ref}
       leading={leading}
-      style={[{ color: Colors.error.base }, style]}
+      style={[{ color: colors.getColor('error.base') }, style]}
       {...restProps}
     >
       {error.message?.toString()}

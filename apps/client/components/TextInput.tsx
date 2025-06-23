@@ -8,18 +8,18 @@ type Props = React.ComponentProps<typeof NativeTextInput>;
 
 const TextInput = React.forwardRef<Ref, Props>((props, ref) => {
   const { style, returnKeyType = 'done', ...restProps } = props;
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
 
   return (
     <NativeTextInput
       ref={ref}
       returnKeyType={returnKeyType}
-      placeholderTextColor={Colors.text.muted}
+      placeholderTextColor={colors.getColor('text.inactive')}
       style={[
         {
           flex: 1,
           paddingInline: Space.lg,
-          color: Colors.text.base,
+          color: colors.getColor('text.base'),
           fontSize: Typography.size.lg,
           borderRadius: Border.radius['xl'],
         },

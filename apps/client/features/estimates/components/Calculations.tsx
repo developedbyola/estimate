@@ -17,7 +17,7 @@ const Operations = [
 ] as const;
 
 const Calculations = () => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
   const { control } = useFormContext<{ calculations: CalculationItem[] }>();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -47,7 +47,7 @@ const Calculations = () => {
     return (
       <Box px='xl'>
         <Box
-          bg='foreground'
+          bg='bg.soft'
           style={{
             overflow: 'hidden',
             flexDirection: 'row',
@@ -58,7 +58,7 @@ const Calculations = () => {
             style={{
               width: '50%',
               borderRightWidth: 0.75,
-              borderColor: Colors.others.background,
+              borderColor: colors.getColor('border.base'),
             }}
             control={control as any}
             name={`calculations.${index}.description`}
@@ -72,7 +72,7 @@ const Calculations = () => {
               width: '30%',
               borderLeftWidth: 0.75,
               borderRightWidth: 0.75,
-              borderColor: Colors.others.background,
+              borderColor: colors.getColor('border.base'),
             }}
             control={control as any}
             name={`calculations.${index}.unitPrice`}
@@ -89,7 +89,7 @@ const Calculations = () => {
             style={{
               width: '20%',
               borderLeftWidth: 0.75,
-              borderColor: Colors.others.background,
+              borderColor: colors.getColor('border.base'),
             }}
             control={control as any}
             name={`calculations.${index}.quantity`}
@@ -115,7 +115,7 @@ const Calculations = () => {
                   onValueChange={({ value }) => operationField.onChange(value)}
                 >
                   <Box
-                    bg='foreground'
+                    bg='bg.soft'
                     style={{
                       overflow: 'hidden',
                       flexDirection: 'row',
@@ -130,7 +130,7 @@ const Calculations = () => {
                           px='sm'
                           key={index}
                           value={operation.value}
-                          bg={isActive ? 'surface' : undefined}
+                          bg={isActive ? 'bg.subtle' : undefined}
                           style={{
                             height: 22,
                             alignItems: 'center',

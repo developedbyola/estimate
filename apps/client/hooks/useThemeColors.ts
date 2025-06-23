@@ -3,11 +3,35 @@
  * https://docs.expo.dev/guides/color-schemes/
  */
 
-import { Colors } from "@/constants";
-import { useColorScheme } from "react-native";
+import { useColorScheme } from 'react-native';
+import Colors, { ColorKeys } from '@/constants/Colors';
 
-export const useThemeColors = (defaultTheme?: "light" | "dark") => {
-  const theme = useColorScheme() || defaultTheme || "light";
+type Theme = 'light' | 'dark';
 
-  return Colors[theme];
+/**
+ * Generate all valid color keys like "primary-base", "text-soft", etc.
+ */
+
+/**
+ * Returns theme colors and a color accessor by key.
+ */
+export const useThemeColors = (defaultTheme?: Theme) => {
+  const colorScheme = useColorScheme();
+  const theme: Theme =
+    colorScheme === 'light' || colorScheme === 'dark'
+      ? colorScheme
+      : defaultTheme || 'light';
+
+  const colors = Colors[theme];
+
+  const getColor = (key: ColorKeys): string => {
+    const [section, shade] = key.split('.') as [keyof typeof colors, string];
+    return colors[section]?.[shade as keyof (typeof colors)[typeof section]];
+  };
+
+  return {
+    theme,
+    colors,
+    getColor,
+  };
 };

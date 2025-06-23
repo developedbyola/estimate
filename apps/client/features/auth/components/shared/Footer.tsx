@@ -1,4 +1,5 @@
 import { Space } from '@/constants';
+import * as SecureStore from 'expo-secure-store';
 import { useFormContext } from 'react-hook-form';
 import {
   Action,
@@ -11,14 +12,15 @@ import {
 } from '@/components';
 import { trpc } from '@/lib/trpc';
 import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
   authType?: 'login' | 'register';
 };
 
 const Footer = ({ authType }: Props) => {
-  const { auth, setAuth } = useAuth();
-  const { user, setUser } = useUser();
+  const { setAuth } = useAuth();
+  const { setUser } = useUser();
   const { onOpenChange } = useOverlayContext();
   const { reset, handleSubmit } = useFormContext();
   const { onNextStep, setData, data } = useFlowContext<{
@@ -28,8 +30,7 @@ const Footer = ({ authType }: Props) => {
   }>();
 
   const login = trpc.auth.login.useMutation({
-    onSuccess: (data: any) => {
-      onNextStep();
+    onSuccess: async (data: any) => {
       setUser({ type: 'SET_USER', payload: { user: data.user } });
       setAuth({
         type: 'LOGIN',
@@ -37,6 +38,9 @@ const Footer = ({ authType }: Props) => {
           auth: { isAuthenticated: true, accessToken: data.accessToken },
         },
       });
+      await SecureStore.setItemAsync('refresh_token', data.refreshToken);
+      await AsyncStorage.setItem('access_token', data.accessToken);
+      onNextStep();
     },
     onError: (error) => {
       Alert.alert('Login failed', error.message, [{ text: 'Cancel' }]);

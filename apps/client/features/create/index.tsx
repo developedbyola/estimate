@@ -31,7 +31,7 @@ const options = [
 ] as const;
 
 const CreateBottomSheet = ({ children }: Props) => {
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
 
   return (
     <Overlay.Root>
@@ -80,13 +80,13 @@ const CreateBottomSheet = ({ children }: Props) => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       borderRadius: Border.radius.full,
-                      backgroundColor: Colors.primary.base,
+                      backgroundColor: colors.getColor('primary.base'),
                     }}
                   >
                     <Ionicons
                       size={20}
                       name={option.icon}
-                      color={Colors.others.background}
+                      color={colors.getColor('bg.base')}
                     />
                   </Box>
                   <Box
@@ -98,7 +98,7 @@ const CreateBottomSheet = ({ children }: Props) => {
                       borderStyle: 'solid',
                       flexDirection: 'row',
                       alignItems: 'center',
-                      borderColor: Colors.others.foreground,
+                      borderColor: colors.getColor('border.base'),
                     }}
                   >
                     <Box style={{ flex: 1 }}>
@@ -117,7 +117,7 @@ const CreateBottomSheet = ({ children }: Props) => {
                       </Text>
                     </Box>
                     <Box
-                      bg='foreground'
+                      bg='bg.soft'
                       style={{
                         width: 24,
                         aspectRatio: '1/1',
@@ -129,8 +129,8 @@ const CreateBottomSheet = ({ children }: Props) => {
                       <Ionicons
                         size={16}
                         name={'add'}
-                        color={Colors.others.inverted}
                         style={{ alignSelf: 'center' }}
+                        color={colors.getColor('icon.base')}
                       />
                     </Box>
                   </Box>

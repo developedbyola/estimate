@@ -1,6 +1,7 @@
 import React from 'react';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/components/Auth';
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const useRefreshToken = () => {
@@ -19,8 +20,11 @@ const useRefreshToken = () => {
     },
   });
 
-  const mutate = React.useCallback(() => {
-    refresh.mutate(undefined);
+  const mutate = React.useCallback(async () => {
+    const refreshToken = (await SecureStore.getItemAsync('refresh_token'))!;
+    console.log({ refreshToken });
+
+    refresh.mutate({ refreshToken });
   }, [refresh.mutate]);
 
   React.useEffect(() => {

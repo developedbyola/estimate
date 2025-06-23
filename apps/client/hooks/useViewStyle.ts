@@ -1,7 +1,5 @@
-import { Colors, Space } from '@/constants';
+import { ColorKeys, Space } from '@/constants';
 import { useThemeColors } from './useThemeColors';
-
-type Background = 'surface' | 'foreground' | 'background';
 
 export type ViewStyle = {
   py?: keyof typeof Space;
@@ -12,12 +10,12 @@ export type ViewStyle = {
   my?: keyof typeof Space;
   mt?: keyof typeof Space;
   mb?: keyof typeof Space;
-  bg?: Background;
+  bg?: ColorKeys;
 };
 
 export const useViewStyle = (styles: ViewStyle) => {
   const { py, px, pt, pb, mx, my, mt, mb, bg } = styles;
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
 
   return {
     paddingTop: pt ? Space[pt] : undefined,
@@ -28,6 +26,6 @@ export const useViewStyle = (styles: ViewStyle) => {
     marginBottom: mb ? Space[mb] : undefined,
     marginVertical: my ? Space[my] : undefined,
     marginHorizontal: mx ? Space[mx] : undefined,
-    backgroundColor: bg ? Colors.others[bg] : 'transparent',
+    backgroundColor: bg ? colors.getColor(bg) : 'transparent',
   };
 };

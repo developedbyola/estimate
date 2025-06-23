@@ -117,24 +117,26 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
   } = props;
 
   const context = useAction({ size, variant, loading });
-  const Colors = useThemeColors();
+  const colors = useThemeColors();
 
   const variants = (state: PressableStateCallbackType) => ({
     outline: {
       borderWidth: Border.width.xs,
-      borderColor: Colors.others.inverted,
+      borderColor: colors.getColor('border.soft'),
     },
     ghost: {
-      backgroundColor: state.pressed ? Colors.others.foreground : 'transparent',
+      backgroundColor: state.pressed
+        ? colors.getColor('bg.soft')
+        : 'transparent',
     },
     surface: {
-      backgroundColor: Colors.others.foreground,
+      backgroundColor: colors.getColor('bg.soft'),
       opacity: state.pressed ? 0.8 : 1,
     },
     primary: {
       backgroundColor: state.pressed
-        ? Colors.primary.hover
-        : Colors.primary.base,
+        ? colors.getColor('primary.subtle')
+        : colors.getColor('primary.base'),
     },
   });
 
@@ -207,22 +209,26 @@ type ActionLabelRef = React.ComponentRef<typeof Text>;
 type ActionLabelProps = React.ComponentProps<typeof Text>;
 const Label = React.forwardRef<ActionLabelRef, ActionLabelProps>(
   (props, ref) => {
-    const Colors = useThemeColors();
+    const colors = useThemeColors();
     const { style, size = 'base', weight = 'medium', ...restProps } = props;
     const { variant, state } = useActionContext();
 
     const variants = (state: PressableStateCallbackType) => ({
       outline: {
-        color: Colors.text.base,
+        color: colors.getColor('text.strong'),
       },
       ghost: {
-        color: state.pressed ? Colors.text.base : Colors.text.body,
+        color: state.pressed
+          ? colors.getColor('text.base')
+          : colors.getColor('text.subtle'),
       },
       surface: {
-        color: state.pressed ? Colors.text.base : Colors.text.body,
+        color: state.pressed
+          ? colors.getColor('text.base')
+          : colors.getColor('text.subtle'),
       },
       primary: {
-        color: state.pressed ? Colors.primary.on : Colors.primary.on,
+        color: colors.getColor('text.base'),
       },
     });
 
@@ -247,16 +253,22 @@ const Icon = React.forwardRef<ActionIconRef, ActionIconProps>((props, ref) => {
 
   const variants = (state: PressableStateCallbackType) => ({
     outline: {
-      color: Colors.text.base,
+      color: Colors.getColor('text.strong'),
     },
     ghost: {
-      color: state.pressed ? Colors.text.base : Colors.text.body,
+      color: state.pressed
+        ? Colors.getColor('text.base')
+        : Colors.getColor('text.subtle'),
     },
     surface: {
-      color: state.pressed ? Colors.text.base : Colors.text.body,
+      color: state.pressed
+        ? Colors.getColor('text.base')
+        : Colors.getColor('text.subtle'),
     },
     primary: {
-      color: state.pressed ? Colors.primary.on : Colors.primary.on,
+      color: state.pressed
+        ? Colors.getColor('text.base')
+        : Colors.getColor('text.subtle'),
     },
   });
 

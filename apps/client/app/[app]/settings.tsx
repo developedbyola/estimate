@@ -13,7 +13,7 @@ const Settings = () => {
     <React.Fragment>
       <Stack.Screen options={{ title: 'Settings', headerShown: false }} />
       <Safe
-        bg='foreground'
+        bg='bg.soft'
         style={{ flex: 1 }}
       >
         <Box

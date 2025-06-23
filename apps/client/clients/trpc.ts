@@ -1,6 +1,7 @@
 import { trpc } from '@/lib/trpc';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Device from 'expo-device';
 import { httpBatchLink } from '@trpc/client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const trpcClient = trpc.createClient({
   links: [
@@ -11,6 +12,9 @@ export const trpcClient = trpc.createClient({
       }/api/trpc`,
       headers: {
         'x-app-version': '0.0.1',
+        'x-device-name': Device.deviceName || '',
+        'x-device-type': Device.osName || '',
+        'x-os-version': Device.osVersion || '',
       },
       async fetch(url, options) {
         const token = (await AsyncStorage.getItem('access_token')) || '';
