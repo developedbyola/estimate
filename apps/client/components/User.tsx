@@ -1,3 +1,4 @@
+import { trpc } from '@/lib/trpc';
 import React from 'react';
 
 export type User = {
@@ -68,6 +69,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = React.useReducer(userReducer, {
     user: null,
   });
+
+  const me = trpc.auth.me.useQuery();
+
+  React.useEffect(() => {
+    if (me.data) {
+      dispatch({ type: 'SET_USER', payload: { user: (me.data as any).user } });
+    }
+  }, [me.data]);
 
   return (
     <userContext.Provider value={{ ...state, setUser: dispatch }}>

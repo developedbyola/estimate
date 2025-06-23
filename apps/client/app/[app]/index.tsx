@@ -1,12 +1,13 @@
 import React from 'react';
 import { Stack } from 'expo-router';
+import { Image } from 'expo-image';
 import { FarmList } from '@/features/farms';
 import { Border, Space } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
 import CreateBottomSheet from '@/features/create';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { Action, Heading, Box, Text, Safe } from '@/components';
 import { useCurrencyContext } from '@/features/currency';
+import { Action, Heading, Box, Text, Safe } from '@/components';
 
 const Farms = () => {
   const Colors = useThemeColors();
@@ -30,10 +31,10 @@ const Farms = () => {
             justifyContent: 'space-between',
           }}
         >
-          <Box
-            bg={'background'}
+          <Image
+            source={require('@/assets/images/avatars/default.png')}
             style={{
-              width: 32,
+              width: 36,
               aspectRatio: '1/1',
               borderRadius: Border.radius.xl,
             }}
@@ -81,7 +82,7 @@ const Farms = () => {
 
         <Box
           px='xl'
-          py='2xl'
+          py='4xl'
         >
           <Text
             size='sm'
@@ -101,43 +102,10 @@ const Farms = () => {
         </Box>
 
         <Box
-          bg='background'
+          px='xl'
           style={{ flex: 1 }}
         >
-          <Box
-            py='lg'
-            px='xl'
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          >
-            <Heading
-              size='2xl'
-              leading='xl'
-            >
-              Farms
-            </Heading>
-            <Action.Root
-              size='2xs'
-              variant='ghost'
-            >
-              <Action.Label
-                size='xs'
-                weight='semibold'
-              >
-                All
-              </Action.Label>
-            </Action.Root>
-          </Box>
-
-          <Box
-            px='xl'
-            style={{ flex: 1 }}
-          >
-            <FarmList />
-          </Box>
-          <Box
-            bg='surface'
-            my='3xl'
-          />
+          <FarmList />
         </Box>
       </Safe>
     </React.Fragment>

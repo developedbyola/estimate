@@ -1,103 +1,59 @@
-import { Box, Heading, Logo, Safe, Text } from '@/components';
-import { Border, Space } from '@/constants';
-import { Currency, useCurrencyContext } from '@/features/currency';
-import SettingsFeature from '@/features/settings';
-import { Stack } from 'expo-router';
 import React from 'react';
-import { Button, ImageBackground } from 'react-native';
+import { Image } from 'expo-image';
+import { Stack } from 'expo-router';
+import { excerpt } from '@/utils/excerpt';
+import { Border, Space } from '@/constants';
+import SettingsFeature from '@/features/settings';
+import { Box, Heading, Safe, Text, useUser } from '@/components';
 
 const Settings = () => {
-  const { currency } = useCurrencyContext();
+  const { user } = useUser();
 
   return (
     <React.Fragment>
       <Stack.Screen options={{ title: 'Settings', headerShown: false }} />
       <Safe
-        bg='background'
+        bg='foreground'
         style={{ flex: 1 }}
       >
         <Box
+          mt='6xl'
           px='xl'
-          py='5xl'
           style={{
+            gap: Space.xl,
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'space-between',
           }}
         >
-          <Heading
-            size='3xl'
-            leading='xl'
-          >
-            Settings
-          </Heading>
-          <Currency.Switch>
-            <Button title={`${currency.name} ${currency.symbol}`} />
-          </Currency.Switch>
-        </Box>
-
-        <Box
-          px='xl'
-          style={{ gap: Space.lg, flexDirection: 'row', alignItems: 'center' }}
-        >
-          <ImageBackground
+          <Image
             style={{
-              width: 48,
+              width: 56,
               aspectRatio: '1/1',
               overflow: 'hidden',
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: Border.radius.full,
             }}
-            source={{
-              uri: 'https://cdn.pixabay.com/photo/2016/11/05/12/38/fuzzy-1800136_640.jpg',
-            }}
-          >
-            <Heading
-              size='2xl'
-              leading='lg'
-              color='inverted'
-              weight='medium'
-            >
-              Ae
-            </Heading>
-          </ImageBackground>
+            source={require('@/assets/images/avatars/default.png')}
+          />
+
           <Heading
             size='2xl'
             leading='xl'
-            align='center'
+            align='left'
             weight='medium'
+            style={{ flex: 1, textTransform: 'capitalize' }}
           >
-            Adeleke Esther
+            {excerpt(user?.name || 'Guest', 5)}
           </Heading>
         </Box>
 
         <Box
           px='xl'
-          my='2xl'
+          my='4xl'
           style={{ flex: 1 }}
         >
           <SettingsFeature />
-        </Box>
-
-        <Box
-          pb='9xl'
-          style={{ gap: Space['2xl'] }}
-        >
-          <Logo
-            style={{ marginInline: 'auto' }}
-            type='full'
-            ext='svg'
-          />
-          <Text
-            size='lg'
-            align='center'
-            color={'muted'}
-            leading='base'
-            style={{ maxWidth: 200, marginInline: 'auto' }}
-          >
-            Estimate is a platform for agricultural cost estimation
-          </Text>
         </Box>
       </Safe>
     </React.Fragment>

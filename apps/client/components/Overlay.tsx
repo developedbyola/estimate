@@ -12,9 +12,9 @@ import BottomSheet, {
   BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
 import { FullWindowOverlay } from 'react-native-screens';
-import { BlurView } from 'expo-blur';
 import { StatusBar } from 'expo-status-bar';
 import { Border } from '@/constants';
+import Blur from './Blur';
 
 type OverlayContext = {
   open: boolean;
@@ -200,13 +200,13 @@ const Modal = React.forwardRef<ModalRef, ModalProps>((props, ref) => {
         statusBarTranslucent={statusBarTranslucent}
         {...restProps}
       >
-        <BlurView
+        <Blur
           tint={theme}
           intensity={100}
           style={[{ flex: 1 }]}
         >
           {children}
-        </BlurView>
+        </Blur>
       </NativeModal>
     </React.Fragment>
   );
@@ -239,13 +239,7 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
         appearsOnIndex={0}
         disappearsOnIndex={-1}
         pressBehavior={'none'}
-      >
-        <BlurView
-          tint={theme}
-          intensity={100}
-          style={[{ flex: 1 }]}
-        />
-      </BottomSheetBackdrop>
+      />
     ),
     []
   );
@@ -262,15 +256,12 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           ref={bottomSheet.ref}
           enableDynamicSizing={false}
           keyboardBehavior='fillParent'
-          backgroundStyle={{
-            backgroundColor: Colors.others.overlay,
-          }}
           index={memoizedSnapPoints.length - 1}
           handleIndicatorStyle={{
             height: 6,
             width: 64,
             borderRadius: Border.radius.full,
-            backgroundColor: Colors.others.border,
+            backgroundColor: Colors.others.surface,
           }}
           backdropComponent={backdrop}
           snapPoints={memoizedSnapPoints}
@@ -282,12 +273,19 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
               {
                 flex: 1,
                 height: '100%',
+                backgroundColor: Colors.others.background,
               },
               style,
             ]}
             {...restProps}
           >
-            {children}
+            <Blur
+              tint={'light'}
+              intensity={100}
+              style={{ flex: 1 }}
+            >
+              {children}
+            </Blur>
           </BottomSheetView>
         </BottomSheet>
       </FullWindowOverlay>

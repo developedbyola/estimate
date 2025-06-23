@@ -121,7 +121,6 @@ export const authRouter = router({
 
         // Check if session was created
         if (!session.data) {
-          console.log(session.error);
           return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
             message:
@@ -252,12 +251,12 @@ export const authRouter = router({
         .select('*')
         .eq('id', sessionId)
         .eq('user_id', userId)
-        .is('is_active', true)
+        .eq('is_active', true)
         .single();
 
       const isSessionNotFound = !session.data;
-      const isSessionInactive = !session.data.is_active;
-      const isSessionExpired = session.data.expires_at < Date.now();
+      const isSessionInactive = !session.data?.is_active;
+      const isSessionExpired = session.data?.expires_at < Date.now();
 
       if (isSessionNotFound || isSessionInactive || isSessionExpired) {
         return ctx.fail({

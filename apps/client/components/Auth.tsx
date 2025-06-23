@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 
 export type Auth = {
@@ -55,6 +56,21 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       isAuthenticated: false,
     },
   });
+
+  React.useEffect(() => {
+    const validateAuth = async () => {
+      const accessToken = await AsyncStorage.getItem('access_token');
+
+      if (accessToken) {
+        dispatch({
+          type: 'LOGIN',
+          payload: { auth: { accessToken, isAuthenticated: true } },
+        });
+      }
+    };
+
+    validateAuth();
+  }, []);
 
   return (
     <authContext.Provider value={{ ...state, setAuth: dispatch }}>

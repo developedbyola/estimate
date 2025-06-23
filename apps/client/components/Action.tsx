@@ -146,7 +146,7 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
       height: 32,
     },
     sm: {
-      height: 44,
+      height: 36,
     },
     lg: {
       height: 48,

@@ -14,6 +14,7 @@ export {
   useOverlayContext,
 } from '@/components/Overlay';
 export { default as Box } from '@/components/Box';
+export { default as Blur } from '@/components/Blur';
 export { default as Safe } from '@/components/Safe';
 export { default as Logo } from '@/components/Logo';
 export { default as Scroll } from '@/components/Scroll';

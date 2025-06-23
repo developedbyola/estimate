@@ -16,12 +16,13 @@ const Layout = () => {
             animation: 'shift',
             tabBarHideOnKeyboard: true,
             tabBarAllowFontScaling: true,
-            tabBarInactiveTintColor: Colors.text.body,
+            tabBarInactiveTintColor: Colors.text.muted,
             tabBarActiveTintColor: Colors.primary.base,
             tabBarStyle: {
-              height: 88,
-              borderTopWidth: 0,
-              backgroundColor: Colors.others.foreground,
+              height: 80,
+              borderTopWidth: 1,
+              borderColor: Colors.others.foreground,
+              backgroundColor: Colors.others.background,
             },
             tabBarLabel: (props) => {
               return (
@@ -30,7 +31,7 @@ const Layout = () => {
                   leading='sm'
                   weight='medium'
                   align='center'
-                  style={{ color: props.color }}
+                  style={{ textTransform: 'capitalize', color: props.color }}
                 >
                   {props.children}
                 </Text>
@@ -45,7 +46,7 @@ const Layout = () => {
                 return (
                   <Ionicons
                     name='search'
-                    size={28}
+                    size={24}
                     color={props.color}
                   />
                 );

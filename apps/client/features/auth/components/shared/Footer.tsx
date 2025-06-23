@@ -7,6 +7,7 @@ import {
   useAuth,
   useFlowContext,
   useOverlayContext,
+  useUser,
 } from '@/components';
 import { trpc } from '@/lib/trpc';
 import { Alert } from 'react-native';
@@ -17,6 +18,7 @@ type Props = {
 
 const Footer = ({ authType }: Props) => {
   const { auth, setAuth } = useAuth();
+  const { user, setUser } = useUser();
   const { onOpenChange } = useOverlayContext();
   const { reset, handleSubmit } = useFormContext();
   const { onNextStep, setData, data } = useFlowContext<{
@@ -26,9 +28,15 @@ const Footer = ({ authType }: Props) => {
   }>();
 
   const login = trpc.auth.login.useMutation({
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       onNextStep();
-      console.log(data);
+      setUser({ type: 'SET_USER', payload: { user: data.user } });
+      setAuth({
+        type: 'LOGIN',
+        payload: {
+          auth: { isAuthenticated: true, accessToken: data.accessToken },
+        },
+      });
     },
     onError: (error) => {
       Alert.alert('Login failed', error.message, [{ text: 'Cancel' }]);

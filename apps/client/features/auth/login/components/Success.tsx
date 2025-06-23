@@ -1,13 +1,14 @@
 import React from 'react';
+import { useUser } from '@/components';
 import { useRedirect } from '@/hooks/useRedirect';
 import { ActivityIndicator, Box, Text, useOverlayContext } from '@/components';
 
 const Success = () => {
+  const { user } = useUser();
   const overlayContext = useOverlayContext();
 
   useRedirect('/app', {
-    delay: 3000,
-    condition: true,
+    condition: !!user,
     onComplete: () => overlayContext.onOpenChange(false),
   });
 

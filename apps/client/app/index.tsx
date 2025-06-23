@@ -1,13 +1,22 @@
 import React from 'react';
 import { MotiImage } from 'moti';
 import { trpc } from '@/lib/trpc';
-import { Stack } from 'expo-router';
+import { Link, Stack, useRouter } from 'expo-router';
 import { Button } from 'react-native';
 import { Border, Space } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
 import LoginFeature from '@/features/auth/login';
 import RegisterFeature from '@/features/auth/register';
-import { Action, Heading, Box, Text, Safe, Overlay } from '@/components';
+import {
+  Action,
+  Heading,
+  Box,
+  Text,
+  Safe,
+  Overlay,
+  useAuth,
+  Blur,
+} from '@/components';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 const images = [
@@ -28,10 +37,72 @@ const images = [
   },
 ];
 
+const Footer = () => {
+  const router = useRouter();
+  const { auth } = useAuth();
+
+  if (auth.isAuthenticated) {
+    return (
+      <Box px='xl'>
+        <Blur
+          px='lg'
+          py='base'
+          bg='foreground'
+          style={{
+            overflow: 'hidden',
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderRadius: Border.radius.xl,
+          }}
+        >
+          <Box style={{ flex: 1 }}>
+            <Heading
+              size='base'
+              leading='base'
+            >
+              You're signed in
+            </Heading>
+            <Text
+              size='sm'
+              leading='sm'
+            >
+              You can now explore the app
+            </Text>
+          </Box>
+          <Action.Root
+            size='sm'
+            onPress={() => router.push('/[app]')}
+          >
+            <Action.Label>Explore</Action.Label>
+          </Action.Root>
+        </Blur>
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      px='xl'
+      mx='auto'
+      style={{ gap: Space.xs, width: '100%', maxWidth: 320 }}
+    >
+      <RegisterFeature>
+        <Action.Root>
+          <Action.Label>Create account</Action.Label>
+        </Action.Root>
+      </RegisterFeature>
+      <LoginFeature>
+        <Action.Root variant='ghost'>
+          <Action.Label>Sign in</Action.Label>
+        </Action.Root>
+      </LoginFeature>
+    </Box>
+  );
+};
+
 const Index = () => {
   const Colors = useThemeColors();
   const healthQuery = trpc.system.health.useQuery();
-  console.log({ data: healthQuery.data });
 
   return (
     <Box
@@ -127,22 +198,8 @@ const Index = () => {
             spend wiser, earn more.
           </Text>
         </Box>
-        <Box
-          px='xl'
-          mx='auto'
-          style={{ gap: Space.xs, width: '100%', maxWidth: 320 }}
-        >
-          <RegisterFeature>
-            <Action.Root>
-              <Action.Label>Create account</Action.Label>
-            </Action.Root>
-          </RegisterFeature>
-          <LoginFeature>
-            <Action.Root variant='ghost'>
-              <Action.Label>Sign in</Action.Label>
-            </Action.Root>
-          </LoginFeature>
-        </Box>
+
+        <Footer />
       </Safe>
     </Box>
   );

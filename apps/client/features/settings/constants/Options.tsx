@@ -1,52 +1,83 @@
-export default [
-  {
-    title: '',
-    name: 'Profile',
-    icon: 'at-circle',
-    snapPoints: ['50%'],
-    content: null,
-  },
+export default {
+  profile: [
+    {
+      title: '',
+      name: 'My profile',
+      icon: 'color-wand-outline',
+      snapPoints: ['50%'],
+      content: null,
+    },
 
-  {
-    title: '',
-    name: 'Privacy',
-    icon: 'key',
-    snapPoints: ['50%'],
-    content: null,
-  },
-  {
-    title: '',
-    name: 'Mail',
-    icon: 'mail-open',
-    snapPoints: ['50%'],
-    content: null,
-  },
-  {
-    title: '',
-    name: 'About estimate',
-    icon: 'people',
-    snapPoints: ['50%'],
-    content: null,
-  },
-  {
-    title: '',
-    name: 'Contact support',
-    icon: 'chatbox-ellipses',
-    snapPoints: ['50%'],
-    content: null,
-  },
-  {
-    title: '',
-    name: 'Terms & Policy',
-    icon: 'information-circle',
-    snapPoints: ['50%'],
-    content: null,
-  },
-  {
-    title: '',
-    name: 'Sign out',
-    icon: 'log-out',
-    snapPoints: ['50%'],
-    content: null,
-  },
-];
+    {
+      title: '',
+      name: 'Password',
+      icon: 'key-outline',
+      snapPoints: ['50%'],
+      content: null,
+    },
+    {
+      title: '',
+      content: null,
+      snapPoints: ['50%'],
+      icon: 'mail-outline',
+      name: 'Email',
+    },
+  ],
+  others: [
+    {
+      title: '',
+      content: null,
+      icon: 'people-outline',
+      snapPoints: ['50%'],
+      name: 'Community',
+    },
+    {
+      title: '',
+      content: null,
+      icon: 'pulse-outline',
+      snapPoints: ['50%'],
+      name: 'System Check',
+    },
+  ],
+  session: [
+    {
+      title: '',
+      content: null,
+      icon: 'recording-outline',
+      snapPoints: ['50%'],
+      name: 'Devices',
+    },
+  ],
+  code: [
+    {
+      title: '',
+      content: null,
+      icon: 'code',
+      snapPoints: ['50%'],
+      name: 'Developer',
+    },
+    {
+      title: '',
+      content: null,
+      snapPoints: ['50%'],
+      name: 'Source code',
+      icon: 'laptop-outline',
+    },
+  ],
+  help: [
+    {
+      title: '',
+      name: 'Contact support',
+      icon: 'chatbox-ellipses-outline',
+      snapPoints: ['50%'],
+      content: null,
+    },
+    {
+      title: '',
+      content: null,
+      icon: 'information-circle-outline',
+      snapPoints: ['50%'],
+      name: 'About',
+    },
+  ],
+} as const;

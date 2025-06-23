@@ -1,68 +1,72 @@
 import React from 'react';
-import { Box, Heading } from '@/components';
+import { Blur, Box, Text } from '@/components';
 import Options from './constants/Options';
-import Modal from './components/shared/Modal';
-import { Ionicons } from '@expo/vector-icons';
 import { Border, Space } from '@/constants';
+import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { TouchableHighlight } from 'react-native';
 
-const SettingsFeature = () => {
-  const Colors = useThemeColors();
+const Group = ({ group }: { group: keyof typeof Options }) => {
+  const colors = useThemeColors();
 
   return (
-    <Box style={{ gap: Space['xs'] }}>
-      {Options.map((option, index) => {
+    <Blur
+      bg='background'
+      style={{ borderRadius: Border.radius.lg }}
+    >
+      {Options[group].map((option, index) => {
         return (
-          <Modal
+          <TouchableHighlight
             key={index}
-            title={option.title}
-            content={option.content}
-            snapPoints={option.snapPoints}
+            style={{ height: 46 }}
+            underlayColor={'red'}
           >
-            <TouchableHighlight
-              underlayColor={Colors.others.foreground}
+            <Box
               style={{
-                height: 44,
-                overflow: 'hidden',
-                paddingInline: Space.sm,
-                justifyContent: 'center',
-                borderRadius: Border.radius.full,
+                flex: 1,
+                gap: Space['xl'],
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingLeft: Space['xl'],
+                paddingRight: Space['xl'],
               }}
             >
-              <Box
-                style={{
-                  gap: Space.xl,
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                }}
+              <Ionicons
+                size={24}
+                name={option.icon}
+                color={colors.text.muted}
+              />
+              <Text
+                size='lg'
+                leading='base'
+                color='base'
+                style={{ flex: 1 }}
               >
-                <Box
-                  bg='foreground'
-                  style={{
-                    width: 32,
-                    aspectRatio: '1/1',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: Border.radius.full,
-                  }}
-                >
-                  <Ionicons
-                    size={20}
-                    color={Colors.text.muted}
-                    name={option.icon as any}
-                  />
-                </Box>
-                <Heading
-                  size='xl'
-                  leading='sm'
-                  weight='medium'
-                >
-                  {option.name}
-                </Heading>
-              </Box>
-            </TouchableHighlight>
-          </Modal>
+                {option.name}
+              </Text>
+              <Ionicons
+                size={16}
+                name={'chevron-forward'}
+                color={colors.text.muted}
+              />
+            </Box>
+          </TouchableHighlight>
+        );
+      })}
+    </Blur>
+  );
+};
+6;
+
+const SettingsFeature = () => {
+  return (
+    <Box style={{ gap: Space['xl'] }}>
+      {Object.keys(Options).map((group) => {
+        return (
+          <Group
+            key={group}
+            group={group as any}
+          />
         );
       })}
     </Box>

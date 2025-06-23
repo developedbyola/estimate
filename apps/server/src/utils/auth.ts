@@ -5,8 +5,8 @@ import { sign, verify } from 'hono/jwt';
 import { UAParser } from 'ua-parser-js';
 import { TRPCError } from '@trpc/server';
 import { sha256 } from 'hono/utils/crypto';
-import type { JWTPayload } from 'hono/utils/jwt/types';
 import { getConnInfo as BunConnInfo } from 'hono/bun';
+import type { JWTPayload } from 'hono/utils/jwt/types';
 
 type TokenOptions = {
   type: 'access' | 'refresh';

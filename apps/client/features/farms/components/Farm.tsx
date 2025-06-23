@@ -3,6 +3,7 @@ import { Border } from '@/constants';
 import { FarmType } from '../types/farm';
 import { Box, Heading, Text } from '@/components';
 import { useCurrencyContext } from '@/features/currency';
+import { excerpt } from '@/utils/excerpt';
 
 type FarmProps = { farm: FarmType };
 
@@ -19,19 +20,19 @@ const Farm = (props: FarmProps) => {
       <Box
         px='lg'
         py='lg'
-        bg='foreground'
+        bg='background'
         style={{
           flex: 1,
-          borderRadius: Border.radius['2xl'],
+          borderRadius: Border.radius['xl'],
         }}
       >
         <Box
-          bg='surface'
+          bg='foreground'
           style={{
             flex: 0,
             width: 40,
             aspectRatio: '1/1',
-            borderRadius: Border.radius.xl,
+            borderRadius: Border.radius.lg,
           }}
         />
         <Box py='sm' />
@@ -40,7 +41,7 @@ const Farm = (props: FarmProps) => {
             size='lg'
             leading='lg'
           >
-            {farm.title}
+            {excerpt(farm.title, 12)}
           </Heading>
           <Text
             size='xs'
