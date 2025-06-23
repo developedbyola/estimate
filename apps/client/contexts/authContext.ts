@@ -1,12 +1,5 @@
 import React from 'react';
 
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  created_at: string;
-};
-
 export type Session = {
   id: string;
   device_name: string;
@@ -21,7 +14,7 @@ export type Session = {
 };
 
 export type Auth = {
-  user: User | null;
+  accessToken: string | null;
   isAuthenticated: boolean;
 };
 
@@ -30,7 +23,7 @@ type State = Auth;
 export type Action =
   | {
       type: 'LOGIN';
-      payload: Pick<Auth, 'user'>;
+      payload: Pick<Auth, 'accessToken' | 'isAuthenticated'>;
     }
   | { type: 'LOGOUT'; payload: never };
 
@@ -38,7 +31,7 @@ export type AuthContext = State & {
   setAuth: React.ActionDispatch<[Action]>;
 };
 
-export const AuthContext = React.createContext<AuthContext | null>(null);
+export const authContext = React.createContext<AuthContext | null>(null);
 
 export const authReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -51,7 +44,7 @@ export const authReducer = (state: State, action: Action): State => {
     case 'LOGOUT':
       return {
         ...state,
-        user: null,
+        accessToken: null,
         isAuthenticated: false,
       };
     default:
@@ -60,7 +53,7 @@ export const authReducer = (state: State, action: Action): State => {
 };
 
 export const useAuth = () => {
-  const context = React.useContext(AuthContext);
+  const context = React.useContext(authContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }

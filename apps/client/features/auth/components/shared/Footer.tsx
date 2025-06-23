@@ -4,6 +4,7 @@ import {
   Action,
   Box,
   Flow,
+  useAuth,
   useFlowContext,
   useOverlayContext,
 } from '@/components';
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const Footer = ({ authType }: Props) => {
+  const { auth, setAuth } = useAuth();
   const { onOpenChange } = useOverlayContext();
   const { reset, handleSubmit } = useFormContext();
   const { onNextStep, setData, data } = useFlowContext<{
@@ -24,8 +26,9 @@ const Footer = ({ authType }: Props) => {
   }>();
 
   const login = trpc.auth.login.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       onNextStep();
+      console.log(data);
     },
     onError: (error) => {
       Alert.alert('Login failed', error.message, [{ text: 'Cancel' }]);

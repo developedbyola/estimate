@@ -26,6 +26,7 @@ export function createResponse() {
       };
     },
     error(err?: unknown): ErrorResponse {
+      console.log(err);
       throw new TRPCError({
         message: (err as any)?.message || 'Something went wrong',
         code: (err as any)?.code || 'INTERNAL_SERVER_ERROR',

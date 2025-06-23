@@ -14,7 +14,7 @@ export default function Protected({ children }: Props) {
   const mutate = React.useCallback(() => {
     refresh.mutate(undefined, {
       onSuccess: (data) => {
-        AsyncStorage.setItem('accessToken', (data as any).accessToken);
+        AsyncStorage.setItem('access_token', (data as any)?.accessToken);
       },
     });
   }, [refresh]);
@@ -26,7 +26,7 @@ export default function Protected({ children }: Props) {
 
     const interval = setInterval(() => {
       mutate();
-    }, 1000 * 60 * 60); // 1 hour
+    }, 1000 * 60 * 0.5); // 30 minutes
 
     return () => clearInterval(interval);
   }, [isAuthenticated, mutate]);
