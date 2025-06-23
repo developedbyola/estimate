@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import argon2 from 'argon2';
-import { env } from '@/configs/env';
 import { auth } from '../../utils/auth';
 import { publicProcedure, protectedProcedure, router } from '../middleware';
 
@@ -70,7 +69,7 @@ export const authRouter = router({
           return ctx.fail({
             code: 'UNAUTHORIZED',
             message:
-              'The email or password you entered is incorrect. Please check your credentials and try again.',
+              'The email you entered is incorrect. Please check your credentials and try again.',
           });
         }
 
@@ -122,11 +121,11 @@ export const authRouter = router({
 
         // Check if session was created
         if (!session.data) {
-          console.error('Session creation failed:', session.error);
+          console.log(session.error);
           return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
             message:
-              'We encountered an unexpected error while adding your device. Please try again or contact support if the issue continues.',
+              'We encountered an unexpected error while setting up your session. Please try again or contact support if the issue continues.',
           });
         }
 
