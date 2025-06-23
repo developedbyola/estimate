@@ -253,8 +253,6 @@ export const authRouter = router({
         const isSessionInactive = !session.data?.is_active;
         const isSessionExpired = session.data?.expires_at < Date.now();
 
-        console.log({ isSessionExpired, isSessionNotFound, isSessionInactive });
-
         if (isSessionNotFound || isSessionInactive || isSessionExpired) {
           return ctx.fail({
             code: 'UNAUTHORIZED',
