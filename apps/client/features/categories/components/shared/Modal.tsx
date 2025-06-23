@@ -1,5 +1,4 @@
 import React from 'react';
-import { Space } from '@/constants';
 import { Keyboard } from 'react-native';
 import { Action, Box, Heading, Overlay } from '@/components';
 import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';

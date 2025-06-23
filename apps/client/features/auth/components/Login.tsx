@@ -1,19 +1,56 @@
 import React from 'react';
-import Footer from '../../components/shared/Footer';
 import {
-  Box,
-  Flow,
-  Text,
   Field,
+  Flow,
   Heading,
   Password,
   useFlowContext,
+  useUser,
 } from '@/components';
-import Success from './Success';
-import { Space } from '@/constants';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { emailSchema, passwordSchema } from '../schemas';
+import { useRedirect } from '@/hooks/useRedirect';
+import { ActivityIndicator, Box, Text, useOverlayContext } from '@/components';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { emailSchema, passwordSchema } from '../schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Space } from '@/constants';
+import Footer from './shared/Footer';
+
+const Success = () => {
+  const { user } = useUser();
+  const overlayContext = useOverlayContext();
+
+  useRedirect('/app', {
+    condition: !!user,
+    onComplete: () => overlayContext.onOpenChange(false),
+  });
+
+  return (
+    <React.Fragment>
+      <Box
+        px='xl'
+        my='5xl'
+        style={{ justifyContent: 'center', flex: 1 }}
+      >
+        <ActivityIndicator />
+      </Box>
+      <Box
+        px='lg'
+        pb='6xl'
+        mx='auto'
+        style={{ maxWidth: 320, width: '100%' }}
+      >
+        <Text
+          size='sm'
+          leading='sm'
+          align='center'
+        >
+          We’ve verified it’s really you. Everything’s locked down tight, so you
+          can browse with peace of mind. Happy exploring!
+        </Text>
+      </Box>
+    </React.Fragment>
+  );
+};
 
 const EmailForm = () => {
   const form = useFormContext();
@@ -74,7 +111,7 @@ const flows = [
   },
 ];
 
-const Forms = () => {
+export const Login = () => {
   const flowContext = useFlowContext();
 
   return (
@@ -136,5 +173,3 @@ const Forms = () => {
     </Box>
   );
 };
-
-export default Forms;

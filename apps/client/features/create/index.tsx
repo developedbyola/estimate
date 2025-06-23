@@ -1,12 +1,9 @@
 import React from 'react';
 import { Border } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
-import CreateFarmFeature from '../create-farm';
 import { TouchableOpacity } from 'react-native';
-import CreateCategoryFeature from '../create-category';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Box, Heading, Overlay, Text } from '@/components';
-import CreateEstimateFeature from '../create-estimate';
 
 type Props = {
   children: React.ReactNode;
@@ -17,19 +14,19 @@ const options = [
     icon: 'barcode',
     title: 'Estimate',
     subTitle: 'Generate a new cost estimate for your farm',
-    feature: CreateEstimateFeature,
+    feature: React.Fragment,
   },
   {
     icon: 'sparkles',
     title: 'Category',
     subTitle: 'Organize all your farm estimates by category',
-    feature: CreateCategoryFeature,
+    feature: React.Fragment,
   },
   {
     icon: 'sunny',
     title: 'Farm',
     subTitle: 'Set up a new farm profile with location and crop info',
-    feature: CreateFarmFeature,
+    feature: React.Fragment,
   },
 ] as const;
 

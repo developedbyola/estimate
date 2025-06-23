@@ -1,5 +1,4 @@
 import { auth } from '@/utils/auth';
-import * as Cookie from 'hono/cookie';
 import { TRPCError } from '@trpc/server';
 import { supabaseClient } from '@/lib/supabase';
 import { createResponse } from '@/utils/response';
@@ -32,7 +31,6 @@ export const createContext = async (c: HonoContext) => {
     ok: success,
     res: c.res,
     req: c.req,
-    cookie: Cookie,
     honoContext: c,
     actor: actor!,
     supabase: supabaseClient,

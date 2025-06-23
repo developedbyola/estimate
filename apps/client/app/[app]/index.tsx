@@ -1,17 +1,17 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 import { Image } from 'expo-image';
-import { FarmList } from '@/features/farms';
+import { Farms } from '@/features/farms';
 import { Border, Space } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
+import { useCurrency } from '@/features/currency';
 import CreateBottomSheet from '@/features/create';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { useCurrencyContext } from '@/features/currency';
 import { Action, Heading, Box, Text, Safe } from '@/components';
 
-const Farms = () => {
+const FarmsPage = () => {
   const Colors = useThemeColors();
-  const { currency } = useCurrencyContext();
+  const { currency } = useCurrency();
 
   return (
     <React.Fragment>
@@ -105,11 +105,11 @@ const Farms = () => {
           px='xl'
           style={{ flex: 1 }}
         >
-          <FarmList />
+          <Farms.List />
         </Box>
       </Safe>
     </React.Fragment>
   );
 };
 
-export default Farms;
+export default FarmsPage;

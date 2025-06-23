@@ -1,12 +1,12 @@
 import React from 'react';
 import { MotiImage } from 'moti';
 import { trpc } from '@/lib/trpc';
-import { Link, Stack, useRouter } from 'expo-router';
 import { Button } from 'react-native';
+import { Auth } from '@/features/auth';
 import { Border, Space } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
-import LoginFeature from '@/features/auth/login';
-import RegisterFeature from '@/features/auth/register';
+import { Stack, useRouter } from 'expo-router';
+import { useThemeColors } from '@/hooks/useThemeColors';
 import {
   Action,
   Heading,
@@ -17,7 +17,6 @@ import {
   useAuth,
   Blur,
 } from '@/components';
-import { useThemeColors } from '@/hooks/useThemeColors';
 
 const images = [
   {
@@ -86,16 +85,12 @@ const Footer = () => {
       mx='auto'
       style={{ gap: Space.xs, width: '100%', maxWidth: 320 }}
     >
-      <RegisterFeature>
-        <Action.Root>
-          <Action.Label>Create account</Action.Label>
-        </Action.Root>
-      </RegisterFeature>
-      <LoginFeature>
-        <Action.Root variant='ghost'>
-          <Action.Label>Sign in</Action.Label>
-        </Action.Root>
-      </LoginFeature>
+      <Action.Root>
+        <Action.Label>Create account</Action.Label>
+      </Action.Root>
+      <Action.Root variant='ghost'>
+        <Action.Label>Sign in</Action.Label>
+      </Action.Root>
     </Box>
   );
 };

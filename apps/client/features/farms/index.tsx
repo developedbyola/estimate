@@ -1,3 +1,11 @@
-import FarmList from './components/FarmList';
+import { Add } from './components/Add';
+import { List } from './components/List';
+import { Provider, useFarms } from './components/Provider';
 
-export { FarmList };
+const Farms = {
+  Provider,
+  Add,
+  List,
+};
+
+export { Farms, useFarms };

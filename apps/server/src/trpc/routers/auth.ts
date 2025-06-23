@@ -154,12 +154,9 @@ export const authRouter = router({
           },
         });
 
-        // Set refresh token cookie
-        auth.cookie(ctx.honoContext).set('refresh_token', refreshToken);
-
         // Return access token and user data
         return ctx.ok(
-          { accessToken, user: userData },
+          { accessToken, refreshToken, user: userData },
           { httpStatus: 200, path: 'auth.login' }
         );
       } catch (err) {
@@ -228,60 +225,60 @@ export const authRouter = router({
       }
     }),
 
-  refresh: publicProcedure.mutation(async ({ ctx }) => {
-    try {
-      const refreshToken = auth.cookie(ctx.honoContext).get('refresh_token');
+  refresh: publicProcedure
+    .input(
+      z.object({
+        refreshToken: z.string().min(1, 'Your refresh token is missing'),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const refreshToken = input.refreshToken;
 
-      // If no refresh token is found, return an error
-      if (!refreshToken) {
-        return ctx.fail({
-          code: 'UNAUTHORIZED',
-          message: 'Your session has expired. Please log in again.',
+        // Verify the refresh token
+        const { userId, sessionId } = (await auth.jwt.verify(
+          'refresh',
+          refreshToken
+        )) as any;
+
+        const session = await ctx.supabase
+          .from('user_sessions')
+          .select('*')
+          .eq('id', sessionId)
+          .eq('user_id', userId)
+          .eq('is_active', true)
+          .single();
+
+        const isSessionNotFound = !session.data;
+        const isSessionInactive = !session.data?.is_active;
+        const isSessionExpired = session.data?.expires_at < Date.now();
+
+        console.log({ isSessionExpired, isSessionNotFound, isSessionInactive });
+
+        if (isSessionNotFound || isSessionInactive || isSessionExpired) {
+          return ctx.fail({
+            code: 'UNAUTHORIZED',
+            message: 'Your session has expired. Please log in again.',
+          });
+        }
+
+        // Create a new access token
+        const accessToken = await auth.jwt.sign({
+          type: 'access',
+          payload: {
+            userId,
+            sessionId,
+          },
         });
+
+        return ctx.ok(
+          { accessToken, refreshToken },
+          { httpStatus: 200, path: 'auth.refresh' }
+        );
+      } catch (err) {
+        return ctx.fail(err);
       }
-
-      // Verify the refresh token
-      const { userId, sessionId } = (await auth.jwt.verify(
-        'refresh',
-        refreshToken
-      )) as any;
-
-      const session = await ctx.supabase
-        .from('user_sessions')
-        .select('*')
-        .eq('id', sessionId)
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .single();
-
-      const isSessionNotFound = !session.data;
-      const isSessionInactive = !session.data?.is_active;
-      const isSessionExpired = session.data?.expires_at < Date.now();
-
-      if (isSessionNotFound || isSessionInactive || isSessionExpired) {
-        return ctx.fail({
-          code: 'UNAUTHORIZED',
-          message: 'Your session has expired. Please log in again.',
-        });
-      }
-
-      // Create a new access token
-      const accessToken = await auth.jwt.sign({
-        type: 'access',
-        payload: {
-          userId,
-          sessionId,
-        },
-      });
-
-      // Set the refresh token cookie
-      auth.cookie(ctx.honoContext).set('refresh_token', refreshToken);
-
-      return ctx.ok({ accessToken }, { httpStatus: 200, path: 'auth.refresh' });
-    } catch (err) {
-      return ctx.fail(err);
-    }
-  }),
+    }),
 
   sessions: protectedProcedure.query(async ({ ctx }) => {
     try {
@@ -330,46 +327,39 @@ export const authRouter = router({
       }
     }),
 
-  logout: publicProcedure.mutation(async ({ ctx }) => {
-    try {
-      // Get the refresh token
-      const refreshToken = auth.cookie(ctx.honoContext).get('refresh_token');
+  logout: publicProcedure
+    .input(
+      z.object({
+        refreshToken: z.string().min(1, ''),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const refreshToken = input.refreshToken;
+        const actor = await auth.jwt.verify('refresh', refreshToken);
 
-      // If no refresh token is found, return an error
-      if (!refreshToken) {
-        return ctx.fail({
-          code: 'UNAUTHORIZED',
-          message: 'Your session has expired. Please log in again.',
-        });
+        const session = await ctx.supabase
+          .from('user_sessions')
+          .update({ is_active: false })
+          .eq('id', actor.sessionId)
+          .eq('user_id', actor.userId)
+          .select('*')
+          .single();
+
+        if (!session.data) {
+          return ctx.fail({
+            code: 'UNAUTHORIZED',
+            message: 'Your session has expired. Please log in again.',
+          });
+        }
+
+        return ctx.ok(
+          { success: true },
+          { httpStatus: 200, path: 'auth.logout' }
+        );
+      } catch (err) {
+        console.log(err);
+        return ctx.fail(err);
       }
-
-      const actor = await auth.jwt.verify('refresh', refreshToken);
-
-      const session = await ctx.supabase
-        .from('user_sessions')
-        .update({ is_active: false })
-        .eq('id', actor.sessionId)
-        .eq('user_id', actor.userId)
-        .select('*')
-        .single();
-
-      if (!session.data) {
-        return ctx.fail({
-          code: 'UNAUTHORIZED',
-          message: 'Your session has expired. Please log in again.',
-        });
-      }
-
-      // Delete the refresh token cookie
-      auth.cookie(ctx.honoContext).delete('refresh_token');
-
-      return ctx.ok(
-        { success: true },
-        { httpStatus: 200, path: 'auth.logout' }
-      );
-    } catch (err) {
-      console.log(err);
-      return ctx.fail(err);
-    }
-  }),
+    }),
 });

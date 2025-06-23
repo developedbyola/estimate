@@ -10,7 +10,7 @@ const Layout = () => {
 
   return (
     <Protected>
-      <Currency.Root style={{ flex: 1 }}>
+      <Currency.Provider>
         <Tabs
           screenOptions={{
             animation: 'shift',
@@ -84,7 +84,7 @@ const Layout = () => {
             }}
           />
         </Tabs>
-      </Currency.Root>
+      </Currency.Provider>
     </Protected>
   );
 };

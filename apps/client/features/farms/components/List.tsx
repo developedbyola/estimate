@@ -1,15 +1,17 @@
 import React from 'react';
 import { Border } from '@/constants';
+import Farms from '../constants/Farms';
+import { FlatList } from 'react-native';
 import { FarmType } from '../types/farm';
-import { Box, Heading, Text } from '@/components';
-import { useCurrencyContext } from '@/features/currency';
 import { excerpt } from '@/utils/excerpt';
+import { Box, Heading, Text } from '@/components';
+import { useCurrency } from '@/features/currency';
 
 type FarmProps = { farm: FarmType };
 
 const Farm = (props: FarmProps) => {
   const { farm } = props;
-  const { currency } = useCurrencyContext();
+  const { currency } = useCurrency();
 
   return (
     <Box
@@ -67,4 +69,30 @@ const Farm = (props: FarmProps) => {
   );
 };
 
-export default Farm;
+export const List = () => {
+  return (
+    <FlatList
+      data={Farms}
+      scrollEnabled
+      numColumns={2}
+      style={{ gap: 12 }}
+      showsVerticalScrollIndicator={false}
+      keyExtractor={(item) => String(item.id)}
+      renderItem={({ item }) => (
+        <Farm
+          farm={item}
+          key={item.id}
+        />
+      )}
+    >
+      {Farms.map((farm, index) => {
+        return (
+          <Farm
+            farm={farm}
+            key={index}
+          />
+        );
+      })}
+    </FlatList>
+  );
+};

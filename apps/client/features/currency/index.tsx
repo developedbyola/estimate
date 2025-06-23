@@ -1,2 +1,9 @@
-export { useCurrencyContext } from './contexts/currency';
-export { default as Currency } from './components/Currency';
+import { Update } from './components/Update';
+import { useCurrency, Provider } from './components/Provider';
+
+const Currency = {
+  Provider,
+  Update,
+};
+
+export { useCurrency, Currency };

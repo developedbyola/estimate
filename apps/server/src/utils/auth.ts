@@ -1,6 +1,5 @@
 import { env } from '@/configs/env';
 import { type Context } from 'hono';
-import * as Cookie from 'hono/cookie';
 import { sign, verify } from 'hono/jwt';
 import { UAParser } from 'ua-parser-js';
 import { TRPCError } from '@trpc/server';
@@ -104,14 +103,19 @@ export const auth = {
       headers.get('accept-language'),
       headers.get('sec-ch-ua-platform'),
     ].join('|');
-
     const fingerprint = await sha256(fingerprintPayload);
 
     const userAgent = headers.get('user-agent') || '';
-    const appVersion = headers.get('x-app-version');
-
     const parser = new UAParser(userAgent);
+
     const ua = parser.getResult();
+
+    const appVersion = headers.get('x-app-version');
+    const osVersion = headers.get('x-os-version') || ua.os.version || 'unknown';
+    const deviceType =
+      headers.get('x-device-type') || ua.device.type || 'unknown';
+    const deviceName =
+      headers.get('x-device-name') || ua.device.vendor || 'unknown';
 
     const ipAddress = getIpAddress(ctx);
 
@@ -120,26 +124,10 @@ export const auth = {
       ipAddress,
       fingerprint,
       appVersion,
-      osVersion: ua.os.version || 'unknown',
-      deviceType: ua.device.type || 'unknown',
-      deviceName: ua.device.type || 'unknown',
+      osVersion,
+      deviceType,
+      deviceName,
       expiresAt: Date.now() + DEFAULT_EXPIRES.refresh * 1000,
-    };
-  },
-
-  cookie: (ctx: Context) => {
-    return {
-      set: (name: string, token: string) => {
-        Cookie.setCookie(ctx, name, token, {
-          path: '/',
-          httpOnly: false,
-          sameSite: 'lax',
-          maxAge: DEFAULT_EXPIRES.refresh,
-          secure: env.NODE_ENV === 'production',
-        });
-      },
-      get: (name: string) => Cookie.getCookie(ctx, name),
-      delete: (name: string) => Cookie.deleteCookie(ctx, name),
     };
   },
 };

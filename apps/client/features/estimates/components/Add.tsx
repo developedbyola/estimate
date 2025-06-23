@@ -1,19 +1,19 @@
 import React from 'react';
-import { calculationSchema } from './schemas';
-import { Action, Box, Heading, Overlay, Scroll, Text } from '@/components';
-import Calculations from './components/Calculations';
+import { sum } from '../utils/sum';
+import { Space } from '@/constants';
+import Calculations from './Calculations';
+import { calculationSchema } from '../schemas';
+import { useCurrency } from '@/features/currency';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { sum } from './utils/sum';
-import { Space } from '@/constants';
-import { Currency, useCurrencyContext } from '../currency';
+import { Action, Box, Heading, Overlay, Scroll, Text } from '@/components';
 
 type Props = {
   children: React.ReactNode;
 };
 
-const CreateEstimateFeature = ({ children }: Props) => {
-  const { currency } = useCurrencyContext();
+export const Add = ({ children }: Props) => {
+  const { currency } = useCurrency();
 
   const form = useForm({
     resolver: zodResolver(calculationSchema),
@@ -86,11 +86,11 @@ const CreateEstimateFeature = ({ children }: Props) => {
                 flexDirection: 'row',
               }}
             >
-              <Currency.Switch>
+              {/* <Currency.Switch>
                 <Action.Root variant='ghost'>
                   <Action.Label>Currency</Action.Label>
                 </Action.Root>
-              </Currency.Switch>
+              </Currency.Switch> */}
               <Action.Root style={{ flex: 1 }}>
                 <Action.Label>Create Estimate</Action.Label>
               </Action.Root>
@@ -101,5 +101,3 @@ const CreateEstimateFeature = ({ children }: Props) => {
     </Overlay.Root>
   );
 };
-
-export default CreateEstimateFeature;
