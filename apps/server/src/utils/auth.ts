@@ -7,7 +7,6 @@ import { TRPCError } from '@trpc/server';
 import { sha256 } from 'hono/utils/crypto';
 import type { JWTPayload } from 'hono/utils/jwt/types';
 import { getConnInfo as BunConnInfo } from 'hono/bun';
-import { getConnInfo as NodeConnInfo } from '@hono/node-server/conninfo';
 
 type TokenOptions = {
   type: 'access' | 'refresh';
@@ -71,6 +70,25 @@ export async function decodeToken(type: 'access' | 'refresh', token: string) {
   }
 }
 
+/**
+ * Gets the IP address from the request, considering proxy headers.
+ * Works in both development (Bun) and production (Render).
+ */
+const getIpAddress = (ctx: Context) => {
+  if (env.NODE_ENV === 'development') {
+    const conn = BunConnInfo(ctx);
+    return conn?.remote?.address ?? 'unknown';
+  }
+
+  // Production (Render) - Use headers due to proxy
+  return (
+    ctx.req.header('x-forwarded-for')?.split(',')[0]?.trim() || // Most reliable on Render
+    ctx.req.header('cf-connecting-ip') || // Cloudflare (if used)
+    ctx.req.header('x-real-ip') || // Alternative header
+    'unknown'
+  );
+};
+
 export const auth = {
   getExpiry,
   expires: DEFAULT_EXPIRES,
@@ -95,9 +113,7 @@ export const auth = {
     const parser = new UAParser(userAgent);
     const ua = parser.getResult();
 
-    const conn =
-      env.NODE_ENV === 'production' ? NodeConnInfo(ctx) : BunConnInfo(ctx);
-    const ipAddress = conn?.remote?.address ?? 'unknown';
+    const ipAddress = getIpAddress(ctx);
 
     return {
       userAgent,
