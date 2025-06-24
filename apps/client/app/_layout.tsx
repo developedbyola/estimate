@@ -8,6 +8,7 @@ import { AuthProvider, UserProvider } from '@/components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Categories } from '@/features/categories';
 
 const Layout = () => {
   const colors = useThemeColors();
@@ -22,20 +23,22 @@ const Layout = () => {
           <BottomSheetModalProvider>
             <AuthProvider>
               <UserProvider>
-                <Stack
-                  screenOptions={{
-                    headerStyle: {
-                      backgroundColor: colors.getColor('bg.base'),
-                    },
-                    headerTitleStyle: { fontWeight: 'bold' },
-                    headerTintColor: colors.getColor('primary.base'),
-                  }}
-                >
-                  <Stack.Screen
-                    name='[app]'
-                    options={{ headerShown: false }}
-                  />
-                </Stack>
+                <Categories.Provider>
+                  <Stack
+                    screenOptions={{
+                      headerStyle: {
+                        backgroundColor: colors.getColor('bg.base'),
+                      },
+                      headerTitleStyle: { fontWeight: 'bold' },
+                      headerTintColor: colors.getColor('primary.base'),
+                    }}
+                  >
+                    <Stack.Screen
+                      name='[app]'
+                      options={{ headerShown: false }}
+                    />
+                  </Stack>
+                </Categories.Provider>
               </UserProvider>
             </AuthProvider>
           </BottomSheetModalProvider>
