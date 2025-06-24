@@ -33,6 +33,9 @@ const Footer = ({ authType }: Props) => {
 
   const login = trpc.auth.login.useMutation({
     onSuccess: async (data: any) => {
+      await SecureStore.setItemAsync('refresh_token', data.refreshToken);
+      await AsyncStorage.setItem('access_token', data.accessToken);
+
       setUser({ type: 'SET_USER', payload: { user: data.user } });
       setAuth({
         type: 'LOGIN',
@@ -40,8 +43,7 @@ const Footer = ({ authType }: Props) => {
           auth: { isAuthenticated: true, accessToken: data.accessToken },
         },
       });
-      await SecureStore.setItemAsync('refresh_token', data.refreshToken);
-      await AsyncStorage.setItem('access_token', data.accessToken);
+
       onOpenChange(false);
       router.push('/[app]');
     },

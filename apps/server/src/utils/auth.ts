@@ -2,7 +2,6 @@ import { env } from '@/configs/env';
 import { type Context } from 'hono';
 import { sign, verify } from 'hono/jwt';
 import { UAParser } from 'ua-parser-js';
-import { TRPCError } from '@trpc/server';
 import { sha256 } from 'hono/utils/crypto';
 import { getConnInfo as BunConnInfo } from 'hono/bun';
 import type { JWTPayload } from 'hono/utils/jwt/types';
@@ -48,8 +47,12 @@ export async function signToken({
   expiresIn = DEFAULT_EXPIRES[type],
 }: TokenOptions) {
   const exp = getExpiry(expiresIn);
-  const token = await sign({ ...payload, exp }, SECRETS[type]);
-  return token;
+  try {
+    const token = await sign({ ...payload, exp }, SECRETS[type]);
+    return token;
+  } catch (err: any) {
+    throw err;
+  }
 }
 
 /**
@@ -61,18 +64,9 @@ export async function signToken({
 export async function verifyToken(type: 'access' | 'refresh', token: string) {
   try {
     const decoded = await verify(token, SECRETS[type]);
-    if (typeof decoded !== 'object' || decoded === null) {
-      throw new Error('Invalid decoded data');
-    }
-    console.log({ decoded });
     return decoded as JWTPayload & TokenOptions['payload'];
   } catch (err: any) {
-    console.log({ err });
-    throw new TRPCError({
-      cause: err,
-      code: 'UNAUTHORIZED',
-      message: err?.message || 'Invalid token',
-    });
+    throw err;
   }
 }
 

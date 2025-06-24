@@ -10,6 +10,7 @@ const useRefreshToken = () => {
   const refresh = trpc.auth.refresh.useMutation({
     onSuccess: async (data: any) => {
       await AsyncStorage.setItem('access_token', data.accessToken);
+      await SecureStore.setItemAsync('refresh_token', data.refreshToken);
     },
     onError: (err) => {
       console.error('Token refresh failed:', err);
@@ -17,6 +18,7 @@ const useRefreshToken = () => {
   });
 
   const mutate = React.useCallback(async () => {
+    const accessToken = await AsyncStorage.getItem('access_token');
     const refreshToken = (await SecureStore.getItemAsync('refresh_token'))!;
     refresh.mutate({ refreshToken });
   }, [refresh.mutate]);
