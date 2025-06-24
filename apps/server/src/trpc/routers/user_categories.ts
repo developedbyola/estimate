@@ -7,7 +7,8 @@ export const userCategoriesRouter = router({
       const categories = await ctx.supabase
         .from('user_categories')
         .select('*')
-        .eq('user_id', ctx.actor.userId);
+        .eq('user_id', ctx.actor.userId)
+        .order('created_at', { ascending: false });
 
       if (categories.error) {
         return ctx.fail({
