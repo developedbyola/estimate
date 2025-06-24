@@ -30,10 +30,8 @@ const Item = ({ category, index }: { category: any; index: number }) => {
   const OUTER_HEIGHT = 120;
   const icon = Icons.find((icon) => icon.id === category.icon)!;
 
-  const [isHovered, setIsHovered] = React.useState(false);
-
   return (
-    <TouchableWithoutFeedback onPress={() => setIsHovered(!isHovered)}>
+    <TouchableWithoutFeedback>
       <MotiView
         style={{
           width: '100%',
@@ -47,9 +45,7 @@ const Item = ({ category, index }: { category: any; index: number }) => {
           translateY: 12,
         }}
         animate={{
-          translateY: isHovered
-            ? (4 - index + 1) * INNER_HEIGHT
-            : index * (INNER_HEIGHT - OUTER_HEIGHT),
+          translateY: index * (INNER_HEIGHT - OUTER_HEIGHT),
         }}
         transition={{
           type: 'spring',
