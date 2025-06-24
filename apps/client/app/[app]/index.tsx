@@ -97,7 +97,7 @@ const FarmsPage = () => {
             size='3xl'
             align='center'
           >
-            {currency.symbol}50.89
+            {currency.symbol}00.00
           </Heading>
         </Box>
 

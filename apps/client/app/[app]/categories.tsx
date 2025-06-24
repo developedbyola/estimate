@@ -20,6 +20,7 @@ const CategoriesPage = () => {
 
         <Scroll
           px='xl'
+          mt='3xl'
           style={{ flex: 1 }}
         >
           <Box py='xl' />
