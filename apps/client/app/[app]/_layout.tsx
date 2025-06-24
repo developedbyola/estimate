@@ -43,12 +43,12 @@ const Layout = () => {
           }}
         >
           <Tabs.Screen
-            name='search'
+            name='categories'
             options={{
               tabBarIcon: (props) => {
                 return (
                   <Ionicons
-                    name='search'
+                    name='sparkles'
                     size={24}
                     color={props.color}
                   />

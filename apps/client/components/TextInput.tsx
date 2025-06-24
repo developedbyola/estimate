@@ -19,9 +19,9 @@ const TextInput = React.forwardRef<Ref, Props>((props, ref) => {
         {
           flex: 1,
           paddingInline: Space.lg,
-          color: colors.getColor('text.base'),
           fontSize: Typography.size.lg,
           borderRadius: Border.radius['xl'],
+          color: colors.getColor('text.strong'),
         },
         style,
       ]}

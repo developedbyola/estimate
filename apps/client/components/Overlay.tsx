@@ -12,7 +12,7 @@ import BottomSheet, {
 import { FullWindowOverlay } from 'react-native-screens';
 import { StatusBar } from 'expo-status-bar';
 import { Border } from '@/constants';
-import { Box, Blur, AsChild } from '@/components';
+import { Box, Blur, AsChild, Scroll } from '@/components';
 
 type OverlayContext = {
   open: boolean;
@@ -226,7 +226,6 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
   const { bottomSheet, open } = useOverlayContext();
 
   const colors = useThemeColors();
-  const theme = useColorScheme() ?? 'light';
 
   const memoizedSnapPoints = React.useMemo(() => snapPoints, []);
 
@@ -289,12 +288,85 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
   );
 });
 
+type SheetHeaderRef = React.ComponentRef<typeof Box>;
+type SheetHeaderProps = React.ComponentProps<typeof Box>;
+const SheetHeader = React.forwardRef<SheetHeaderRef, SheetHeaderProps>(
+  (props, ref) => {
+    const { style, px = 'xl', py = 'sm', ...restProps } = props;
+    return (
+      <Box
+        ref={ref}
+        px={px}
+        py={py}
+        style={[style]}
+        {...restProps}
+      />
+    );
+  }
+);
+
+type SheetContentRef = React.ComponentRef<typeof Scroll>;
+type SheetContentProps = React.ComponentProps<typeof Scroll>;
+const SheetContent = React.forwardRef<SheetContentRef, SheetContentProps>(
+  (props, ref) => {
+    const { style, px = 'xl', ...restProps } = props;
+    return (
+      <Scroll
+        ref={ref}
+        px={px}
+        style={[style]}
+        {...restProps}
+      />
+    );
+  }
+);
+
+type SheetFooterRef = React.ComponentRef<typeof Box>;
+type SheetFooterProps = React.ComponentProps<typeof Box>;
+const SheetFooter = React.forwardRef<SheetFooterRef, SheetFooterProps>(
+  (props, ref) => {
+    const {
+      style,
+      px = 'xl',
+      pt = 'base',
+      pb = '4xl',
+      bg = 'bg.soft',
+      ...restProps
+    } = props;
+
+    const colors = useThemeColors();
+    return (
+      <Box
+        ref={ref}
+        px={px}
+        pt={pt}
+        pb={pb}
+        bg={bg}
+        style={[
+          {
+            position: 'absolute',
+            borderTopWidth: 1,
+            borderTopColor: colors.getColor('border.soft'),
+            bottom: 0,
+            width: '100%',
+          },
+          style,
+        ]}
+        {...restProps}
+      />
+    );
+  }
+);
+
 const Overlay = {
   Root,
   Trigger,
   Modal,
   Sheet,
   SheetTrigger,
+  SheetHeader,
+  SheetContent,
+  SheetFooter,
 };
 
 export default Overlay;

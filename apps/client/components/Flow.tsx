@@ -101,21 +101,19 @@ export const useFlowContext = <T extends object>() => {
   return context as FlowContext<T>;
 };
 
-type ProviderRef = React.ComponentRef<typeof AsChild>;
+type ProviderRef = React.ComponentRef<typeof Box>;
 type ProviderProps = Omit<
-  React.ComponentProps<typeof AsChild>,
+  React.ComponentProps<typeof Box>,
   keyof React.ComponentProps<typeof flowContext.Provider>
 > &
   React.ComponentProps<typeof flowContext.Provider>;
 const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
-  const { value, asChild = false, ...restProps } = props;
-  const context = useFlow(value ? value : undefined);
+  const { value, ...restProps } = props;
 
   return (
-    <flowContext.Provider value={context}>
-      <AsChild
+    <flowContext.Provider value={value}>
+      <Box
         ref={ref}
-        asChild={asChild}
         {...restProps}
       />
     </flowContext.Provider>
@@ -147,10 +145,7 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
   });
 
   return (
-    <Provider
-      asChild
-      value={context}
-    >
+    <Provider value={context}>
       <Box
         style={[{ flex: 1 }, style]}
         ref={ref}

@@ -2,10 +2,10 @@ import React from 'react';
 import { Stack } from 'expo-router';
 import { Image } from 'expo-image';
 import { Farms } from '@/features/farms';
+import { Create } from '@/features/create';
 import { Border, Space } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
 import { useCurrency } from '@/features/currency';
-import CreateBottomSheet from '@/features/create';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Action, Heading, Box, Text, Safe } from '@/components';
 
@@ -41,7 +41,7 @@ const FarmsPage = () => {
           />
 
           <Box style={{ gap: Space['2xs'], flexDirection: 'row' }}>
-            <CreateBottomSheet>
+            <Create.Sheet>
               <Action.Root
                 hitSlop={40}
                 variant='ghost'
@@ -59,7 +59,7 @@ const FarmsPage = () => {
                   color={colors.getColor('primary.base')}
                 />
               </Action.Root>
-            </CreateBottomSheet>
+            </Create.Sheet>
             <Action.Root
               variant='ghost'
               hitSlop={20}

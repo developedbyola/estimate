@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const categorySchema = z.object({
-  title: z
+  name: z
     .string({
       required_error: 'Category title is required.',
       invalid_type_error: 'Category title must be a string.',

@@ -3,10 +3,10 @@ import { Image } from 'expo-image';
 import { Stack } from 'expo-router';
 import { excerpt } from '@/utils/excerpt';
 import { Border, Space } from '@/constants';
-import SettingsFeature from '@/features/settings';
-import { Box, Heading, Safe, Text, useUser } from '@/components';
+import { Settings } from '@/features/settings';
+import { Box, Heading, Safe, Scroll, Text, useUser } from '@/components';
 
-const Settings = () => {
+const SettingsPage = () => {
   const { user } = useUser();
 
   return (
@@ -17,8 +17,9 @@ const Settings = () => {
         style={{ flex: 1 }}
       >
         <Box
-          mt='6xl'
+          mt='4xl'
           px='xl'
+          py='xl'
           style={{
             gap: Space.xl,
             flexDirection: 'row',
@@ -37,27 +38,38 @@ const Settings = () => {
             source={require('@/assets/images/avatars/default.png')}
           />
 
-          <Heading
-            size='2xl'
-            leading='xl'
-            align='left'
-            weight='medium'
-            style={{ flex: 1, textTransform: 'capitalize' }}
-          >
-            {excerpt(user?.name || 'Guest', 5)}
-          </Heading>
+          <Box style={{ flex: 1 }}>
+            <Heading
+              size='2xl'
+              leading='xl'
+              align='left'
+              weight='medium'
+              style={{ textTransform: 'capitalize' }}
+            >
+              {excerpt(user?.name || 'Guest', 5)}
+            </Heading>
+            <Text
+              size='sm'
+              leading='sm'
+              style={{ textTransform: 'capitalize', maxWidth: 240 }}
+            >
+              {user?.name}
+            </Text>
+          </Box>
         </Box>
 
-        <Box
+        <Scroll
           px='xl'
-          my='4xl'
           style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
         >
-          <SettingsFeature />
-        </Box>
+          <Box pt='3xl' />
+          <Settings.List />
+          <Box py='xl' />
+        </Scroll>
       </Safe>
     </React.Fragment>
   );
 };
 
-export default Settings;
+export default SettingsPage;

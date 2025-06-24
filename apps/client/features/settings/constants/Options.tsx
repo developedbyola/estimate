@@ -39,6 +39,22 @@ export default {
       name: 'System Check',
     },
   ],
+  language: [
+    {
+      title: '',
+      content: null,
+      icon: 'language-outline',
+      snapPoints: ['50%'],
+      name: 'Currency',
+    },
+    {
+      title: '',
+      content: null,
+      icon: 'globe-outline',
+      snapPoints: ['50%'],
+      name: 'Language',
+    },
+  ],
   session: [
     {
       title: '',

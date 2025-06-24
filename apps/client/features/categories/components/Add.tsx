@@ -5,7 +5,7 @@ import { excerpt } from '@/utils/excerpt';
 import { categorySchema } from '../schemas';
 import { Ionicons } from '@expo/vector-icons';
 import Modal from './shared/Modal';
-import { FlatList, TouchableHighlight } from 'react-native';
+import { Alert, TouchableHighlight } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import {
@@ -23,21 +23,25 @@ import {
   Text,
   Field,
   RadioGroup,
+  Flow,
+  useFlow,
 } from '@/components';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { trpc } from '@/lib/trpc';
+import { useCategories } from './Provider';
 
-const Title = () => {
+const Name = () => {
   const colors = useThemeColors();
-  const { control } = useFormContext<{ title: string }>();
+  const { control } = useFormContext<{ name: string }>();
 
   return (
     <Controller
-      name='title'
+      name='name'
       control={control}
       render={({ field }) => {
         return (
           <Field.Root
-            name='title'
+            name='name'
             control={control as any}
           >
             <Field.Control>
@@ -73,24 +77,17 @@ const Icon = () => {
       render={({ field }) => {
         return (
           <RadioGroup.Root
-            pb='10xl'
             value={field.value}
-            style={{ alignItems: 'center' }}
+            style={{ flexDirection: 'row', gap: '1.5%', flexWrap: 'wrap' }}
             onValueChange={({ value }) => field.onChange(value)}
           >
-            <FlatList
-              data={Icons}
-              scrollEnabled
-              numColumns={4}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => (
+            {Icons.map((item) => {
+              return (
                 <Box
                   key={item.id}
                   style={{
                     gap: 2,
-                    padding: 6,
-                    width: '25%',
+                    width: '18.5%',
                     alignItems: 'center',
                   }}
                 >
@@ -146,8 +143,9 @@ const Icon = () => {
                     {excerpt(item.icon, 6)}
                   </Text>
                 </Box>
-              )}
-            />
+              );
+            })}
+            <Box style={{ paddingBottom: 310 }} />
           </RadioGroup.Root>
         );
       }}
@@ -161,8 +159,8 @@ type Props = {
 
 const options = [
   {
-    name: 'Title',
-    content: Title,
+    name: 'Name',
+    content: Name,
     snapPoints: ['36%'],
     headingText: 'What would you like to call this category?',
   },
@@ -174,148 +172,186 @@ const options = [
   },
 ];
 
-export const Add = ({ children }: Props) => {
+const Form = () => {
   const colors = useThemeColors();
-  const form = useForm({
-    mode: 'all',
-    resolver: zodResolver(categorySchema),
-    defaultValues: { title: '', icon: Icons[0].id },
-  });
+  const formContext = useFormContext<{ name: string; icon: string }>();
+  const values = useWatch({ control: formContext.control });
 
-  const values = useWatch({ control: form.control });
   const icon = Icons.find((icon) => icon.id === values.icon);
 
   return (
-    <Overlay.Root>
-      <Overlay.SheetTrigger>{children}</Overlay.SheetTrigger>
-      <Overlay.Sheet
-        snapPoints={['40%']}
-        style={{ justifyContent: 'space-between' }}
-      >
-        <Box
-          my='lg'
-          px='xl'
-        >
-          <Heading
-            size='2xl'
-            align='center'
-            leading='xl'
-            weight='medium'
-            style={{ maxWidth: 240, marginHorizontal: 'auto' }}
+    <Box
+      bg='bg.soft'
+      style={{
+        overflow: 'hidden',
+        borderRadius: Border.radius.xl,
+      }}
+    >
+      {options.map((option, index) => {
+        return (
+          <Modal
+            key={index}
+            content={<option.content />}
+            snapPoints={option.snapPoints}
+            headingText={option.headingText}
           >
-            Sort your farms meaningfully.
-          </Heading>
-        </Box>
-
-        <FormProvider {...form}>
-          <Box
-            my='2xl'
-            px='xl'
-            mx='auto'
-            style={{ maxWidth: 320, width: '100%' }}
-          >
-            <Box
-              bg='bg.soft'
-              style={{
-                overflow: 'hidden',
-                borderRadius: Border.radius.xl,
-              }}
-            >
-              {options.map((option, index) => {
-                return (
-                  <Modal
-                    key={index}
-                    content={<option.content />}
-                    snapPoints={option.snapPoints}
-                    headingText={option.headingText}
+            <TouchableHighlight underlayColor={colors.getColor('bg.subtle')}>
+              <Box
+                px='lg'
+                style={{
+                  height: 44,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  borderColor: 'white',
+                  borderBottomWidth: options.length - 1 === index ? 0 : 1.5,
+                }}
+              >
+                <Heading
+                  size='lg'
+                  leading='sm'
+                  weight='normal'
+                  style={{ flex: 1 }}
+                >
+                  {option.name}
+                </Heading>
+                {index === 1 ? (
+                  <Box
+                    style={{
+                      width: 24,
+                      aspectRatio: '1/1',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: Border.radius.full,
+                      backgroundColor: icon?.lightColor,
+                    }}
                   >
-                    <TouchableHighlight
-                      underlayColor={colors.getColor('bg.subtle')}
-                    >
-                      <Box
-                        px='lg'
-                        style={{
-                          height: 44,
-                          alignItems: 'center',
-                          flexDirection: 'row',
-                          borderColor: 'white',
-                          borderBottomWidth:
-                            options.length - 1 === index ? 0 : 1.5,
-                        }}
-                      >
-                        <Heading
-                          size='lg'
-                          leading='sm'
-                          weight='normal'
-                          style={{ flex: 1 }}
-                        >
-                          {option.name}
-                        </Heading>
-                        {index === 1 ? (
-                          <Box
-                            style={{
-                              width: 24,
-                              aspectRatio: '1/1',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              borderRadius: Border.radius.base,
-                              backgroundColor: icon?.lightColor,
-                            }}
-                          >
-                            <Ionicons
-                              size={16}
-                              color={icon?.normalColor}
-                              name={icon?.icon || ('' as any)}
-                            />
-                          </Box>
-                        ) : null}
-                        {index === 0 ? (
-                          <Text
-                            size='lg'
-                            leading='sm'
-                            color='text.inactive'
-                          >
-                            {excerpt(values.title || 'No title', 12)}
-                          </Text>
-                        ) : null}
+                    <Ionicons
+                      size={16}
+                      color={icon?.normalColor}
+                      name={icon?.icon || ('' as any)}
+                    />
+                  </Box>
+                ) : null}
+                {index === 0 ? (
+                  <Text
+                    size='lg'
+                    leading='sm'
+                    color='text.inactive'
+                  >
+                    {excerpt(values.name || 'e.g Cereals', 12)}
+                  </Text>
+                ) : null}
+              </Box>
+            </TouchableHighlight>
+          </Modal>
+        );
+      })}
+    </Box>
+  );
+};
 
-                        <Box
-                          style={{
-                            width: 20,
-                            aspectRatio: '1/1',
-                            alignItems: 'center',
-                            marginLeft: Space.lg,
-                            justifyContent: 'center',
-                            borderRadius: Border.radius.xl,
-                            backgroundColor: colors.getColor('bg.subtle'),
-                          }}
-                        >
-                          <Ionicons
-                            size={16}
-                            name='add'
-                            color={colors.getColor('icon.base')}
-                          />
-                        </Box>
-                      </Box>
-                    </TouchableHighlight>
-                  </Modal>
-                );
-              })}
-            </Box>
-          </Box>
-        </FormProvider>
+const Success = () => {
+  const colors = useThemeColors();
 
-        <Box
-          px='xl'
-          pb='5xl'
-          mx='auto'
-          style={{ maxWidth: 320, width: '100%' }}
+  return (
+    <React.Fragment>
+      <Ionicons
+        size={40}
+        name='bonfire-outline'
+        color={colors.getColor('success.base')}
+        style={{ marginInline: 'auto', marginTop: Space.xl }}
+      />
+      <Heading
+        size='2xl'
+        align='center'
+        leading='lg'
+        weight='medium'
+        style={{ marginTop: Space['2xl'], maxWidth: 200, marginInline: 'auto' }}
+      >
+        Farm category created successfully
+      </Heading>
+      <Text
+        size='lg'
+        align='center'
+        leading='base'
+        weight='normal'
+        style={{ marginTop: Space.base, maxWidth: 320, marginInline: 'auto' }}
+      >
+        The new category is ready, Making it easier to manage and track
+        different agricultural locations.
+      </Text>
+    </React.Fragment>
+  );
+};
+
+export const Add = ({ children }: Props) => {
+  const form = useForm({
+    mode: 'all',
+    resolver: zodResolver(categorySchema),
+    defaultValues: { name: '', icon: Icons[0].id },
+  });
+
+  const flow = useFlow({ count: 1 });
+  const { setCategories } = useCategories();
+  const createCategory = trpc.userCategories.create.useMutation({
+    onSuccess: (data: any) => {
+      setCategories({
+        type: 'ADD_CATEGORY',
+        payload: { category: data.category },
+      });
+      flow.onNextStep();
+    },
+    onError: (err) => {
+      Alert.alert('Failed to create category', err.message);
+    },
+  });
+
+  return (
+    <FormProvider {...form}>
+      <Overlay.Root>
+        <Overlay.SheetTrigger>{children}</Overlay.SheetTrigger>
+        <Overlay.Sheet
+          snapPoints={['37%']}
+          style={{ justifyContent: 'space-between' }}
         >
-          <Action.Root>
-            <Action.Label>Create</Action.Label>
-          </Action.Root>
-        </Box>
-      </Overlay.Sheet>
-    </Overlay.Root>
+          <Flow.Provider
+            value={flow}
+            style={{ flex: 1 }}
+          >
+            <Flow.Success>
+              <Success />
+            </Flow.Success>
+            <Flow.Content index={0}>
+              <Overlay.SheetHeader>
+                <Heading
+                  size='2xl'
+                  align='center'
+                  leading='lg'
+                  weight='medium'
+                  style={{ maxWidth: 240, marginHorizontal: 'auto' }}
+                >
+                  Sort your farms meaningfully.
+                </Heading>
+              </Overlay.SheetHeader>
+
+              <Overlay.SheetContent mt='2xl'>
+                <Form />
+              </Overlay.SheetContent>
+
+              <Overlay.SheetFooter>
+                <Action.Root
+                  loading={createCategory.isPending}
+                  disabled={!form.formState.isValid}
+                  onPress={() => createCategory.mutate(form.getValues())}
+                >
+                  <Action.Loader />
+                  <Action.Label>Create a category</Action.Label>
+                </Action.Root>
+              </Overlay.SheetFooter>
+            </Flow.Content>
+          </Flow.Provider>
+        </Overlay.Sheet>
+      </Overlay.Root>
+    </FormProvider>
   );
 };
