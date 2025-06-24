@@ -53,7 +53,8 @@ const Item = ({ category, index }: { category: any; index: number }) => {
         }}
         transition={{
           type: 'spring',
-          stiffness: 112,
+          stiffness: 100,
+          duration: 1500,
           delay: index * 100,
         }}
       >
