@@ -50,9 +50,8 @@ const Item = ({ category, index }: { category: any; index: number }) => {
           translateY: 12,
         }}
         animate={{
-          zIndex: isHovered ? index : 0,
           translateY: isHovered
-            ? (OUTER_HEIGHT + INNER_HEIGHT) * index
+            ? 92 + index * OUTER_HEIGHT
             : index * (INNER_HEIGHT - OUTER_HEIGHT),
         }}
         transition={{
