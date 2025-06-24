@@ -18,7 +18,6 @@ const useRefreshToken = () => {
 
   const mutate = React.useCallback(async () => {
     const refreshToken = (await SecureStore.getItemAsync('refresh_token'))!;
-
     refresh.mutate({ refreshToken });
   }, [refresh.mutate]);
 
@@ -29,7 +28,7 @@ const useRefreshToken = () => {
 
     const interval = setInterval(() => {
       mutate();
-    }, 1000 * 60 * 30); // 30 minutes
+    }, 1000 * 60 * 0.25); // 1 minutes
 
     return () => clearInterval(interval);
   }, [auth.isAuthenticated, mutate]);

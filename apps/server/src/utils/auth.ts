@@ -64,12 +64,14 @@ export async function verifyToken(type: 'access' | 'refresh', token: string) {
     if (typeof decoded !== 'object' || decoded === null) {
       throw new Error('Invalid decoded data');
     }
+    console.log({ decoded });
     return decoded as JWTPayload & TokenOptions['payload'];
-  } catch (err) {
+  } catch (err: any) {
+    console.log({ err });
     throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: 'Invalid token',
       cause: err,
+      code: 'UNAUTHORIZED',
+      message: err?.message || 'Invalid token',
     });
   }
 }
