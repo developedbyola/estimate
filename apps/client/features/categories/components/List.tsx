@@ -47,17 +47,17 @@ const Item = ({ category, index }: { category: any; index: number }) => {
           boxShadow: '0px 3px 8px rgba(0, 0, 0, 0.04)',
         }}
         from={{
-          translateY: index + 1 * 10,
+          translateY: 12,
         }}
         animate={{
           translateY: isHovered
-            ? OUTER_HEIGHT
+            ? -(OUTER_HEIGHT + INNER_HEIGHT)
             : index * (INNER_HEIGHT - OUTER_HEIGHT),
         }}
         transition={{
           type: 'spring',
-          stiffness: 100,
-          delay: index * 150,
+          stiffness: 112,
+          delay: index * 100,
         }}
       >
         <Box

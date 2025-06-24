@@ -20,7 +20,7 @@ const CategoriesPage = () => {
 
         <Scroll
           px='xl'
-          style={{ flex: 1, overflow: 'hidden' }}
+          style={{ flex: 1 }}
         >
           <Box py='xl' />
           <Categories.List />
