@@ -22,7 +22,7 @@ const Layout = () => {
               height: 80,
               borderTopWidth: 1,
               backgroundColor: colors.getColor('bg.base'),
-              borderColor: colors.getColor('border.inactive'),
+              borderColor: colors.getColor('border.soft'),
             },
             tabBarLabel: (props) => {
               return (

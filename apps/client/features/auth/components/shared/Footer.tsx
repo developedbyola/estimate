@@ -12,6 +12,7 @@ import {
 } from '@/components';
 import { trpc } from '@/lib/trpc';
 import { Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
@@ -21,6 +22,7 @@ type Props = {
 const Footer = ({ authType }: Props) => {
   const { setAuth } = useAuth();
   const { setUser } = useUser();
+  const router = useRouter();
   const { onOpenChange } = useOverlayContext();
   const { reset, handleSubmit } = useFormContext();
   const { onNextStep, setData, data } = useFlowContext<{
@@ -40,7 +42,8 @@ const Footer = ({ authType }: Props) => {
       });
       await SecureStore.setItemAsync('refresh_token', data.refreshToken);
       await AsyncStorage.setItem('access_token', data.accessToken);
-      onNextStep();
+      onOpenChange(false);
+      router.push('/[app]');
     },
     onError: (error) => {
       Alert.alert('Login failed', error.message, [{ text: 'Cancel' }]);

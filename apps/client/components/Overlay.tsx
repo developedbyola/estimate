@@ -256,13 +256,15 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           keyboardBehavior='fillParent'
           index={memoizedSnapPoints.length - 1}
           style={{
+            overflow: 'hidden',
+            borderRadius: Border.radius['3xl'],
             backgroundColor: colors.getColor('bg.soft'),
           }}
           handleIndicatorStyle={{
             height: 6,
             width: 64,
             borderRadius: Border.radius.full,
-            backgroundColor: colors.getColor('bg.soft'),
+            backgroundColor: colors.getColor('border.subtle'),
           }}
           backdropComponent={backdrop}
           snapPoints={memoizedSnapPoints}

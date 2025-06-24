@@ -10,7 +10,7 @@ const Auth = {
       <AuthModal
         trigger={children}
         flow={
-          <Flow.Root count={3}>
+          <Flow.Root count={2}>
             <Login />
           </Flow.Root>
         }

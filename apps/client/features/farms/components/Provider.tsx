@@ -81,9 +81,12 @@ type FarmsProviderProps = {
   initialFarms?: Farm[];
 };
 
-export const Provider = ({ children, initialFarms }: FarmsProviderProps) => {
+export const Provider = ({
+  children,
+  initialFarms = [],
+}: FarmsProviderProps) => {
   const [state, dispatch] = React.useReducer(farmsReducer, {
-    farms: initialFarms || [],
+    farms: initialFarms,
   });
 
   return (

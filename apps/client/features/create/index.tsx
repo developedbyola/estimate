@@ -60,7 +60,7 @@ const CreateBottomSheet = ({ children }: Props) => {
         <Box
           px='xl'
           mx='auto'
-          style={{ maxWidth: 360, width: '100%' }}
+          style={{ width: '100%' }}
         >
           {options.map((option, index) => {
             return (
@@ -92,20 +92,19 @@ const CreateBottomSheet = ({ children }: Props) => {
                   <Box
                     style={{
                       flex: 1,
-                      gap: 12,
+                      gap: 20,
                       paddingBottom: 12,
-                      borderBottomWidth: 1,
                       borderStyle: 'solid',
                       flexDirection: 'row',
-                      alignItems: 'center',
-                      borderColor: colors.getColor('border.base'),
+                      borderColor: colors.getColor('border.soft'),
+                      borderBottomWidth: index === options.length - 1 ? 0 : 1,
                     }}
                   >
                     <Box style={{ flex: 1 }}>
                       <Heading
-                        size='lg'
+                        size='xl'
                         leading='lg'
-                        weight='medium'
+                        weight='normal'
                       >
                         {option.title}
                       </Heading>
@@ -117,7 +116,7 @@ const CreateBottomSheet = ({ children }: Props) => {
                       </Text>
                     </Box>
                     <Box
-                      bg='bg.soft'
+                      bg='bg.subtle'
                       style={{
                         width: 24,
                         aspectRatio: '1/1',
@@ -127,10 +126,10 @@ const CreateBottomSheet = ({ children }: Props) => {
                       }}
                     >
                       <Ionicons
-                        size={16}
+                        size={18}
                         name={'add'}
                         style={{ alignSelf: 'center' }}
-                        color={colors.getColor('icon.base')}
+                        color={colors.getColor('icon.strong')}
                       />
                     </Box>
                   </Box>

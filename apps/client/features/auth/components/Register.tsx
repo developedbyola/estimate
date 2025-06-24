@@ -207,7 +207,7 @@ export const Register = () => {
               px='xl'
               my='5xl'
               mx='auto'
-              style={{ width: '100%', maxWidth: 320 }}
+              style={{ width: '100%', maxWidth: 340 }}
             >
               {flow.content}
             </Box>

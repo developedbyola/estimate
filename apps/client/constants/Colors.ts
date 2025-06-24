@@ -116,34 +116,34 @@ const Colors = {
       soft: '#fee2e2', // red-100
     },
     bg: {
-      soft: '#f9fafb', // gray-50
+      soft: '#f9fafb', // neutral-50
       base: '#ffffff', // white
-      inactive: '#e5e7eb', // gray-200
-      subtle: '#f3f4f6', // gray-100
-      strong: '#111827', // gray-900
+      inactive: '#e5e7eb', // neutral-200
+      subtle: '#f3f4f6', // neutral-100
+      strong: '#111827', // neutral-900
       overlay: 'rgba(255, 255, 255, 0.8)', // semi-transparent white
       backdrop: 'rgba(0, 0, 0, 0.3)', // dark overlay for modals
       glass: 'rgba(255, 255, 255, 0.6)', // frosted glass effect
     },
     border: {
-      base: '#d1d5db', // gray-300
-      soft: '#e5e7eb', // gray-200
-      subtle: '#f3f4f6', // gray-100
-      inactive: '#9ca3af', // gray-400
-      strong: '#111827', // gray-900
+      base: '#d1d5db', // neutral-300
+      soft: '#e5e7eb', // neutral-200
+      subtle: '#f3f4f6', // neutral-100
+      inactive: '#9ca3af', // neutral-400
+      strong: '#111827', // neutral-900
     },
     text: {
-      base: '#ffffff', // gray-900
-      subtle: '#4b5563', // gray-600
-      soft: '#6b7280', // gray-500
+      base: '#ffffff', // neutral-50
+      subtle: '#4b5563', // neutral-600
+      soft: '#6b7280', // neutral-500
       inactive: '#9ca3af', // gray-400
       strong: '#111827', // gray-900
     },
     icon: {
-      on: '#111827', // gray-900
+      on: '#111827', // neutral-900
       base: '#ffffff', // white
-      soft: '#f3f4f6', // gray-100
-      subtle: '#e5e7eb', // gray-200
+      soft: '#f3f4f6', // neutral-100
+      subtle: '#e5e7eb', // neutral-200
       strong: '#111827', // gray-900
       inactive: '#9ca3af', // gray-400
     },
@@ -185,36 +185,36 @@ const Colors = {
       soft: '#7f1d1d', // red-900
     },
     bg: {
-      soft: '#1f2937', // gray-800
-      base: '#111827', // gray-900
-      inactive: '#374151', // gray-700
-      subtle: '#1f2937', // gray-800
-      strong: '#f9fafb', // gray-50
+      soft: '#1f2937', // neutral-800
+      base: '#111827', // neutral-900
+      inactive: '#374151', // neutral-700
+      subtle: '#1f2937', // neutral-800
+      strong: '#f9fafb', // neutral-50
       overlay: 'rgba(17, 24, 39, 0.9)', // semi-transparent dark
       backdrop: 'rgba(0, 0, 0, 0.6)', // darker overlay for modals
       glass: 'rgba(31, 41, 55, 0.7)', // dark frosted glass effect
     },
     border: {
-      base: '#4b5563', // gray-600
-      soft: '#374151', // gray-700
-      subtle: '#1f2937', // gray-800
-      inactive: '#6b7280', // gray-500
-      strong: '#f9fafb', // gray-50
+      base: '#4b5563', // neutral-600
+      soft: '#374151', // neutral-700
+      subtle: '#1f2937', // neutral-800
+      inactive: '#6b7280', // neutral-500
+      strong: '#f9fafb', // neutral-50
     },
     text: {
-      base: '#f9fafb', // gray-50
-      subtle: '#d1d5db', // gray-300
-      soft: '#9ca3af', // gray-400
-      inactive: '#6b7280', // gray-500
-      strong: '#ffffff', // gray-50
+      base: '#f9fafb', // neutral-50
+      subtle: '#d1d5db', // neutral-300
+      soft: '#9ca3af', // neutral-400
+      inactive: '#6b7280', // neutral-500
+      strong: '#ffffff', // neutral-50
     },
     icon: {
-      on: '#f9fafb', // gray-50
-      base: '#111827', // gray-900
-      soft: '#1f2937', // gray-800
-      subtle: '#374151', // gray-700
-      strong: '#f9fafb', // gray-50
-      inactive: '#6b7280', // gray-500
+      on: '#f9fafb', // neutral-50
+      base: '#111827', // neutral-900
+      soft: '#1f2937', // neutral-800
+      subtle: '#374151', // neutral-700
+      strong: '#f9fafb', // neutral-50
+      inactive: '#6b7280', // neutral-500
     },
   },
 } satisfies ThemeColors;

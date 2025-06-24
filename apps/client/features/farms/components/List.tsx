@@ -1,5 +1,7 @@
 import React from 'react';
+import { Empty } from './Empty';
 import { Border } from '@/constants';
+import { Provider, useFarms } from './Provider';
 import Farms from '../constants/Farms';
 import { FlatList } from 'react-native';
 import { FarmType } from '../types/farm';
@@ -70,6 +72,10 @@ const Farm = (props: FarmProps) => {
 };
 
 export const List = () => {
+  const { farms } = useFarms();
+
+  if (farms.length === 0) return <Empty />;
+
   return (
     <FlatList
       data={Farms}

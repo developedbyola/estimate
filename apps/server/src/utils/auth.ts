@@ -49,9 +49,6 @@ export async function signToken({
 }: TokenOptions) {
   const exp = getExpiry(expiresIn);
   const token = await sign({ ...payload, exp }, SECRETS[type]);
-  console.log('Token exp (UNIX sec):', exp);
-  console.log('Expires at:', new Date(exp * 1000).toISOString());
-  console.log('Now:', new Date().toISOString());
   return token;
 }
 
@@ -69,7 +66,6 @@ export async function verifyToken(type: 'access' | 'refresh', token: string) {
     }
     return decoded as JWTPayload & TokenOptions['payload'];
   } catch (err) {
-    console.log(err);
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Invalid token',

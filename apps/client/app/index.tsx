@@ -16,7 +16,7 @@ import {
   Blur,
 } from '@/components';
 import { Auth } from '@/features/auth';
-// import { useDeleteAccessToken } from '@/hooks/useTokens';
+import { useDeleteAccessToken } from '@/hooks/useTokens';
 
 const images = [
   {
@@ -40,62 +40,65 @@ const Footer = () => {
   const router = useRouter();
   const { auth } = useAuth();
 
-  if (auth.isAuthenticated) {
-    return (
-      <Box px='xl'>
-        <Blur
-          px='lg'
-          py='base'
-          bg='bg.soft'
-          style={{
-            overflow: 'hidden',
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderRadius: Border.radius.xl,
-          }}
-        >
-          <Box style={{ flex: 1 }}>
-            <Heading
-              size='base'
-              leading='base'
-            >
-              You're signed in
-            </Heading>
-            <Text
-              size='sm'
-              leading='sm'
-            >
-              You can now explore the app
-            </Text>
-          </Box>
-          <Action.Root
-            size='sm'
-            onPress={() => router.push('/[app]')}
-          >
-            <Action.Label>Explore</Action.Label>
-          </Action.Root>
-        </Blur>
-      </Box>
-    );
-  }
-
   return (
-    <Box
-      px='xl'
-      mx='auto'
-      style={{ gap: Space.xs, width: '100%', maxWidth: 320 }}
-    >
-      <Auth.Register>
-        <Action.Root>
-          <Action.Label>Create account</Action.Label>
-        </Action.Root>
-      </Auth.Register>
-      <Auth.Login>
-        <Action.Root variant='ghost'>
-          <Action.Label>Sign in</Action.Label>
-        </Action.Root>
-      </Auth.Login>
-    </Box>
+    <React.Fragment>
+      {auth.isAuthenticated ? (
+        <Box px='xl'>
+          <Blur
+            px='lg'
+            py='base'
+            bg='bg.subtle'
+            style={{
+              overflow: 'hidden',
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderRadius: Border.radius.lg,
+            }}
+          >
+            <Box style={{ flex: 1 }}>
+              <Heading
+                size='base'
+                leading='base'
+              >
+                You're signed in
+              </Heading>
+              <Text
+                size='sm'
+                leading='sm'
+              >
+                You can now explore the app
+              </Text>
+            </Box>
+            <Action.Root
+              size='sm'
+              onPress={() => router.push('/[app]')}
+            >
+              <Action.Label>Explore</Action.Label>
+            </Action.Root>
+          </Blur>
+        </Box>
+      ) : null}
+      <Box
+        px='xl'
+        mx='auto'
+        style={{ gap: Space.xs, width: '100%', maxWidth: 320 }}
+      >
+        <Auth.Register>
+          {auth.isAuthenticated ? null : (
+            <Action.Root>
+              <Action.Label>Sign up</Action.Label>
+            </Action.Root>
+          )}
+        </Auth.Register>
+        <Auth.Login>
+          {auth.isAuthenticated ? null : (
+            <Action.Root variant='ghost'>
+              <Action.Label>Sign in</Action.Label>
+            </Action.Root>
+          )}
+        </Auth.Login>
+      </Box>
+    </React.Fragment>
   );
 };
 

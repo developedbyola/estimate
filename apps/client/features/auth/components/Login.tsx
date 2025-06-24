@@ -1,56 +1,18 @@
 import React from 'react';
+import { Space } from '@/constants';
+import Footer from './shared/Footer';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { emailSchema, passwordSchema } from '../schemas';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import {
-  Field,
+  Box,
   Flow,
+  Text,
+  Field,
   Heading,
   Password,
   useFlowContext,
-  useUser,
 } from '@/components';
-import { useRedirect } from '@/hooks/useRedirect';
-import { ActivityIndicator, Box, Text, useOverlayContext } from '@/components';
-import { FormProvider, useForm, useFormContext } from 'react-hook-form';
-import { emailSchema, passwordSchema } from '../schemas';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Space } from '@/constants';
-import Footer from './shared/Footer';
-
-const Success = () => {
-  const { user } = useUser();
-  const overlayContext = useOverlayContext();
-
-  useRedirect('/app', {
-    condition: !!user,
-    onComplete: () => overlayContext.onOpenChange(false),
-  });
-
-  return (
-    <React.Fragment>
-      <Box
-        px='xl'
-        my='5xl'
-        style={{ justifyContent: 'center', flex: 1 }}
-      >
-        <ActivityIndicator />
-      </Box>
-      <Box
-        px='lg'
-        pb='6xl'
-        mx='auto'
-        style={{ maxWidth: 320, width: '100%' }}
-      >
-        <Text
-          size='sm'
-          leading='sm'
-          align='center'
-        >
-          We’ve verified it’s really you. Everything’s locked down tight, so you
-          can browse with peace of mind. Happy exploring!
-        </Text>
-      </Box>
-    </React.Fragment>
-  );
-};
 
 const EmailForm = () => {
   const form = useFormContext();
@@ -157,7 +119,7 @@ export const Login = () => {
                 px='xl'
                 my='5xl'
                 mx='auto'
-                style={{ width: '100%', maxWidth: 320 }}
+                style={{ width: '100%', maxWidth: 340 }}
               >
                 {flow.content}
               </Box>
@@ -167,9 +129,6 @@ export const Login = () => {
           </FormProvider>
         );
       })}
-      <Flow.Success>
-        <Success />
-      </Flow.Success>
     </Box>
   );
 };
