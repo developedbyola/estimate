@@ -84,8 +84,6 @@ export const List = () => {
   const list = trpc.userCategories.list.useQuery();
   const { categories, setCategories } = useCategories();
 
-  console.log(categories);
-
   React.useEffect(() => {
     if (list.data) {
       setCategories({
