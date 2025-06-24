@@ -99,6 +99,8 @@ export const Provider = ({
     categories: initialCategories,
   });
 
+  console.log({ cats: state.categories.length });
+
   return (
     <categoryContext.Provider
       value={{ categories: state.categories, setCategories: dispatch }}
