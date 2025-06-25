@@ -1,9 +1,11 @@
 import React from 'react';
-import { FarmSchemaType } from '../schemas';
 import { trpc } from '@/lib/trpc';
+import { FarmSchema } from '../schemas';
+import { Category } from '@/features/categories';
 
-type Farm = FarmSchemaType & {
+export type Farm = FarmSchema & {
   id: string;
+  category: Omit<Category, 'created_at'>;
 };
 
 type State = {

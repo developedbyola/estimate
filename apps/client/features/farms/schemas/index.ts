@@ -48,4 +48,4 @@ export const farmSchema = z.object({
     .default('acres'),
 });
 
-export type FarmSchemaType = z.infer<typeof farmSchema>;
+export type FarmSchema = z.infer<typeof farmSchema>;

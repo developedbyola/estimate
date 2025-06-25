@@ -1,11 +1,11 @@
 import { trpc } from '@/lib/trpc';
 import React from 'react';
 
-type Category = {
+export type Category = {
   id: string;
   name: string;
   icon: string;
-  description: string;
+  created_at: string;
 };
 
 type State = {

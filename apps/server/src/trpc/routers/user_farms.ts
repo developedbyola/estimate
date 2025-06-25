@@ -1,12 +1,14 @@
 import z from 'zod';
 import { protectedProcedure, router } from '../middleware';
 
+const SELECT = `*, category:category_id(id, name, icon, created_at)`;
+
 export const userFarmsRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
     try {
       const farms = await ctx.supabase
         .from('user_farms')
-        .select(`*, category:category_id(id, name, icon)`)
+        .select(SELECT)
         .eq('user_id', ctx.actor.userId)
         .order('created_at', { ascending: false });
 
@@ -32,7 +34,7 @@ export const userFarmsRouter = router({
       try {
         const farm = await ctx.supabase
           .from('user_farms')
-          .select('*')
+          .select(SELECT)
           .eq('id', input.farmId)
           .eq('user_id', ctx.actor.userId)
           .single();
@@ -98,7 +100,7 @@ export const userFarmsRouter = router({
           })
           .eq('id', input.farmId)
           .eq('user_id', ctx.actor.userId)
-          .select('*')
+          .select(SELECT)
           .single();
 
         if (!farm.data) {
@@ -125,7 +127,7 @@ export const userFarmsRouter = router({
           .delete()
           .eq('id', input.farmId)
           .eq('user_id', ctx.actor.userId)
-          .select('*')
+          .select(SELECT)
           .single();
 
         if (!farm.data) {
@@ -183,7 +185,7 @@ export const userFarmsRouter = router({
             size_unit: input.size_unit,
             category_id: input.categoryId,
           })
-          .select('*')
+          .select(SELECT)
           .single();
 
         if (!farm.data) {

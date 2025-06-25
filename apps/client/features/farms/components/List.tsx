@@ -1,13 +1,11 @@
 import React from 'react';
-import { Alert } from 'react-native';
-import { useFarms } from './Provider';
+import { Alert, TouchableOpacity } from 'react-native';
+import { Farm, useFarms } from './Provider';
 import { excerpt } from '@/utils/excerpt';
 import { Border, Space } from '@/constants';
-import { FarmSchemaType } from '../schemas';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Box, Heading, Text, ActivityIndicator } from '@/components';
-import { useCategories } from '@/features/categories';
 import Icons from '@/features/categories/constants/Icons';
 
 const Loader = () => {
@@ -49,28 +47,58 @@ const Empty = () => {
   );
 };
 
-type FarmProps = { farm: FarmSchemaType & { id: string } };
+type ItemProps = { farm: Farm };
 
-const Farm = (props: FarmProps) => {
+const Item = (props: ItemProps) => {
   const { farm } = props;
+  const colors = useThemeColors();
+
+  const icon = Icons.find((icon) => icon.id === farm.category.icon);
 
   return (
-    <Box
-      py='xs'
-      px='xs'
-      bg='bg.base'
-      style={{ width: '100%', flexDirection: 'row', height: 48 }}
+    <TouchableOpacity
+      activeOpacity={0.6}
+      style={{
+        height: 56,
+        width: '100%',
+        overflow: 'hidden',
+        borderRadius: Border.radius.lg,
+        backgroundColor: colors.getColor('bg.base'),
+      }}
     >
-      <Ionicons name={'' as any} />
-      <Box>
-        <Heading
-          size='lg'
-          leading='lg'
-        >
-          {excerpt(farm.name, 12)}
-        </Heading>
+      <Box
+        px='lg'
+        style={{
+          flex: 1,
+          gap: Space.xl,
+          alignItems: 'center',
+          flexDirection: 'row',
+        }}
+      >
+        <Ionicons
+          size={30}
+          color={icon?.normalColor || ''}
+          name={(icon?.icon || '') as any}
+        />
+        <Box>
+          <Heading
+            size='lg'
+            leading='base'
+            weight='medium'
+          >
+            {excerpt(farm.name, 20)}
+          </Heading>
+
+          <Text
+            size='sm'
+            leading='sm'
+          >{`${farm.size} ${farm.size_unit} at ${excerpt(
+            farm.address,
+            20
+          )}`}</Text>
+        </Box>
       </Box>
-    </Box>
+    </TouchableOpacity>
   );
 };
 
@@ -95,13 +123,14 @@ export const List = () => {
     <Box
       style={{
         flex: 1,
+        gap: Space.sm,
         flexWrap: 'wrap',
         flexDirection: 'row',
       }}
     >
       {farms.map((farm) => {
         return (
-          <Farm
+          <Item
             farm={farm}
             key={farm.id}
           />

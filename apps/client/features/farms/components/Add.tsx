@@ -371,18 +371,9 @@ export const Add = ({ children, farm }: Props) => {
 
   const create = trpc.userFarms.create.useMutation({
     onSuccess: (data: any) => {
+      setFarms({ type: 'ADD_FARM', payload: { farm: data?.farm || {} } });
       form.reset();
       overlay.onToggle(false);
-      setFarms({ type: 'ADD_FARM', payload: { farm: data?.any || {} } });
-      Toast.show(
-        '✅ Farm created successfully! You can now start adding estimates to keep track of your farm finances.',
-        {
-          delay: 100,
-          position: 96,
-          duration: 3000,
-          onShow: () => console.log('showing...'),
-        }
-      );
     },
     onError: (err: any) => {
       Alert.alert('Error', err?.message || 'Failed to create farm', [
@@ -392,15 +383,9 @@ export const Add = ({ children, farm }: Props) => {
   });
   const update = trpc.userFarms.update.useMutation({
     onSuccess: (data: any) => {
-      setFarms({ type: 'UPDATE_FARM', payload: { farm: data?.any || {} } });
-
+      setFarms({ type: 'UPDATE_FARM', payload: { farm: data?.farm || {} } });
       form.reset();
       overlay.onToggle(false);
-      Toast.show('Farm updated successfully', {
-        delay: 100,
-        position: 20,
-        duration: 3000,
-      });
     },
     onError: (err: any) => {
       Alert.alert('Error', err?.message || 'Failed to update farm', [

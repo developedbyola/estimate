@@ -1,6 +1,6 @@
 import { Add } from './components/Add';
 import { List } from './components/List';
-import { useCategories, Provider } from './components/Provider';
+import { useCategories, Provider, Category } from './components/Provider';
 
 const Categories = {
   Provider,
@@ -8,4 +8,4 @@ const Categories = {
   List,
 };
 
-export { useCategories, Categories };
+export { useCategories, Categories, Category };
