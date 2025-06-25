@@ -16,21 +16,18 @@ import { Box, Blur, AsChild, Scroll } from '@/components';
 
 type OverlayContext = {
   open: boolean;
-  close: () => void;
-  openBottomSheet?: () => void;
   bottomSheet: {
-    ref: React.RefObject<BottomSheet | null>;
     open: () => void;
     close: () => void;
+    ref: React.RefObject<BottomSheet | null>;
   };
-  onOpenChange: (open: boolean) => void;
+  onToggle: (open: boolean) => void;
 };
 
 export const overlayContext = React.createContext<OverlayContext | null>(null);
 
 export const useOverlay = (value?: Partial<OverlayContext>): OverlayContext => {
-  const { open: externalOpen = false, onOpenChange: setExternalOpen } =
-    value || {};
+  const { open: externalOpen = false, onToggle: setExternalOpen } = value || {};
 
   const bottomSheetRef = React.useRef<BottomSheet>(null);
   const [internalOpen, setInternalOpen] = React.useState(false);
@@ -39,7 +36,7 @@ export const useOverlay = (value?: Partial<OverlayContext>): OverlayContext => {
 
   const open = isControlled ? externalOpen : internalOpen;
 
-  const onOpenChange = React.useCallback(
+  const onToggle = React.useCallback(
     (open: boolean) => {
       if (isControlled) {
         setExternalOpen?.(open);
@@ -51,23 +48,22 @@ export const useOverlay = (value?: Partial<OverlayContext>): OverlayContext => {
   );
 
   const close = React.useCallback(() => {
-    onOpenChange(false);
-  }, [onOpenChange]);
+    onToggle(false);
+  }, [onToggle]);
 
   const closeBottomSheet = React.useCallback(() => {
-    onOpenChange(false);
+    onToggle(false);
     bottomSheetRef.current?.collapse();
-  }, [onOpenChange]);
+  }, [onToggle]);
 
   const openBottomSheet = React.useCallback(() => {
-    onOpenChange(true);
+    onToggle(true);
     bottomSheetRef.current?.expand();
-  }, [onOpenChange]);
+  }, [onToggle]);
 
   return {
     open, // Ensure open is never undefined
-    close,
-    onOpenChange,
+    onToggle,
     bottomSheet: {
       ref: bottomSheetRef,
       open: openBottomSheet,
@@ -84,18 +80,17 @@ export const useOverlayContext = () => {
   return context;
 };
 
-type ProviderRef = React.ComponentRef<typeof AsChild>;
-type ProviderProps = React.ComponentProps<typeof AsChild> &
+type ProviderRef = React.ComponentRef<typeof Box>;
+type ProviderProps = React.ComponentProps<typeof Box> &
   React.ComponentProps<typeof overlayContext.Provider>;
 
 const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
-  const { value, asChild = true, ...restProps } = props;
+  const { value, ...restProps } = props;
 
   return (
     <overlayContext.Provider value={value}>
-      <AsChild
+      <Box
         ref={ref}
-        asChild={asChild}
         {...restProps}
       />
     </overlayContext.Provider>
@@ -123,11 +118,11 @@ type TriggerRef = React.ComponentRef<typeof AsChild>;
 type TriggerProps = React.ComponentProps<typeof AsChild>;
 const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   const { asChild = true, onPress, ...restProps } = props;
-  const { open, onOpenChange } = useOverlayContext();
+  const { open, onToggle } = useOverlayContext();
 
   const handlePress = (event: GestureResponderEvent) => {
     onPress?.(event);
-    onOpenChange(!open);
+    onToggle(!open);
   };
 
   return (
@@ -213,12 +208,14 @@ const Modal = React.forwardRef<ModalRef, ModalProps>((props, ref) => {
 type SheetRef = React.ComponentRef<typeof BottomSheetView>;
 type SheetProps = React.ComponentProps<typeof BottomSheetView> & {
   snapPoints?: string[];
+  onDismiss?: () => void;
   statusBarStyle?: 'dark' | 'light';
 };
 const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
   const {
     style,
     children,
+    onDismiss,
     statusBarStyle = 'light',
     snapPoints = ['25%', '50%', '75%'],
     ...restProps
@@ -268,6 +265,11 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           backdropComponent={backdrop}
           snapPoints={memoizedSnapPoints}
           onClose={() => bottomSheet.close()}
+          onChange={(index) => {
+            if (index === -1) {
+              onDismiss?.();
+            }
+          }}
           {...restProps}
         >
           <BottomSheetView
@@ -359,6 +361,7 @@ const SheetFooter = React.forwardRef<SheetFooterRef, SheetFooterProps>(
 );
 
 const Overlay = {
+  Provider,
   Root,
   Trigger,
   Modal,

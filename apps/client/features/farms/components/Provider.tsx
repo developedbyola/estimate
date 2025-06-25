@@ -1,5 +1,6 @@
 import React from 'react';
 import { FarmSchemaType } from '../schemas';
+import { trpc } from '@/lib/trpc';
 
 type Farm = FarmSchemaType & {
   id: string;
@@ -7,12 +8,15 @@ type Farm = FarmSchemaType & {
 
 type State = {
   farms: Farm[];
+  loading: boolean;
+  error: ReturnType<typeof trpc.userFarms.list.useQuery>['error'];
+  refetch: ReturnType<typeof trpc.userFarms.list.useQuery>['refetch'];
 };
 
 type Action =
   | {
       type: 'SET_FARMS';
-      payload: State;
+      payload: { farms: Farm[] };
     }
   | {
       type: 'SET_FARM';
@@ -31,9 +35,8 @@ type Action =
       payload: { farm: Farm };
     };
 
-type farmContextType = {
-  farms: Farm[];
-  setFarms: React.Dispatch<Action>;
+type farmContextType = State & {
+  setFarms: React.ActionDispatch<[Action]>;
 };
 
 const farmsContext = React.createContext<farmContextType | null>(null);
@@ -49,7 +52,10 @@ export const useFarms = () => {
 const farmsReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'SET_FARMS':
-      return { ...state, farms: action.payload.farms };
+      return {
+        ...state,
+        farms: action.payload.farms,
+      };
     case 'SET_FARM':
       return {
         ...state,
@@ -85,12 +91,35 @@ export const Provider = ({
   children,
   initialFarms = [],
 }: FarmsProviderProps) => {
+  const list = trpc.userFarms.list.useQuery();
   const [state, dispatch] = React.useReducer(farmsReducer, {
+    error: null,
+    loading: false,
     farms: initialFarms,
+    refetch: list.refetch,
   });
 
+  React.useEffect(() => {
+    if (list.data) {
+      dispatch({
+        type: 'SET_FARMS',
+        payload: {
+          farms: (list.data as any)?.farms || [],
+        },
+      });
+    }
+  }, [list.data]);
+
   return (
-    <farmsContext.Provider value={{ farms: state.farms, setFarms: dispatch }}>
+    <farmsContext.Provider
+      value={{
+        error: list.error,
+        setFarms: dispatch,
+        farms: state.farms,
+        loading: list.isLoading,
+        refetch: list.refetch,
+      }}
+    >
       {children}
     </farmsContext.Provider>
   );

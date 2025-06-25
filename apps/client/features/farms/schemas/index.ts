@@ -42,10 +42,10 @@ export const farmSchema = z.object({
     .default('1'),
 
   size_unit: z
-    .enum(['hectare', 'acre'], {
+    .enum(['hectares', 'acres', 'square meters'], {
       errorMap: () => ({ message: 'Size unit must be either hectare or acre' }),
     })
-    .default('acre'),
+    .default('acres'),
 });
 
 export type FarmSchemaType = z.infer<typeof farmSchema>;

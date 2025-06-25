@@ -20,10 +20,10 @@ const CategoriesPage = () => {
 
         <Scroll
           px='xl'
-          mt='3xl'
+          mt='5xl'
           style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
         >
-          <Box py='xl' />
           <Categories.List />
         </Scroll>
       </Safe>

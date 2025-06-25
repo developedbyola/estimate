@@ -14,6 +14,7 @@ const useRefreshToken = () => {
     },
     onError: (err) => {
       console.error('Token refresh failed:', err);
+      return;
     },
   });
 
@@ -30,7 +31,7 @@ const useRefreshToken = () => {
 
     const interval = setInterval(() => {
       mutate();
-    }, 1000 * 60 * 0.25); // 1 minutes
+    }, 1000 * 60 * 30);
 
     return () => clearInterval(interval);
   }, [auth.isAuthenticated, mutate]);

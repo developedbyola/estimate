@@ -15,6 +15,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "expo-linear-gradient": "^14.1.5"
+    "expo-linear-gradient": "^14.1.5",
+    "react-native-root-toast": "^4.0.1"
   }
 }

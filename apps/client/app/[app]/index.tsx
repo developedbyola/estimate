@@ -2,12 +2,11 @@ import React from 'react';
 import { Stack } from 'expo-router';
 import { Image } from 'expo-image';
 import { Farms } from '@/features/farms';
-import { Create } from '@/features/create';
 import { Border, Space } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
 import { useCurrency } from '@/features/currency';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { Action, Heading, Box, Text, Safe } from '@/components';
+import { Action, Heading, Box, Text, Safe, Scroll } from '@/components';
 
 const FarmsPage = () => {
   const colors = useThemeColors();
@@ -19,7 +18,7 @@ const FarmsPage = () => {
       <StatusBar style='dark' />
 
       <Safe
-        bg='bg.soft'
+        bg='bg.subtle'
         style={{ flex: 1 }}
       >
         <Box
@@ -41,7 +40,7 @@ const FarmsPage = () => {
           />
 
           <Box style={{ gap: Space['2xs'], flexDirection: 'row' }}>
-            <Create.Sheet>
+            <Farms.Add>
               <Action.Root
                 hitSlop={40}
                 variant='ghost'
@@ -59,7 +58,7 @@ const FarmsPage = () => {
                   color={colors.getColor('primary.base')}
                 />
               </Action.Root>
-            </Create.Sheet>
+            </Farms.Add>
             <Action.Root
               variant='ghost'
               hitSlop={20}
@@ -101,12 +100,12 @@ const FarmsPage = () => {
           </Heading>
         </Box>
 
-        <Box
+        <Scroll
           px='xl'
           style={{ flex: 1 }}
         >
           <Farms.List />
-        </Box>
+        </Scroll>
       </Safe>
     </React.Fragment>
   );

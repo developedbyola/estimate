@@ -153,10 +153,6 @@ const Icon = () => {
   );
 };
 
-type Props = {
-  children: React.ReactNode;
-};
-
 const options = [
   {
     name: 'Name',
@@ -238,7 +234,7 @@ const Form = () => {
                     leading='sm'
                     color='text.inactive'
                   >
-                    {excerpt(values.name || 'e.g Cereals', 12)}
+                    {excerpt(values.name || 'e.g Cereals', 20)}
                   </Text>
                 ) : null}
               </Box>
@@ -250,7 +246,7 @@ const Form = () => {
   );
 };
 
-const Success = () => {
+const Success = ({ isUpdate }: { isUpdate: boolean }) => {
   const colors = useThemeColors();
 
   return (
@@ -268,7 +264,9 @@ const Success = () => {
         weight='medium'
         style={{ marginTop: Space['2xl'], maxWidth: 200, marginInline: 'auto' }}
       >
-        Farm category created successfully
+        {isUpdate
+          ? 'Category updated successfully'
+          : 'Category created successfully'}
       </Heading>
       <Text
         size='lg'
@@ -284,15 +282,37 @@ const Success = () => {
   );
 };
 
-export const Add = ({ children }: Props) => {
+type Props = {
+  category?: any;
+  children: React.ReactNode;
+};
+
+export const Add = ({ children, category }: Props) => {
   const form = useForm({
     mode: 'all',
     resolver: zodResolver(categorySchema),
-    defaultValues: { name: '', icon: Icons[0].id },
+    defaultValues: {
+      name: category?.name || '',
+      icon: category?.icon || Icons[0].id,
+    },
   });
 
   const flow = useFlow({ count: 1 });
   const { setCategories } = useCategories();
+
+  const updateCategory = trpc.userCategories.update.useMutation({
+    onSuccess: (data: any) => {
+      setCategories({
+        type: 'UPDATE_CATEGORY',
+        payload: { category: data.category },
+      });
+      flow.onNextStep();
+    },
+    onError: (err) => {
+      Alert.alert('Failed to update category', err.message);
+    },
+  });
+
   const createCategory = trpc.userCategories.create.useMutation({
     onSuccess: (data: any) => {
       setCategories({
@@ -306,12 +326,32 @@ export const Add = ({ children }: Props) => {
     },
   });
 
+  const isUpdate = !!category;
+  const isLoading = createCategory.isPending || updateCategory.isPending;
+  const mutate = () => {
+    if (category) {
+      updateCategory.mutate({
+        categoryId: category.id,
+        name: form.getValues().name,
+        icon: form.getValues().icon,
+      });
+    } else {
+      createCategory.mutate({
+        name: form.getValues().name,
+        icon: form.getValues().icon,
+      });
+    }
+  };
+
   return (
     <FormProvider {...form}>
       <Overlay.Root>
         <Overlay.SheetTrigger>{children}</Overlay.SheetTrigger>
         <Overlay.Sheet
           snapPoints={['37%']}
+          onDismiss={() => {
+            flow.reset();
+          }}
           style={{ justifyContent: 'space-between' }}
         >
           <Flow.Provider
@@ -319,7 +359,7 @@ export const Add = ({ children }: Props) => {
             style={{ flex: 1 }}
           >
             <Flow.Success>
-              <Success />
+              <Success isUpdate={isUpdate} />
             </Flow.Success>
             <Flow.Content index={0}>
               <Overlay.SheetHeader>
@@ -328,9 +368,11 @@ export const Add = ({ children }: Props) => {
                   align='center'
                   leading='lg'
                   weight='medium'
-                  style={{ maxWidth: 240, marginHorizontal: 'auto' }}
+                  style={{ maxWidth: 200, marginHorizontal: 'auto' }}
                 >
-                  Sort your farms meaningfully.
+                  {isUpdate
+                    ? 'Review and update this category'
+                    : 'Sort your farms meaningfully.'}
                 </Heading>
               </Overlay.SheetHeader>
 
@@ -340,12 +382,14 @@ export const Add = ({ children }: Props) => {
 
               <Overlay.SheetFooter>
                 <Action.Root
-                  loading={createCategory.isPending}
+                  loading={isLoading}
+                  onPress={() => mutate()}
                   disabled={!form.formState.isValid}
-                  onPress={() => createCategory.mutate(form.getValues())}
                 >
                   <Action.Loader />
-                  <Action.Label>Create a category</Action.Label>
+                  <Action.Label>
+                    {isUpdate ? 'Update category' : 'Create category'}
+                  </Action.Label>
                 </Action.Root>
               </Overlay.SheetFooter>
             </Flow.Content>

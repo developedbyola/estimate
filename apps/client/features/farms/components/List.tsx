@@ -1,104 +1,112 @@
 import React from 'react';
-import { Empty } from './Empty';
-import { Border } from '@/constants';
-import { Provider, useFarms } from './Provider';
-import Farms from '../constants/Farms';
-import { FlatList } from 'react-native';
-import { FarmType } from '../types/farm';
+import { Alert } from 'react-native';
+import { useFarms } from './Provider';
 import { excerpt } from '@/utils/excerpt';
-import { Box, Heading, Text } from '@/components';
-import { useCurrency } from '@/features/currency';
+import { Border, Space } from '@/constants';
+import { FarmSchemaType } from '../schemas';
+import { Ionicons } from '@expo/vector-icons';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { Box, Heading, Text, ActivityIndicator } from '@/components';
+import { useCategories } from '@/features/categories';
+import Icons from '@/features/categories/constants/Icons';
 
-type FarmProps = { farm: FarmType };
+const Loader = () => {
+  return <ActivityIndicator />;
+};
+
+const Empty = () => {
+  const colors = useThemeColors();
+
+  return (
+    <Box>
+      <Ionicons
+        size={56}
+        style={{ marginInline: 'auto' }}
+        name='notifications-off-circle-outline'
+        color={colors.getColor('icon.inactive')}
+      />
+      <Heading
+        size='2xl'
+        leading='base'
+        align='center'
+        weight='medium'
+        color='text.strong'
+        style={{ marginTop: Space['2xl'], marginInline: 'auto', maxWidth: 240 }}
+      >
+        Let's get growing!
+      </Heading>
+      <Text
+        size='lg'
+        leading='base'
+        align='center'
+        color='text.subtle'
+        style={{ marginTop: Space.base, marginInline: 'auto', maxWidth: 280 }}
+      >
+        Looks like no farms have been added — Create new farm and start tracking
+        your farm's production
+      </Text>
+    </Box>
+  );
+};
+
+type FarmProps = { farm: FarmSchemaType & { id: string } };
 
 const Farm = (props: FarmProps) => {
   const { farm } = props;
-  const { currency } = useCurrency();
 
   return (
     <Box
       py='xs'
       px='xs'
-      style={{ width: '50%' }}
+      bg='bg.base'
+      style={{ width: '100%', flexDirection: 'row', height: 48 }}
     >
-      <Box
-        px='lg'
-        py='lg'
-        bg='bg.base'
-        style={{
-          flex: 1,
-          borderRadius: Border.radius['xl'],
-        }}
-      >
-        <Box
-          bg='bg.soft'
-          style={{
-            flex: 0,
-            width: 40,
-            aspectRatio: '1/1',
-            borderRadius: Border.radius.lg,
-          }}
-        />
-        <Box py='sm' />
-        <Box>
-          <Heading
-            size='lg'
-            leading='lg'
-          >
-            {excerpt(farm.title, 12)}
-          </Heading>
-          <Text
-            size='xs'
-            leading='xs'
-            color='text.inactive'
-          >
-            {farm.estimates} estimates
-          </Text>
-        </Box>
-        <Box py='xs' />
-        <Box>
-          <Heading
-            size='xl'
-            leading='base'
-            color='text.subtle'
-          >
-            {currency.symbol}
-            {farm.amount.toFixed(2)}
-          </Heading>
-        </Box>
+      <Ionicons name={'' as any} />
+      <Box>
+        <Heading
+          size='lg'
+          leading='lg'
+        >
+          {excerpt(farm.name, 12)}
+        </Heading>
       </Box>
     </Box>
   );
 };
 
 export const List = () => {
-  const { farms } = useFarms();
+  const { farms, loading, error, refetch } = useFarms();
 
+  if (loading) return <Loader />;
+  if (error) {
+    Alert.alert('Server Error', error?.message || 'Failed to load farms', [
+      { text: 'OK' },
+      {
+        text: 'Retry',
+        onPress: () => refetch?.(),
+      },
+    ]);
+
+    return <Empty />;
+  }
   if (farms.length === 0) return <Empty />;
 
   return (
-    <FlatList
-      data={Farms}
-      scrollEnabled
-      numColumns={2}
-      style={{ gap: 12 }}
-      showsVerticalScrollIndicator={false}
-      keyExtractor={(item) => String(item.id)}
-      renderItem={({ item }) => (
-        <Farm
-          farm={item}
-          key={item.id}
-        />
-      )}
+    <Box
+      style={{
+        flex: 1,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+      }}
     >
-      {Farms.map((farm, index) => {
+      {farms.map((farm) => {
         return (
           <Farm
             farm={farm}
-            key={index}
+            key={farm.id}
           />
         );
       })}
-    </FlatList>
+    </Box>
   );
 };

@@ -23,10 +23,15 @@ type FlowContext<T extends object> = {
 export const flowContext = React.createContext<FlowContext<any> | null>(null);
 
 export const useFlow = <T extends object>(
-  value?: Partial<FlowContext<T>>
+  value?: Partial<FlowContext<T>> & {
+    defaultStep?: number;
+    defaultData?: T;
+  }
 ): FlowContext<T> => {
-  const [currentStep, setCurrentStep] = React.useState(value?.currentStep ?? 0);
-  const [data, setData] = React.useState<T>(value?.data ?? ({} as T));
+  const { defaultStep = 0, defaultData = {} as T } = value ?? {};
+
+  const [currentStep, setCurrentStep] = React.useState(defaultStep);
+  const [data, setData] = React.useState<T>(defaultData);
   const [showSuccess, setShowSuccess] = React.useState(false);
   const count = value?.count ?? 0;
 
@@ -68,8 +73,8 @@ export const useFlow = <T extends object>(
   };
 
   const reset = () => {
-    setData({} as T);
-    setCurrentStep(value?.currentStep || 0);
+    setData(defaultData);
+    setCurrentStep(defaultStep);
     setShowSuccess(false);
   };
 

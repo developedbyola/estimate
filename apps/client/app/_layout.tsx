@@ -6,24 +6,24 @@ import { queryClient } from '@/clients/query';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { AuthProvider, UserProvider } from '@/components';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { RootSiblingParent } from 'react-native-root-siblings';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Categories } from '@/features/categories';
 
 const Layout = () => {
   const colors = useThemeColors();
 
   return (
-    <trpc.Provider
-      client={trpcClient}
-      queryClient={queryClient}
-    >
-      <QueryClientProvider client={queryClient}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <BottomSheetModalProvider>
-            <AuthProvider>
-              <UserProvider>
-                <Categories.Provider>
+    <RootSiblingParent>
+      <trpc.Provider
+        client={trpcClient}
+        queryClient={queryClient}
+      >
+        <QueryClientProvider client={queryClient}>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <BottomSheetModalProvider>
+              <AuthProvider>
+                <UserProvider>
                   <Stack
                     screenOptions={{
                       headerStyle: {
@@ -38,13 +38,13 @@ const Layout = () => {
                       options={{ headerShown: false }}
                     />
                   </Stack>
-                </Categories.Provider>
-              </UserProvider>
-            </AuthProvider>
-          </BottomSheetModalProvider>
-        </GestureHandlerRootView>
-      </QueryClientProvider>
-    </trpc.Provider>
+                </UserProvider>
+              </AuthProvider>
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </QueryClientProvider>
+      </trpc.Provider>
+    </RootSiblingParent>
   );
 };
 

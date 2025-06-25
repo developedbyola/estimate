@@ -1,30 +1,42 @@
 import React from 'react';
+import Modal from './shared/Modal';
 import { farmSchema } from '../schemas';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableHighlight } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCategories } from '@/features/categories';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Border, Space, Typography } from '@/constants';
+import { Alert, TouchableHighlight } from 'react-native';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import {
   Controller,
   FormProvider,
   useForm,
   useFormContext,
 } from 'react-hook-form';
-import Modal from './shared/Modal';
-import Categories from '../constants/Categories';
-import { Picker } from '@react-native-picker/picker';
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
-import { Action, Box, Field, Heading, Overlay, Text } from '@/components';
+import {
+  Action,
+  Box,
+  Field,
+  Heading,
+  Overlay,
+  Text,
+  useOverlay,
+} from '@/components';
+import { trpc } from '@/lib/trpc';
+import { useFarms } from './Provider';
+import Toast from 'react-native-root-toast';
 
 const Category = () => {
+  const { categories } = useCategories();
   const { control } = useFormContext<{
-    category: string;
+    categoryId: string;
   }>();
 
   return (
     <Controller
-      name='category'
+      name='categoryId'
       control={control}
       render={({ field }) => {
         return (
@@ -32,12 +44,12 @@ const Category = () => {
             selectedValue={field.value}
             onValueChange={(itemValue) => field.onChange(itemValue)}
           >
-            {Categories.map((category) => {
+            {categories.map((category) => {
               return (
                 <Picker.Item
                   key={category.id}
-                  value={category.value}
-                  label={category.label}
+                  value={category.id}
+                  label={category.name}
                 />
               );
             })}
@@ -90,7 +102,7 @@ const Name = () => {
 const SizeUnit = () => {
   const { control } = useFormContext<{
     size: number;
-    size_unit: 'acre' | 'hectare';
+    size_unit: 'acres' | 'hectares' | 'square meters';
   }>();
 
   return (
@@ -103,14 +115,15 @@ const SizeUnit = () => {
             selectedValue={field.value}
             onValueChange={(itemValue) => field.onChange(itemValue)}
           >
-            <Picker.Item
-              value={'acre'}
-              label='Acre'
-            />
-            <Picker.Item
-              value={'hectare'}
-              label='Hectare'
-            />
+            {['Acres', 'Hectares', 'Square Meters'].map((unit) => {
+              return (
+                <Picker.Item
+                  key={unit}
+                  label={unit}
+                  value={unit.toLowerCase()}
+                />
+              );
+            })}
           </Picker>
         );
       }}
@@ -129,7 +142,7 @@ const Location = () => {
   return (
     <Box
       mx='auto'
-      bg='bg.soft'
+      bg='bg.subtle'
       style={{
         flexWrap: 'wrap',
         overflow: 'hidden',
@@ -142,9 +155,9 @@ const Location = () => {
         control={control as any}
         style={{
           width: '50%',
-          borderRightWidth: 0.75,
-          borderBottomWidth: 0.75,
-          borderColor: colors.getColor('border.base'),
+          borderRightWidth: 0.5,
+          borderBottomWidth: 0.5,
+          borderColor: colors.getColor('border.soft'),
         }}
       >
         <Field.Control style={{ backgroundColor: 'transparent' }}>
@@ -175,13 +188,13 @@ const Location = () => {
         name='state'
         style={{
           width: '50%',
-          borderLeftWidth: 0.75,
-          borderBottomWidth: 0.75,
-          borderColor: colors.getColor('border.base'),
+          borderLeftWidth: 0.5,
+          borderBottomWidth: 0.5,
+          borderColor: colors.getColor('border.soft'),
         }}
         control={control as any}
       >
-        <Field.Control>
+        <Field.Control style={{ backgroundColor: 'transparent' }}>
           <Controller
             name='state'
             control={control}
@@ -208,12 +221,12 @@ const Location = () => {
       <Field.Root
         name='address'
         style={{
-          borderTopWidth: 0.75,
-          borderColor: colors.getColor('border.base'),
+          borderTopWidth: 0.5,
+          borderColor: colors.getColor('border.soft'),
         }}
         control={control as any}
       >
-        <Field.Control>
+        <Field.Control style={{ backgroundColor: 'transparent' }}>
           <Controller
             name='address'
             control={control}
@@ -303,7 +316,7 @@ const options = [
   {
     name: 'Name',
     content: Name,
-    snapPoints: ['36%'],
+    snapPoints: ['34%'],
     title: 'What would you call this farmland?',
   },
   {
@@ -315,75 +328,125 @@ const options = [
   {
     name: 'Size',
     content: Size,
-    snapPoints: ['36%'],
+    snapPoints: ['34%'],
     title: 'How large is your farmland?',
   },
   {
     name: 'Location',
     content: Location,
-    snapPoints: ['42%'],
+    snapPoints: ['38%'],
     title: 'Specify where your farm is located',
   },
   {
     name: 'Category',
     content: Category,
-    snapPoints: ['54%'],
+    snapPoints: ['50%'],
     title: "What kind of farm you're running?",
   },
 ];
 
 type Props = {
+  farm?: any;
   children: React.ReactNode;
 };
 
-export const Add = ({ children }: Props) => {
+export const Add = ({ children, farm }: Props) => {
+  const { setFarms } = useFarms();
   const colors = useThemeColors();
+  const overlay = useOverlay();
+
   const form = useForm({
     mode: 'all',
     resolver: zodResolver(farmSchema),
     defaultValues: {
-      name: 'My farm',
-      city: '',
-      state: '',
-      address: '',
-      categoryId: '',
-      size: '1',
-      size_unit: 'acre',
+      city: farm?.city || '',
+      state: farm?.state || '',
+      size: farm?.size || '1',
+      address: farm?.address || '',
+      name: farm?.name || 'My farm',
+      categoryId: farm?.categoryId || '',
+      size_unit: farm?.size_unit || 'acres',
     },
   });
 
-  return (
-    <Overlay.Root>
-      <Overlay.SheetTrigger>{children}</Overlay.SheetTrigger>
-      <Overlay.Sheet snapPoints={['56%']}>
-        <Box
-          px='xl'
-          my='lg'
-        >
-          <Heading
-            size='2xl'
-            leading='lg'
-            align='center'
-            weight='medium'
-            style={{ maxWidth: 200, marginHorizontal: 'auto' }}
-          >
-            Add new farm to your record
-          </Heading>
-        </Box>
+  const create = trpc.userFarms.create.useMutation({
+    onSuccess: (data: any) => {
+      form.reset();
+      overlay.onToggle(false);
+      setFarms({ type: 'ADD_FARM', payload: { farm: data?.any || {} } });
+      Toast.show(
+        '✅ Farm created successfully! You can now start adding estimates to keep track of your farm finances.',
+        {
+          delay: 100,
+          position: 96,
+          duration: 3000,
+          onShow: () => console.log('showing...'),
+        }
+      );
+    },
+    onError: (err: any) => {
+      Alert.alert('Error', err?.message || 'Failed to create farm', [
+        { text: 'OK' },
+      ]);
+    },
+  });
+  const update = trpc.userFarms.update.useMutation({
+    onSuccess: (data: any) => {
+      setFarms({ type: 'UPDATE_FARM', payload: { farm: data?.any || {} } });
 
-        <FormProvider {...form}>
-          <Box
-            my='xl'
-            px='xl'
-            mx='auto'
-            style={{
-              flex: 1,
-              width: '100%',
-              maxWidth: 320,
-            }}
-          >
+      form.reset();
+      overlay.onToggle(false);
+      Toast.show('Farm updated successfully', {
+        delay: 100,
+        position: 20,
+        duration: 3000,
+      });
+    },
+    onError: (err: any) => {
+      Alert.alert('Error', err?.message || 'Failed to update farm', [
+        { text: 'OK' },
+      ]);
+    },
+  });
+
+  const loading = create.isPending || update.isPending;
+  const buttonLabel = loading ? '...' : farm ? 'Update farm' : 'Create farm';
+
+  const onSubmit = async (data: any) => {
+    if (farm) {
+      await update.mutateAsync({
+        id: farm.id,
+        ...data,
+      });
+    } else {
+      await create.mutateAsync(data);
+    }
+  };
+
+  const title = farm
+    ? 'Update your farm record'
+    : 'Add new farm to your record';
+
+  return (
+    <FormProvider {...form}>
+      <Overlay.Provider value={overlay}>
+        <Overlay.SheetTrigger>{children}</Overlay.SheetTrigger>
+        <Overlay.Sheet snapPoints={['55%']}>
+          <Overlay.SheetHeader>
+            <Heading
+              size='2xl'
+              leading='lg'
+              align='center'
+              weight='medium'
+              style={{ maxWidth: 200, marginHorizontal: 'auto' }}
+            >
+              {title}
+            </Heading>
+          </Overlay.SheetHeader>
+
+          <Overlay.SheetContent mt='3xl'>
             <Box
-              bg='bg.soft'
+              bg='bg.subtle'
               style={{
                 overflow: 'hidden',
                 borderRadius: Border.radius.xl,
@@ -398,7 +461,7 @@ export const Add = ({ children }: Props) => {
                     snapPoints={option.snapPoints}
                   >
                     <TouchableHighlight
-                      underlayColor={colors.getColor('bg.subtle')}
+                      underlayColor={colors.getColor('bg.soft')}
                     >
                       <Box
                         px='lg'
@@ -419,41 +482,35 @@ export const Add = ({ children }: Props) => {
                         >
                           {option.name}
                         </Heading>
-                        <Box
-                          style={{
-                            width: 20,
-                            aspectRatio: '1/1',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderRadius: Border.radius.xl,
-                            backgroundColor: colors.getColor('bg.subtle'),
-                          }}
-                        >
-                          <Ionicons
-                            size={16}
-                            name='add'
-                            color={colors.getColor('icon.base')}
-                          />
-                        </Box>
+
+                        <Ionicons
+                          size={16}
+                          name='chevron-forward'
+                          color={colors.getColor('icon.inactive')}
+                        />
                       </Box>
                     </TouchableHighlight>
                   </Modal>
                 );
               })}
             </Box>
-          </Box>
-        </FormProvider>
-        <Box
-          px='xl'
-          pb='5xl'
-          mx='auto'
-          style={{ maxWidth: 320, width: '100%' }}
-        >
-          <Action.Root>
-            <Action.Label>Create new farm</Action.Label>
-          </Action.Root>
-        </Box>
-      </Overlay.Sheet>
-    </Overlay.Root>
+          </Overlay.SheetContent>
+
+          <Overlay.SheetFooter>
+            <Action.Root
+              loading={loading}
+              onPress={async () => {
+                const values = form.getValues();
+                await onSubmit(values);
+              }}
+              disabled={!form.formState.isValid}
+            >
+              <Action.Loader />
+              <Action.Label>{buttonLabel}</Action.Label>
+            </Action.Root>
+          </Overlay.SheetFooter>
+        </Overlay.Sheet>
+      </Overlay.Provider>
+    </FormProvider>
   );
 };

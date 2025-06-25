@@ -1,5 +1,6 @@
-import { Categories } from '@/features/categories';
 import React from 'react';
+import { Farms } from '@/features/farms';
+import { Categories } from '@/features/categories';
 
 export default [
   {
@@ -18,6 +19,6 @@ export default [
     icon: 'sunny',
     title: 'Farm',
     subTitle: 'Set up a new farm profile with location and crop info',
-    feature: React.Fragment,
+    feature: Farms.Add,
   },
 ] as const;

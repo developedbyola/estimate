@@ -23,7 +23,7 @@ const Footer = ({ authType }: Props) => {
   const { setAuth } = useAuth();
   const { setUser } = useUser();
   const router = useRouter();
-  const { onOpenChange } = useOverlayContext();
+  const { onToggle } = useOverlayContext();
   const { reset, handleSubmit } = useFormContext();
   const { onNextStep, setData, data } = useFlowContext<{
     email?: string;
@@ -44,7 +44,7 @@ const Footer = ({ authType }: Props) => {
         },
       });
 
-      onOpenChange(false);
+      onToggle(false);
       router.push('/[app]');
     },
     onError: (error) => {
@@ -105,7 +105,7 @@ const Footer = ({ authType }: Props) => {
           variant='surface'
           onPress={() => {
             reset();
-            onOpenChange(false);
+            onToggle(false);
           }}
         >
           <Action.Label>Cancel</Action.Label>

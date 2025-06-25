@@ -1,3 +1,4 @@
+import { trpc } from '@/lib/trpc';
 import React from 'react';
 
 type Category = {
@@ -8,13 +9,16 @@ type Category = {
 };
 
 type State = {
+  loading: boolean;
   categories: Category[];
+  error: ReturnType<typeof trpc.userCategories.list.useQuery>['error'];
+  refetch: ReturnType<typeof trpc.userCategories.list.useQuery>['refetch'];
 };
 
 type Action =
   | {
       type: 'SET_CATEGORIES';
-      payload: State;
+      payload: { categories: Category[] };
     }
   | {
       type: 'SET_CATEGORY';
@@ -33,9 +37,8 @@ type Action =
       payload: { category: Category };
     };
 
-type CategoryContext = {
-  categories: Category[];
-  setCategories: React.ActionDispatch<[Action]>;
+type CategoryContext = State & {
+  setCategories: React.Dispatch<Action>;
 };
 const categoryContext = React.createContext<CategoryContext | null>(null);
 
@@ -95,13 +98,34 @@ export const Provider = ({
   children,
   initialCategories = [],
 }: CategoryProviderProps) => {
+  const list = trpc.userCategories.list.useQuery();
   const [state, dispatch] = React.useReducer(reducer, {
+    error: null,
+    loading: false,
+    refetch: list.refetch,
     categories: initialCategories,
-  });
+  } as State);
+
+  React.useEffect(() => {
+    if (list.data) {
+      dispatch({
+        type: 'SET_CATEGORIES',
+        payload: {
+          categories: (list.data as any)?.categories || [],
+        },
+      });
+    }
+  }, [list.data]);
 
   return (
     <categoryContext.Provider
-      value={{ categories: state.categories, setCategories: dispatch }}
+      value={{
+        error: list.error,
+        refetch: list.refetch,
+        setCategories: dispatch,
+        loading: list.isLoading,
+        categories: state.categories,
+      }}
     >
       {children}
     </categoryContext.Provider>

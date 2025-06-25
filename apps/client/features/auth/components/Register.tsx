@@ -21,7 +21,7 @@ import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 
 const Success = () => {
   const colors = useThemeColors();
-  const { onOpenChange } = useOverlayContext();
+  const { onToggle } = useOverlayContext();
   const { data } = useFlowContext<{ name?: string }>();
 
   return (
@@ -65,12 +65,12 @@ const Success = () => {
         mx='auto'
         style={{ width: '100%', maxWidth: 320, gap: Space.base }}
       >
-        <Action.Root onPress={() => onOpenChange(false)}>
+        <Action.Root onPress={() => onToggle(false)}>
           <Action.Label>Get started</Action.Label>
         </Action.Root>
         <Action.Root
           variant='surface'
-          onPress={() => onOpenChange(false)}
+          onPress={() => onToggle(false)}
         >
           <Action.Label>Close</Action.Label>
         </Action.Root>

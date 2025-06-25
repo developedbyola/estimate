@@ -6,7 +6,7 @@ export const userFarmsRouter = router({
     try {
       const farms = await ctx.supabase
         .from('user_farms')
-        .select('*')
+        .select(`*, category:category_id(id, name, icon)`)
         .eq('user_id', ctx.actor.userId)
         .order('created_at', { ascending: false });
 
