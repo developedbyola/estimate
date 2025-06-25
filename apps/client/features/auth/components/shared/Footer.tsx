@@ -45,7 +45,7 @@ const Footer = ({ authType }: Props) => {
       });
 
       onToggle(false);
-      router.push('/[app]');
+      router.push('/(tabs)');
     },
     onError: (error) => {
       Alert.alert('Login failed', error.message, [{ text: 'Cancel' }]);

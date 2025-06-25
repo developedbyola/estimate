@@ -26,7 +26,6 @@ import {
 } from '@/components';
 import { trpc } from '@/lib/trpc';
 import { useFarms } from './Provider';
-import Toast from 'react-native-root-toast';
 
 const Category = () => {
   const { categories } = useCategories();
@@ -364,7 +363,7 @@ export const Add = ({ children, farm }: Props) => {
       size: farm?.size || '1',
       address: farm?.address || '',
       name: farm?.name || 'My farm',
-      categoryId: farm?.categoryId || '',
+      categoryId: farm?.category_id || '',
       size_unit: farm?.size_unit || 'acres',
     },
   });
@@ -400,7 +399,7 @@ export const Add = ({ children, farm }: Props) => {
   const onSubmit = async (data: any) => {
     if (farm) {
       await update.mutateAsync({
-        id: farm.id,
+        farmId: farm.id,
         ...data,
       });
     } else {

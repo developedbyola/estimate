@@ -14,7 +14,6 @@ const FarmsPage = () => {
 
   return (
     <React.Fragment>
-      <Stack.Screen options={{ title: 'Farms', headerShown: false }} />
       <StatusBar style='dark' />
 
       <Safe

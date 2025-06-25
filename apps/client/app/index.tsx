@@ -71,7 +71,7 @@ const Footer = () => {
             </Box>
             <Action.Root
               size='sm'
-              onPress={() => router.push('/[app]')}
+              onPress={() => router.push('/(tabs)')}
             >
               <Action.Label>Explore</Action.Label>
             </Action.Root>

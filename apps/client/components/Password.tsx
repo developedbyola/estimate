@@ -1,8 +1,8 @@
 import React from 'react';
 import Field from './Field';
+import { Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
-import { Space } from '@/constants';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 type PasswordContext = {

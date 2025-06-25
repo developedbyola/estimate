@@ -96,7 +96,7 @@ export const userFarmsRouter = router({
             state: input.state,
             address: input.address,
             size_unit: input.size_unit,
-            categoryId: input.categoryId,
+            category_id: input.categoryId,
           })
           .eq('id', input.farmId)
           .eq('user_id', ctx.actor.userId)
@@ -106,7 +106,8 @@ export const userFarmsRouter = router({
         if (!farm.data) {
           return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
-            message: 'No farm found',
+            message:
+              'We couldn’t find the farm record you’re trying to update.',
           });
         }
 

@@ -7,6 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Box, Heading, Text, ActivityIndicator } from '@/components';
 import Icons from '@/features/categories/constants/Icons';
+import { MotiView } from 'moti';
+import { useRouter } from 'expo-router';
 
 const Loader = () => {
   return <ActivityIndicator />;
@@ -47,17 +49,21 @@ const Empty = () => {
   );
 };
 
-type ItemProps = { farm: Farm };
+type ItemProps = { farm: Farm; index: number };
 
 const Item = (props: ItemProps) => {
-  const { farm } = props;
-  const colors = useThemeColors();
+  const { farm, index } = props;
 
+  const router = useRouter();
+  const colors = useThemeColors();
+  const { setFarms } = useFarms();
   const icon = Icons.find((icon) => icon.id === farm.category.icon);
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.6}
+    <MotiView
+      animate={{ translateY: 0, opacity: 1 }}
+      from={{ translateY: 12 * index, opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 100, delay: 120 * index }}
       style={{
         height: 56,
         width: '100%',
@@ -66,13 +72,18 @@ const Item = (props: ItemProps) => {
         backgroundColor: colors.getColor('bg.base'),
       }}
     >
-      <Box
-        px='lg'
+      <TouchableOpacity
+        activeOpacity={0.6}
+        onPress={() => {
+          setFarms({ type: 'SET_FARM', payload: { farm } });
+          router.push('/(modals)/farm');
+        }}
         style={{
           flex: 1,
-          gap: Space.xl,
+          gap: Space.lg,
           alignItems: 'center',
           flexDirection: 'row',
+          paddingInline: Space.lg,
         }}
       >
         <Ionicons
@@ -97,8 +108,8 @@ const Item = (props: ItemProps) => {
             20
           )}`}</Text>
         </Box>
-      </Box>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </MotiView>
   );
 };
 
@@ -128,11 +139,12 @@ export const List = () => {
         flexDirection: 'row',
       }}
     >
-      {farms.map((farm) => {
+      {farms.map((farm, index) => {
         return (
           <Item
             farm={farm}
             key={farm.id}
+            index={index}
           />
         );
       })}

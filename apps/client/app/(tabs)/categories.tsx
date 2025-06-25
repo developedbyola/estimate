@@ -6,7 +6,6 @@ import { Box, Heading, Safe, Scroll } from '@/components';
 const CategoriesPage = () => {
   return (
     <React.Fragment>
-      <Stack.Screen options={{ title: 'Categories', headerShown: false }} />
       <Safe
         bg='bg.soft'
         style={{ flex: 1 }}

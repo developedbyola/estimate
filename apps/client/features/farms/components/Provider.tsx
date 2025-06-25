@@ -11,6 +11,7 @@ export type Farm = FarmSchema & {
 type State = {
   farms: Farm[];
   loading: boolean;
+  farm: Farm | null;
   error: ReturnType<typeof trpc.userFarms.list.useQuery>['error'];
   refetch: ReturnType<typeof trpc.userFarms.list.useQuery>['refetch'];
 };
@@ -61,9 +62,7 @@ const farmsReducer = (state: State, action: Action): State => {
     case 'SET_FARM':
       return {
         ...state,
-        farms: state.farms.map((farm) =>
-          farm.id === action.payload.farm.id ? action.payload.farm : farm
-        ),
+        farm: action.payload.farm,
       };
     case 'ADD_FARM':
       return { ...state, farms: [...state.farms, action.payload.farm] };
@@ -95,6 +94,7 @@ export const Provider = ({
 }: FarmsProviderProps) => {
   const list = trpc.userFarms.list.useQuery();
   const [state, dispatch] = React.useReducer(farmsReducer, {
+    farm: null,
     error: null,
     loading: false,
     farms: initialFarms,
@@ -115,6 +115,7 @@ export const Provider = ({
   return (
     <farmsContext.Provider
       value={{
+        farm: state.farm,
         error: list.error,
         setFarms: dispatch,
         farms: state.farms,

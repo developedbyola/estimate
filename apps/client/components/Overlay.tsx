@@ -12,7 +12,10 @@ import BottomSheet, {
 import { FullWindowOverlay } from 'react-native-screens';
 import { StatusBar } from 'expo-status-bar';
 import { Border } from '@/constants';
-import { Box, Blur, AsChild, Scroll } from '@/components';
+import Box from './Box';
+import Blur from './Blur';
+import AsChild from './AsChild';
+import Scroll from './Scroll';
 
 type OverlayContext = {
   open: boolean;

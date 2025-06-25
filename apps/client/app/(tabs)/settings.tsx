@@ -11,7 +11,6 @@ const SettingsPage = () => {
 
   return (
     <React.Fragment>
-      <Stack.Screen options={{ title: 'Settings', headerShown: false }} />
       <Safe
         bg='bg.subtle'
         style={{ flex: 1 }}

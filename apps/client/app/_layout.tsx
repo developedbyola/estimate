@@ -1,13 +1,16 @@
 import React from 'react';
 import { trpc } from '@/lib/trpc';
 import { Stack } from 'expo-router';
+import { Farms } from '@/features/farms';
 import { trpcClient } from '@/clients/trpc';
 import { queryClient } from '@/clients/query';
+import { Currency } from '@/features/currency';
+import { Categories } from '@/features/categories';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { AuthProvider, UserProvider } from '@/components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { AuthProvider, Protected, UserProvider } from '@/components';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Layout = () => {
@@ -24,20 +27,35 @@ const Layout = () => {
             <BottomSheetModalProvider>
               <AuthProvider>
                 <UserProvider>
-                  <Stack
-                    screenOptions={{
-                      headerStyle: {
-                        backgroundColor: colors.getColor('bg.base'),
-                      },
-                      headerTitleStyle: { fontWeight: 'bold' },
-                      headerTintColor: colors.getColor('primary.base'),
-                    }}
-                  >
-                    <Stack.Screen
-                      name='[app]'
-                      options={{ headerShown: false }}
-                    />
-                  </Stack>
+                  <Protected>
+                    <Currency.Provider>
+                      <Categories.Provider>
+                        <Farms.Provider>
+                          <Stack
+                            screenOptions={{
+                              headerStyle: {
+                                backgroundColor: colors.getColor('bg.base'),
+                              },
+                              headerTitleStyle: { fontWeight: 'bold' },
+                              headerTintColor: colors.getColor('primary.base'),
+                            }}
+                          >
+                            <Stack.Screen
+                              name='(tabs)'
+                              options={{ headerShown: false }}
+                            />
+                            <Stack.Screen
+                              name='(modals)'
+                              options={{
+                                title: 'Farm',
+                                headerBackTitle: 'Back',
+                              }}
+                            />
+                          </Stack>
+                        </Farms.Provider>
+                      </Categories.Provider>
+                    </Currency.Provider>
+                  </Protected>
                 </UserProvider>
               </AuthProvider>
             </BottomSheetModalProvider>
