@@ -90,7 +90,7 @@ const Footer = () => {
 
 const Index = () => {
   const colors = useThemeColors();
-  // useDeleteAccessToken();
+  useDeleteAccessToken();
 
   return (
     <Box

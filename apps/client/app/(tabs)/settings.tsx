@@ -59,12 +59,12 @@ const SettingsPage = () => {
 
         <Scroll
           px='xl'
+          mb='xl'
+          mt='3xl'
           style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
         >
-          <Box pt='3xl' />
           <Settings.List />
-          <Box py='xl' />
         </Scroll>
       </Safe>
     </React.Fragment>

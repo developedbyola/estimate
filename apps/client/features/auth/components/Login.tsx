@@ -11,16 +11,17 @@ import {
   Text,
   useFlow,
 } from '@/components';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm, useFormContext } from 'react-hook-form';
-import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
-import { Keyboard } from 'react-native';
 import { trpc } from '@/lib/trpc';
 import { Alert } from 'react-native';
-import { useRouter } from 'expo-router';
 import { useAuth } from './Provider';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '@/features/user';
+import { Keyboard } from 'react-native';
+import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 
 const EmailField = () => {
   const { control } = useFormContext<{ email: string }>();
@@ -87,8 +88,8 @@ export const Login = () => {
 
   const login = trpc.auth.login.useMutation({
     onSuccess: async (data: any) => {
-      console.log(data);
       await AsyncStorage.setItem('access_token', data?.accessToken);
+      await SecureStore.setItemAsync('refresh_token', data?.refreshToken);
       setAuth({
         type: 'LOGIN',
         payload: {

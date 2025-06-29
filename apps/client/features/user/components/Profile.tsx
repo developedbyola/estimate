@@ -15,6 +15,7 @@ const useProfile = () => {
   React.useEffect(() => {
     const data = profile.data as any;
     if (!data) return;
+
     setUser({ type: 'SET_USER', payload: { user: data?.user } });
   }, [profile.data]);
 

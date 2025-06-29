@@ -35,8 +35,8 @@ const useRefreshToken = () => {
 
   const mutate = React.useCallback(async () => {
     const refreshToken = (await SecureStore.getItemAsync('refresh_token'))!;
-    refresh.mutate({ refreshToken });
-  }, [refresh.mutate]);
+    await refresh.mutateAsync({ refreshToken });
+  }, []);
 
   React.useEffect(() => {
     if (!auth.isAuthenticated) return;

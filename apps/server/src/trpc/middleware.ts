@@ -27,16 +27,16 @@ const isAuthed = t.middleware(async ({ ctx, next }) => {
   const accessToken = authorization?.split('Bearer ')[1];
 
   let actor = null;
-  if (accessToken) {
-    try {
+  try {
+    if (accessToken) {
       actor = await auth.jwt.verify('access', accessToken);
-    } catch (error) {
-      // Token verification failed
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: 'Invalid or expired token.',
-      });
     }
+  } catch (error) {
+    // Token verification failed
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Invalid or expired token.',
+    });
   }
 
   if (!actor) {

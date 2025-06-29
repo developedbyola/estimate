@@ -12,7 +12,7 @@ const Scroll = React.forwardRef<ScrollRef, ScrollProps>((props, ref) => {
   return (
     <ScrollView
       ref={ref}
-      contentContainerStyle={[ViewStyle, style]}
+      style={[ViewStyle, style]}
       {...restProps}
     />
   );
