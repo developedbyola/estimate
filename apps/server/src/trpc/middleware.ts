@@ -26,14 +26,14 @@ const isAuthed = t.middleware(async ({ ctx, next }) => {
   const Authorization = ctx.req.header('Authorization');
   const accessToken = Authorization?.split('Bearer ')[1];
 
-  const actor = await auth.jwt.verify('access', accessToken || '');
+  const actor = await auth.jwt.verify('access', accessToken ?? '');
 
   if (!actor) {
+    console.log('Actor not found');
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'You must be logged in to access this feature.',
     });
-    // ↑ This goes directly to client, route never runs
   }
 
   return next({

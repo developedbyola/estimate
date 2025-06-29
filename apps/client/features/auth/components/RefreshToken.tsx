@@ -16,7 +16,6 @@ const useRefreshToken = () => {
       if (err.message.includes('expired')) {
         setAuth({ type: 'LOGOUT' });
       }
-      console.error('Token refresh failed:', err);
     },
   });
 

@@ -20,6 +20,7 @@ import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from './Provider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User } from '@/features/user';
 
 const EmailField = () => {
   const { control } = useFormContext<{ email: string }>();
@@ -82,9 +83,11 @@ const steps = [
 export const Login = () => {
   const router = useRouter();
   const { setAuth } = useAuth();
+  const { setUser } = User.useUser();
 
   const login = trpc.auth.login.useMutation({
     onSuccess: async (data: any) => {
+      console.log(data);
       await AsyncStorage.setItem('access_token', data?.accessToken);
       setAuth({
         type: 'LOGIN',
@@ -93,6 +96,12 @@ export const Login = () => {
             isAuthenticated: true,
             accessToken: data?.accessToken,
           },
+        },
+      });
+      setUser({
+        type: 'SET_USER',
+        payload: {
+          user: data?.user,
         },
       });
       router.replace('/(tabs)');

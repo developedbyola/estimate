@@ -66,6 +66,7 @@ export async function verifyToken(type: 'access' | 'refresh', token: string) {
     const decoded = await verify(token, SECRETS[type]);
     return decoded as JWTPayload & TokenOptions['payload'];
   } catch (err: any) {
+    console.error('Token verification error:', err);
     throw err;
   }
 }

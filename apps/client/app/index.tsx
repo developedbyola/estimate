@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { Border, Space } from '@/constants';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Action, Heading, Box, Text, Safe, Overlay, Blur } from '@/components';
+// import { useDeleteAccessToken } from '@/hooks/useTokens';
 
 const images = [
   {
@@ -89,6 +90,7 @@ const Footer = () => {
 
 const Index = () => {
   const colors = useThemeColors();
+  // useDeleteAccessToken();
 
   return (
     <Box
