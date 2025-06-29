@@ -7,7 +7,6 @@ import { getFirstValidationMessage } from '@/utils/validationMessage';
 const t = initTRPC.context<Context>().create({
   errorFormatter: (opts) => {
     const { shape, error } = opts;
-
     return {
       ...shape,
       message:
@@ -15,6 +14,7 @@ const t = initTRPC.context<Context>().create({
           ? getFirstValidationMessage(error)
           : error.message,
       data: {
+        ...shape.data,
         code: shape.data.code,
         path: shape.data.path,
       },
@@ -23,13 +23,23 @@ const t = initTRPC.context<Context>().create({
 });
 
 const isAuthed = t.middleware(async ({ ctx, next }) => {
-  const Authorization = ctx.req.header('Authorization');
-  const accessToken = Authorization?.split('Bearer ')[1];
+  const authorization = ctx.req.header('Authorization');
+  const accessToken = authorization?.split('Bearer ')[1];
 
-  const actor = await auth.jwt.verify('access', accessToken ?? '');
+  let actor = null;
+  if (accessToken) {
+    try {
+      actor = await auth.jwt.verify('access', accessToken);
+    } catch (error) {
+      // Token verification failed
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Invalid or expired token.',
+      });
+    }
+  }
 
   if (!actor) {
-    console.log('Actor not found');
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'You must be logged in to access this feature.',
@@ -38,6 +48,7 @@ const isAuthed = t.middleware(async ({ ctx, next }) => {
 
   return next({
     ctx: {
+      ...ctx,
       actor,
     },
   });

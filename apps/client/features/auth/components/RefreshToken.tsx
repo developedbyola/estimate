@@ -1,11 +1,14 @@
 import React from 'react';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from './Provider';
+import { Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const useRefreshToken = () => {
   const { auth, setAuth } = useAuth();
+  const router = useRouter();
 
   const refresh = trpc.auth.refresh.useMutation({
     onSuccess: async (data: any) => {
@@ -13,8 +16,19 @@ const useRefreshToken = () => {
       await SecureStore.setItemAsync('refresh_token', data.refreshToken);
     },
     onError: (err) => {
+      console.log(err);
       if (err.message.includes('expired')) {
-        setAuth({ type: 'LOGOUT' });
+        Alert.alert('Session expired', 'Please login again', [
+          {
+            text: 'OK',
+            onPress: async () => {
+              setAuth({ type: 'LOGOUT' });
+              await AsyncStorage.removeItem('access_token');
+              await SecureStore.deleteItemAsync('refresh_token');
+              router.replace('/login');
+            },
+          },
+        ]);
       }
     },
   });
