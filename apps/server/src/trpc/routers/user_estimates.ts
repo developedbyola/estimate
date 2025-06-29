@@ -62,10 +62,6 @@ export const userEstimatesRouter = router({
         calculations: z
           .array(z.any())
           .min(1, 'Your estimate must include at least one calculation'),
-        description: z
-          .string()
-          .max(500, 'Description must be 500 characters or less')
-          .optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -75,7 +71,6 @@ export const userEstimatesRouter = router({
           .insert({
             title: input.title,
             farm_id: input.farmId,
-            description: input.description,
             calculations: input.calculations,
             user_id: ctx.actor.userId,
           })
@@ -106,10 +101,6 @@ export const userEstimatesRouter = router({
           .min(1, 'Title cannot be empty')
           .max(100, 'Title must be 100 characters or less')
           .optional(),
-        description: z
-          .string()
-          .max(500, 'Description must be 500 characters or less')
-          .optional(),
         calculations: z
           .array(z.any())
           .min(1, 'Your estimate must include at least one calculation')
@@ -122,7 +113,6 @@ export const userEstimatesRouter = router({
           .from('user_estimates')
           .update({
             title: input.title,
-            description: input.description,
             calculations: input.calculations,
           })
           .eq('id', input.estimateId)

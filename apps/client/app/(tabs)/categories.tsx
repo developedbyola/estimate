@@ -1,5 +1,4 @@
 import React from 'react';
-import { Stack } from 'expo-router';
 import { Categories } from '@/features/categories';
 import { Box, Heading, Safe, Scroll } from '@/components';
 

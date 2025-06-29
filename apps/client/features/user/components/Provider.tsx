@@ -1,4 +1,3 @@
-import { trpc } from '@/lib/trpc';
 import React from 'react';
 
 export type User = {
@@ -65,18 +64,10 @@ export const userReducer = (state: State, action: Action): State => {
   }
 };
 
-const UserProvider = ({ children }: { children: React.ReactNode }) => {
+export const Provider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = React.useReducer(userReducer, {
     user: null,
   });
-
-  const me = trpc.auth.me.useQuery();
-
-  React.useEffect(() => {
-    if (me.data) {
-      dispatch({ type: 'SET_USER', payload: { user: (me.data as any).user } });
-    }
-  }, [me.data]);
 
   return (
     <userContext.Provider value={{ ...state, setUser: dispatch }}>
@@ -84,5 +75,3 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     </userContext.Provider>
   );
 };
-
-export default UserProvider;

@@ -23,3 +23,10 @@ export const calculationSchema = z.object({
 
 export type Calculations = z.infer<typeof calculationSchema>;
 export type CalculationItem = z.infer<typeof calculationItemSchema>;
+
+export const estimateSchema = z.object({
+  title: z.string().min(3, 'Name is required'),
+  calculations: z
+    .array(calculationItemSchema)
+    .nonempty('At least one item is required'),
+});

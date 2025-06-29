@@ -1,7 +1,7 @@
 import { ZodError } from 'zod';
 import { auth } from '@/utils/auth';
 import type { Context } from '@/trpc/context';
-import { TRPCError, initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import { getFirstValidationMessage } from '@/utils/validationMessage';
 
 const t = initTRPC.context<Context>().create({
@@ -23,34 +23,22 @@ const t = initTRPC.context<Context>().create({
 });
 
 const isAuthed = t.middleware(async ({ ctx, next }) => {
-  let actor = null;
   const Authorization = ctx.req.header('Authorization');
   const accessToken = Authorization?.split('Bearer ')[1];
 
-  if (accessToken) {
-    try {
-      actor = await auth.jwt.verify('access', accessToken);
+  const actor = await auth.jwt.verify('access', accessToken || '');
 
-      if (!actor) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'You must be logged in to access this feature.',
-        });
-      }
-    } catch (err: any) {
-      if (err instanceof TRPCError) throw err;
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: err.message.includes('expired')
-          ? 'Session expired. Refresh tokens.'
-          : 'Authentication failed.',
-      });
-    }
+  if (!actor) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'You must be logged in to access this feature.',
+    });
+    // ↑ This goes directly to client, route never runs
   }
 
   return next({
     ctx: {
-      actor: actor!,
+      actor,
     },
   });
 });

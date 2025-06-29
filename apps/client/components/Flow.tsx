@@ -1,269 +1,160 @@
 import Box from './Box';
 import React from 'react';
-import AsChild from './AsChild';
-import { GestureResponderEvent } from 'react-native';
+import { AnimatePresence, MotiView } from 'moti';
 
-type FlowContext<T extends object> = {
-  data: T;
+type Context = {
   count: number;
-  currentStep: number;
   isLastStep: boolean;
-  onNextStep: () => void;
-  canGoToNextStep: boolean;
-  onPreviousStep: () => void;
-  canGoToPreviousStep: boolean;
-  setStep: (newStep: number) => void;
-  skipToStep: (step: number) => void;
-  setData: (newData: T) => void;
-  reset: () => void;
-  progress: number;
-  isCompleted: boolean;
+  currentStep: number;
+  previous: () => void;
+  onSubmit?: () => Promise<void>;
+  next: (options?: {
+    onValidate?: () => Promise<boolean> | boolean;
+  }) => Promise<void>;
 };
 
-export const flowContext = React.createContext<FlowContext<any> | null>(null);
+const flowContext = React.createContext<Context | null>(null);
 
-export const useFlow = <T extends object>(
-  value?: Partial<FlowContext<T>> & {
-    defaultStep?: number;
-    defaultData?: T;
+export const useFlowContext = () => {
+  const context = React.useContext(flowContext);
+  if (!context) {
+    throw new Error('useFlowContext must be used within a Flow.Provider');
   }
-): FlowContext<T> => {
-  const { defaultStep = 0, defaultData = {} as T } = value ?? {};
+  return context;
+};
 
-  const [currentStep, setCurrentStep] = React.useState(defaultStep);
-  const [data, setData] = React.useState<T>(defaultData);
-  const [showSuccess, setShowSuccess] = React.useState(false);
-  const count = value?.count ?? 0;
+export const useFlow = (values?: {
+  count: number;
+  onSubmit?: () => Promise<void>;
+}): Context => {
+  const { count = 1, onSubmit } = values || {};
 
-  const isLastStep = currentStep === count - 1;
-  const canGoToNextStep = currentStep < count - 1;
-  const canGoToPreviousStep = currentStep > 0;
-  const progress = count > 0 ? (currentStep + 1) / count : 0;
-  const isCompleted = showSuccess;
+  const [currentStep, setCurrentStep] = React.useState(1);
 
-  const handleNextStep = () => {
-    if (isLastStep) {
-      setShowSuccess(true);
-    } else if (canGoToNextStep) {
+  const next = async (options?: {
+    onValidate?: () => Promise<boolean> | boolean;
+  }) => {
+    const { onValidate } = options || {};
+    const isValid = (await onValidate?.()) ?? true;
+    if (!isValid) return;
+
+    if (currentStep === count) {
+      await onSubmit?.();
+    } else {
       setCurrentStep((prev) => prev + 1);
     }
   };
 
-  const handlePreviousStep = () => {
-    if (canGoToPreviousStep) {
+  const previous = () => {
+    if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     }
-    setShowSuccess(false);
-  };
-
-  const handleSkipToStep = (stepIndex: number) => {
-    if (stepIndex >= 0 && stepIndex < count) {
-      setCurrentStep(stepIndex);
-      setShowSuccess(false);
-    }
-  };
-
-  const handleSetData = (newData: Partial<T>) => {
-    setData((prev) => ({ ...prev, ...newData }));
-  };
-
-  const handleSetStep = (newStep: number) => {
-    setCurrentStep(newStep);
-    setShowSuccess(false);
-  };
-
-  const reset = () => {
-    setData(defaultData);
-    setCurrentStep(defaultStep);
-    setShowSuccess(false);
   };
 
   return {
-    data,
+    next,
+    previous,
     count,
-    reset,
-    progress,
+    isLastStep: currentStep === count,
+    onSubmit,
     currentStep,
-    isCompleted,
-    isLastStep,
-    canGoToNextStep,
-    canGoToPreviousStep,
-    setStep: handleSetStep,
-    setData: handleSetData,
-    onNextStep: handleNextStep,
-    onPreviousStep: handlePreviousStep,
-    skipToStep: handleSkipToStep,
   };
 };
 
-export const useFlowContext = <T extends object>() => {
-  const context = React.useContext(flowContext);
-
-  if (!context) {
-    throw new Error('useFlow must be used within a FlowProvider');
-  }
-
-  return context as FlowContext<T>;
-};
-
 type ProviderRef = React.ComponentRef<typeof Box>;
-type ProviderProps = Omit<
-  React.ComponentProps<typeof Box>,
-  keyof React.ComponentProps<typeof flowContext.Provider>
-> &
+type ProviderProps = React.ComponentProps<typeof Box> &
   React.ComponentProps<typeof flowContext.Provider>;
+
 const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
-  const { value, ...restProps } = props;
+  const { children, value, ...restProps } = props;
 
   return (
     <flowContext.Provider value={value}>
       <Box
         ref={ref}
         {...restProps}
-      />
+      >
+        {children}
+      </Box>
     </flowContext.Provider>
   );
 });
 
 type RootRef = React.ComponentRef<typeof Box>;
-type RootProps = Omit<
-  React.ComponentProps<typeof Box>,
-  'initialData' | 'initialStep' | 'count'
-> & {
-  count: number;
-  initialStep?: number;
-  initialData?: object;
-};
+type RootProps = React.ComponentProps<typeof Box> &
+  Parameters<typeof useFlow>[0];
 const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
-  const {
-    style,
-    count,
-    initialStep = 0,
-    initialData = {},
-    ...restProps
-  } = props;
+  const { children, count, onSubmit, style, ...restProps } = props;
 
-  const context = useFlow({
-    count,
-    currentStep: initialStep,
-    data: initialData,
-  });
+  const value = useFlow({ count, onSubmit });
 
   return (
-    <Provider value={context}>
-      <Box
-        style={[{ flex: 1 }, style]}
-        ref={ref}
-        {...restProps}
-      />
+    <Provider
+      ref={ref}
+      {...restProps}
+      value={value}
+      style={[{ overflow: 'hidden' }, style]}
+    >
+      {children}
     </Provider>
   );
 });
-Root.displayName = 'Flow.Root';
 
-type ContentRef = React.ComponentRef<typeof Box>;
-type ContentProps = Omit<React.ComponentProps<typeof Box>, 'index'> & {
-  index: number;
-};
-const Content = React.forwardRef<ContentRef, ContentProps>((props, ref) => {
+type StepRef = React.ComponentRef<typeof MotiView>;
+type StepProps = React.ComponentProps<typeof MotiView> & { index: number };
+const Step = React.forwardRef<StepRef, StepProps>((props, ref) => {
   const { index, style, ...restProps } = props;
-  const { currentStep, isCompleted } = useFlowContext();
+  const { currentStep } = useFlowContext();
 
-  if (currentStep !== index || isCompleted) return null;
+  const isActive = index === currentStep;
 
   return (
-    <Box
-      style={[{ flex: 1 }, style]}
-      ref={ref}
-      {...restProps}
-    />
+    <AnimatePresence>
+      {isActive && (
+        <MotiView
+          ref={ref}
+          style={[{ flex: 1 }, style]}
+          animate={{ opacity: 1, translateX: 0 }}
+          from={{ opacity: 0, translateX: '100%' }}
+          exit={{ opacity: 0, translateX: '-100%' }}
+          transition={{ type: 'timing', duration: 400 }}
+          {...restProps}
+        />
+      )}
+    </AnimatePresence>
   );
 });
-Content.displayName = 'Flow.Content';
 
-type SuccessRef = React.ComponentRef<typeof Box>;
-type SuccessProps = React.ComponentProps<typeof Box>;
+type SuccessRef = React.ComponentRef<typeof MotiView>;
+type SuccessProps = React.ComponentProps<typeof MotiView>;
 const Success = React.forwardRef<SuccessRef, SuccessProps>((props, ref) => {
   const { style, ...restProps } = props;
-  const { isCompleted } = useFlowContext();
+  const { currentStep, count } = useFlowContext();
 
-  if (!isCompleted) return null;
+  const isActive = currentStep > count;
 
   return (
-    <Box
-      ref={ref}
-      style={[{ flex: 1 }, style]}
-      {...restProps}
-    />
+    <AnimatePresence>
+      {isActive && (
+        <MotiView
+          ref={ref}
+          style={[{ flex: 1 }, style]}
+          animate={{ opacity: 1 }}
+          from={{ opacity: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ type: 'timing', duration: 400 }}
+          {...restProps}
+        />
+      )}
+    </AnimatePresence>
   );
 });
-Success.displayName = 'Flow.Success';
-
-type PreviousButtonRef = React.ComponentRef<typeof AsChild>;
-type PreviousButtonProps = React.ComponentProps<typeof AsChild>;
-const PreviousButton = React.forwardRef<PreviousButtonRef, PreviousButtonProps>(
-  (props, ref) => {
-    const { onPress, ...restProps } = props;
-    const { onPreviousStep, canGoToPreviousStep } = useFlowContext();
-
-    const handlePress = (event: GestureResponderEvent) => {
-      onPress?.(event);
-      onPreviousStep();
-    };
-
-    return (
-      <AsChild
-        ref={ref}
-        asChild={true}
-        onPress={handlePress}
-        disabled={!canGoToPreviousStep}
-        {...restProps}
-      />
-    );
-  }
-);
-PreviousButton.displayName = 'Flow.PreviousButton';
-
-type NextButtonRef = React.ComponentRef<typeof AsChild>;
-type NextButtonProps = React.ComponentProps<typeof AsChild> & {
-  onComplete?: () => void | Promise<void>;
-};
-const NextButton = React.forwardRef<NextButtonRef, NextButtonProps>(
-  (props, ref) => {
-    const { onPress, onComplete, ...restProps } = props;
-    const { onNextStep, canGoToNextStep, isCompleted, isLastStep } =
-      useFlowContext();
-
-    const handlePress = async (event: GestureResponderEvent) => {
-      onPress?.(event);
-
-      if (isLastStep && !isCompleted) {
-        await Promise.resolve(onComplete?.());
-      } else {
-        onNextStep();
-      }
-    };
-
-    return (
-      <AsChild
-        ref={ref}
-        asChild={true}
-        onPress={handlePress}
-        disabled={!canGoToNextStep && !isLastStep}
-        {...restProps}
-      />
-    );
-  }
-);
-NextButton.displayName = 'Flow.NextButton';
 
 const Flow = {
   Root,
-  Content,
-  Provider,
+  Step,
   Success,
-  NextButton,
-  PreviousButton,
+  Provider,
 };
 
 export default Flow;

@@ -1,23 +1,72 @@
 import React from 'react';
-import { sum } from '../utils/sum';
-import { Space } from '@/constants';
 import Calculations from './Calculations';
-import { calculationSchema } from '../schemas';
+import { estimateSchema } from '../schemas';
 import { useCurrency } from '@/features/currency';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { Action, Box, Heading, Overlay, Scroll, Text } from '@/components';
+import {
+  FormProvider,
+  useForm,
+  useFormContext,
+  useWatch,
+} from 'react-hook-form';
+import {
+  Action,
+  Box,
+  Field,
+  Heading,
+  Overlay,
+  Scroll,
+  Text,
+  useOverlay,
+} from '@/components';
+import { Stack } from 'expo-router';
+import { Button } from 'react-native';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { Space } from '@/constants';
 
-type Props = {
-  children: React.ReactNode;
+const Title = ({
+  trigger,
+  control,
+}: {
+  trigger: React.ReactNode;
+  control: any;
+}) => {
+  const overlay = useOverlay();
+
+  return (
+    <Overlay.Provider value={overlay}>
+      <Overlay.SheetTrigger>{trigger}</Overlay.SheetTrigger>
+      <Overlay.Sheet snapPoints={['20%']}>
+        <Overlay.SheetContent>
+          <Field.Root
+            name='title'
+            control={control as any}
+            style={{ marginBottom: Space.lg }}
+          >
+            <Field.Control>
+              <Field.TextInput placeholder='Estimate title' />
+            </Field.Control>
+            <Field.Feedback />
+          </Field.Root>
+          <Overlay.SheetTrigger>
+            <Action.Root>
+              <Action.Label>Save</Action.Label>
+            </Action.Root>
+          </Overlay.SheetTrigger>
+        </Overlay.SheetContent>
+      </Overlay.Sheet>
+    </Overlay.Provider>
+  );
 };
 
-export const Add = ({ children }: Props) => {
+export const Add = () => {
+  const colors = useThemeColors();
   const { currency } = useCurrency();
 
   const form = useForm({
-    resolver: zodResolver(calculationSchema),
+    resolver: zodResolver(estimateSchema),
     defaultValues: {
+      title: 'New Estimate',
       calculations: [
         {
           id: Date.now().toString(),
@@ -31,73 +80,41 @@ export const Add = ({ children }: Props) => {
     },
   });
 
-  const calculations = useWatch({
-    control: form.control,
-    name: 'calculations',
-  });
+  const values = useWatch({ control: form.control });
 
   return (
-    <Overlay.Root>
-      <Overlay.SheetTrigger>{children}</Overlay.SheetTrigger>
-      <Overlay.Sheet snapPoints={['95%']}>
-        <FormProvider {...form}>
-          <Box my='lg'>
-            <Heading
-              size='2xl'
-              leading='xl'
-              weight='medium'
-              align='center'
-              style={{ maxWidth: 200, marginHorizontal: 'auto' }}
-            >
-              Estimation{'\n'}
-              <Text
-                size='xl'
-                leading='lg'
-                align='center'
-              >
-                {`${currency.symbol}${sum(calculations as any).toFixed(2)}`}
-              </Text>
-            </Heading>
-          </Box>
-          <Scroll
-            mt='2xl'
-            mb='4xl'
-          >
-            <Calculations />
-          </Scroll>
-          <Box
-            pt='lg'
-            px='xl'
-            pb='6xl'
-            style={{
-              bottom: 0,
-              width: '100%',
-              position: 'absolute',
-              boxShadow: `0 0 0 1px rgba(0, 0, 0, 0.05)`,
-            }}
-          >
-            <Box
-              mx='auto'
-              style={{
-                flex: 1,
-                maxWidth: 320,
-                width: '100%',
-                gap: Space['xs'],
-                flexDirection: 'row',
-              }}
-            >
-              {/* <Currency.Switch>
-                <Action.Root variant='ghost'>
-                  <Action.Label>Currency</Action.Label>
-                </Action.Root>
-              </Currency.Switch> */}
-              <Action.Root style={{ flex: 1 }}>
-                <Action.Label>Create Estimate</Action.Label>
-              </Action.Root>
-            </Box>
-          </Box>
-        </FormProvider>
-      </Overlay.Sheet>
-    </Overlay.Root>
+    <FormProvider {...form}>
+      <Stack.Screen
+        options={{
+          title: values.title,
+          headerStyle: {
+            backgroundColor: colors.getColor('bg.soft'),
+          },
+          headerTitleStyle: {
+            fontWeight: '500',
+            color: colors.getColor('text.strong'),
+          },
+          headerLeft: () => {
+            return (
+              <Title
+                control={form.control}
+                trigger={<Button title='Edit' />}
+              />
+            );
+          },
+          headerRight: () => {
+            return <Button title='Create' />;
+          },
+        }}
+      />
+
+      <Scroll
+        bg='bg.base'
+        style={{ flex: 1 }}
+      >
+        <Box py='lg' />
+        <Calculations />
+      </Scroll>
+    </FormProvider>
   );
 };

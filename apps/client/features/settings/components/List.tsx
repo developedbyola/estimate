@@ -3,10 +3,12 @@ import Options from '../constants/Options';
 import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { Blur, Box, Text } from '@/components';
-import { TouchableHighlight } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { useRouter } from 'expo-router';
 
 const Group = ({ group }: { group: keyof typeof Options }) => {
+  const router = useRouter();
   const colors = useThemeColors();
 
   return (
@@ -16,10 +18,11 @@ const Group = ({ group }: { group: keyof typeof Options }) => {
     >
       {Options[group].map((option, index) => {
         return (
-          <TouchableHighlight
+          <TouchableOpacity
             key={index}
+            activeOpacity={0.6}
             style={{ height: 46 }}
-            underlayColor={'red'}
+            onPress={() => router.push(option.href as any)}
           >
             <Box
               style={{
@@ -50,7 +53,7 @@ const Group = ({ group }: { group: keyof typeof Options }) => {
                 color={colors.getColor('text.inactive')}
               />
             </Box>
-          </TouchableHighlight>
+          </TouchableOpacity>
         );
       })}
     </Blur>

@@ -17,7 +17,7 @@ type ActionContext = {
   loading: boolean;
   state: PressableStateCallbackType;
   size: '2xs' | 'xs' | 'sm' | 'base' | 'lg' | 'xl';
-  variant: 'primary' | 'ghost' | 'surface' | 'outline';
+  variant: 'primary' | 'ghost' | 'surface' | 'outline' | 'destructive';
 };
 
 export const ActionContext = React.createContext<ActionContext | null>(null);
@@ -138,14 +138,19 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
         ? colors.getColor('primary.subtle')
         : colors.getColor('primary.base'),
     },
+    destructive: {
+      backgroundColor: state.pressed
+        ? colors.getColor('error.base')
+        : colors.getColor('error.subtle'),
+    },
   });
 
   const sizes = {
     '2xs': {
-      height: 24,
+      height: 26,
     },
     xs: {
-      height: 32,
+      height: 30,
     },
     sm: {
       height: 36,
@@ -172,7 +177,7 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
             alignItems: 'center',
             flexDirection: 'row',
             justifyContent: 'center',
-            paddingInline: Space['2xl'],
+            paddingInline: Space['xl'],
             borderRadius: Border.radius['full'],
             opacity: disabled || loading ? 0.5 : 1,
           },
@@ -230,6 +235,9 @@ const Label = React.forwardRef<ActionLabelRef, ActionLabelProps>(
       primary: {
         color: colors.getColor('text.base'),
       },
+      destructive: {
+        color: colors.getColor('text.base'),
+      },
     });
 
     return (
@@ -266,6 +274,11 @@ const Icon = React.forwardRef<ActionIconRef, ActionIconProps>((props, ref) => {
         : Colors.getColor('text.subtle'),
     },
     primary: {
+      color: state.pressed
+        ? Colors.getColor('text.base')
+        : Colors.getColor('text.subtle'),
+    },
+    destructive: {
       color: state.pressed
         ? Colors.getColor('text.base')
         : Colors.getColor('text.subtle'),

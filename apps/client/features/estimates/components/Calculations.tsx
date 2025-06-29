@@ -1,10 +1,10 @@
 import React from 'react';
 import { Border } from '@/constants';
+import { CalculationItem } from '../schemas';
 import { Ionicons } from '@expo/vector-icons';
 import { Box, Field, RadioGroup } from '@/components';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-import { CalculationItem } from '../schemas';
 
 type RowProps = {
   index: number;
@@ -19,7 +19,7 @@ const Operations = [
 const Calculations = () => {
   const colors = useThemeColors();
   const { control } = useFormContext<{ calculations: CalculationItem[] }>();
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append } = useFieldArray({
     control,
     name: 'calculations',
   });
@@ -159,7 +159,13 @@ const Calculations = () => {
 
   const renderNode = (field: any, depth = 0) => {
     const index = fields.findIndex((f) => f.id === field.id);
-    const child = fields.find((f) => f.attachedTo === field.id);
+    const children = React.useMemo(() => {
+      const map = new Map<string, CalculationItem>();
+      fields.forEach((field) => {
+        if (field.attachedTo) map.set(field.attachedTo, field);
+      });
+      return map;
+    }, [fields]);
 
     return (
       <Box key={field.id}>
@@ -167,7 +173,7 @@ const Calculations = () => {
           field={field}
           index={index}
         />
-        {child && renderNode(child, depth + 1)}
+        {children && renderNode(children.get(field.id), depth + 1)}
       </Box>
     );
   };

@@ -31,7 +31,7 @@ type Action =
     }
   | {
       type: 'REMOVE_FARM';
-      payload: { id: string };
+      payload: { farmId: string };
     }
   | {
       type: 'UPDATE_FARM';
@@ -69,11 +69,16 @@ const farmsReducer = (state: State, action: Action): State => {
     case 'REMOVE_FARM':
       return {
         ...state,
-        farms: state.farms.filter((farm) => farm.id !== action.payload.id),
+        farm: null,
+        farms: state.farms.filter((farm) => farm.id !== action.payload.farmId),
       };
     case 'UPDATE_FARM':
       return {
         ...state,
+        farm:
+          state.farm && state.farm.id === action.payload.farm.id
+            ? { ...state.farm, ...action.payload.farm }
+            : state.farm,
         farms: state.farms.map((farm) =>
           farm.id === action.payload.farm.id ? action.payload.farm : farm
         ),

@@ -1,97 +1,38 @@
-import {
-  Box,
-  Flow,
-  Heading,
-  useFlowContext,
-  Text,
-  Field,
-  Password,
-  useOverlayContext,
-  Action,
-} from '@/components';
 import React from 'react';
 import { Space } from '@/constants';
-import Footer from './shared/Footer';
-import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { excerpt } from '@/utils/excerpt';
+import { registerSchema } from '../schemas';
+import {
+  Action,
+  Box,
+  Field,
+  Flow,
+  Heading,
+  Password,
+  Text,
+  useFlow,
+  usePopupContext,
+} from '@/components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { emailSchema, nameSchema, passwordSchema } from '../schemas';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
+import { Keyboard } from 'react-native';
+import { trpc } from '@/lib/trpc';
+import { Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 
-const Success = () => {
-  const colors = useThemeColors();
-  const { onToggle } = useOverlayContext();
-  const { data } = useFlowContext<{ name?: string }>();
-
-  return (
-    <React.Fragment>
-      <Box
-        px='xl'
-        py='4xl'
-        mx='auto'
-        style={{ flex: 1, maxWidth: 320, width: '100%' }}
-      >
-        <Ionicons
-          size={64}
-          name='checkmark-circle'
-          style={{ marginInline: 'auto' }}
-          color={colors.getColor('success.base')}
-        />
-        <Box py='xl' />
-        <Heading
-          size='2xl'
-          leading='lg'
-          align='center'
-          weight='medium'
-          style={{ maxWidth: 200, marginInline: 'auto' }}
-        >
-          High five! ✋ {`${excerpt(data.name || '', 12)}`}
-        </Heading>
-        <Box py='sm' />
-        <Text
-          size='xl'
-          leading='lg'
-          align='center'
-        >
-          We are thrilled to have you join our community. Your account is all
-          set up and ready to grow with us!
-        </Text>
-      </Box>
-
-      <Box
-        px='lg'
-        pb='6xl'
-        mx='auto'
-        style={{ width: '100%', maxWidth: 320, gap: Space.base }}
-      >
-        <Action.Root onPress={() => onToggle(false)}>
-          <Action.Label>Get started</Action.Label>
-        </Action.Root>
-        <Action.Root
-          variant='surface'
-          onPress={() => onToggle(false)}
-        >
-          <Action.Label>Close</Action.Label>
-        </Action.Root>
-      </Box>
-    </React.Fragment>
-  );
-};
-
-const NameForm = () => {
-  const form = useFormContext();
+export const NameField = () => {
+  const { control } = useFormContext<{ name: string }>();
 
   return (
     <Field.Root
-      name={'name'}
-      control={form.control}
+      name='name'
+      control={control as any}
     >
       <Field.Control>
         <Field.TextInput
           keyboardType='default'
           textContentType='name'
-          placeholder='Enter your fullname'
+          placeholder='Enter your name'
         />
       </Field.Control>
       <Field.Feedback />
@@ -99,32 +40,13 @@ const NameForm = () => {
   );
 };
 
-const PasswordForm = () => {
-  const form = useFormContext();
+const EmailField = () => {
+  const { control } = useFormContext<{ email: string }>();
 
   return (
     <Field.Root
-      name={'password'}
-      control={form.control as any}
-    >
-      <Field.Control>
-        <Password.Root>
-          <Password.TextInput placeholder='Enter your password' />
-          <Password.Indicator />
-        </Password.Root>
-      </Field.Control>
-      <Field.Feedback />
-    </Field.Root>
-  );
-};
-
-const EmailForm = () => {
-  const form = useFormContext();
-
-  return (
-    <Field.Root
-      name={'email'}
-      control={form.control as any}
+      name='email'
+      control={control as any}
     >
       <Field.Control>
         <Field.TextInput
@@ -138,87 +60,159 @@ const EmailForm = () => {
   );
 };
 
-const flows = [
+const PasswordField = () => {
+  const { control } = useFormContext<{ password: string }>();
+
+  return (
+    <Field.Root
+      name='password'
+      control={control as any}
+    >
+      <Field.Control>
+        <Password.Root>
+          <Password.TextInput
+            textContentType='password'
+            placeholder='Enter your password'
+          />
+          <Password.Indicator />
+        </Password.Root>
+      </Field.Control>
+      <Field.Feedback />
+    </Field.Root>
+  );
+};
+
+const steps = [
   {
-    schema: nameSchema,
-    heading: 'Provide your full legal names',
-    subHeading: 'To help us get to know you better, please share your name.',
-    content: <NameForm />,
+    fields: ['name'],
+    component: NameField,
+    title: 'Set up your name',
+    description:
+      "Please enter your full name as you'd like it to appear on your account.",
   },
   {
-    schema: emailSchema,
-    heading: 'Share your official email address',
-    subHeading: 'Get all the latest updates delivered straight to your inbox.',
-    content: <EmailForm />,
+    fields: ['email'],
+    component: EmailField,
+    title: 'Set up your email',
+    description:
+      'To be used for account verification and important notifications.',
   },
   {
-    schema: passwordSchema,
-    heading: 'Use a strong and secure password.',
-    subHeading: "Shield your account with a strong password you'll remember.",
-    content: <PasswordForm />,
+    fields: ['password'],
+    component: PasswordField,
+    title: 'Secure your accountx',
+    description: 'Create a strong password with at least 8 characters.',
   },
 ];
 
 export const Register = () => {
-  const flowContext = useFlowContext();
+  const router = useRouter();
+  const popupContext = usePopupContext();
+  const register = trpc.auth.register.useMutation({
+    onSuccess: () => {
+      popupContext.open({
+        title: 'Congratulations 🎉',
+        onDismiss: () => router.back(),
+        message:
+          'Your account has been created successfully. Welcome to our community!',
+        actions: [{ text: 'OK', onPress: () => router.back() }],
+      });
+    },
+    onError: (error) => {
+      Alert.alert('Registration failed', error.message, [{ text: 'Cancel' }]);
+    },
+  });
+
+  const form = useForm({
+    mode: 'all',
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+    },
+  });
+
+  const flow = useFlow({
+    count: 3,
+    onSubmit: form.handleSubmit(async (data) => {
+      await register.mutateAsync({
+        ...data,
+        name: data.name.toLowerCase(),
+        email: data.email.toLowerCase(),
+      });
+    }),
+  });
 
   return (
-    <Box style={{ flex: 1 }}>
-      {flows.map((flow, index) => (
-        <FormProvider
-          key={index}
-          {...useForm({
-            mode: 'all',
-            defaultValues: flowContext.data,
-            resolver: zodResolver(flow.schema as any),
-          })}
-        >
-          <Flow.Content index={index}>
-            <Box
-              px='xl'
-              mt='6xl'
-              style={{ gap: Space.lg }}
-            >
-              <Heading
-                size='2xl'
-                leading='lg'
-                align='center'
-                weight='medium'
-                style={{
-                  maxWidth: 200,
-                  marginInline: 'auto',
-                }}
-              >
-                {flow.heading}
-              </Heading>
-              <Text
-                size='lg'
-                align='center'
-                style={{
-                  maxWidth: 280,
-                  marginInline: 'auto',
-                }}
-              >
-                {flow.subHeading}
-              </Text>
-            </Box>
+    <FormProvider {...form}>
+      <Box
+        bg='bg.base'
+        style={{ flex: 1 }}
+      >
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <Flow.Provider
+            value={flow}
+            style={{ flex: 1 }}
+          >
+            {steps.map((step, index) => {
+              return (
+                <Flow.Step
+                  key={index}
+                  index={index + 1}
+                  style={{
+                    width: '100%',
+                    maxWidth: 360,
+                    marginInline: 'auto',
+                    paddingTop: Space['4xl'],
+                    paddingHorizontal: Space.xl,
+                  }}
+                >
+                  <Heading
+                    size='2xl'
+                    leading='lg'
+                    align='center'
+                    weight='medium'
+                    style={{ maxWidth: 200, marginInline: 'auto' }}
+                  >
+                    {step.title}
+                  </Heading>
+                  <Text
+                    size='lg'
+                    align='center'
+                    style={{
+                      maxWidth: 300,
+                      marginInline: 'auto',
+                      marginTop: Space.base,
+                      marginBottom: Space['4xl'],
+                    }}
+                  >
+                    {step.description}
+                  </Text>
 
-            <Box
-              px='xl'
-              my='5xl'
-              mx='auto'
-              style={{ width: '100%', maxWidth: 340 }}
-            >
-              {flow.content}
-            </Box>
+                  <step.component />
 
-            <Footer authType='register' />
-          </Flow.Content>
-        </FormProvider>
-      ))}
-      <Flow.Success>
-        <Success />
-      </Flow.Success>
-    </Box>
+                  <Action.Root
+                    loading={form.formState.isSubmitting}
+                    style={{ marginTop: Space['xl'] }}
+                    onPress={() =>
+                      flow.next({
+                        onValidate: async () =>
+                          await form.trigger(step.fields as any[]),
+                      })
+                    }
+                  >
+                    <Action.Loader />
+                    <Action.Label>
+                      {flow.isLastStep ? 'Become a member' : 'Next'}
+                    </Action.Label>
+                  </Action.Root>
+                </Flow.Step>
+              );
+            })}
+          </Flow.Provider>
+        </TouchableWithoutFeedback>
+      </Box>
+    </FormProvider>
   );
 };

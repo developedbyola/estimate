@@ -1,22 +1,11 @@
 import React from 'react';
 import { MotiImage } from 'moti';
 import { Button } from 'react-native';
-import { Border, Space } from '@/constants';
-import { StatusBar } from 'expo-status-bar';
-import { Stack, useRouter } from 'expo-router';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import {
-  Action,
-  Heading,
-  Box,
-  Text,
-  Safe,
-  Overlay,
-  useAuth,
-  Blur,
-} from '@/components';
 import { Auth } from '@/features/auth';
-// import { useDeleteAccessToken } from '@/hooks/useTokens';
+import { useRouter } from 'expo-router';
+import { Border, Space } from '@/constants';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { Action, Heading, Box, Text, Safe, Overlay, Blur } from '@/components';
 
 const images = [
   {
@@ -38,90 +27,74 @@ const images = [
 
 const Footer = () => {
   const router = useRouter();
-  const { auth } = useAuth();
+  const { auth } = Auth.useAuth();
+
+  if (auth.isAuthenticated) {
+    return (
+      <Box px='xl'>
+        <Blur
+          px='lg'
+          py='base'
+          bg='bg.subtle'
+          style={{
+            overflow: 'hidden',
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderRadius: Border.radius.lg,
+          }}
+        >
+          <Box style={{ flex: 1 }}>
+            <Heading
+              size='base'
+              leading='base'
+            >
+              You're signed in
+            </Heading>
+            <Text
+              size='sm'
+              leading='sm'
+            >
+              You can now explore the app
+            </Text>
+          </Box>
+          <Action.Root
+            size='sm'
+            onPress={() => router.push('/(tabs)')}
+          >
+            <Action.Label>Explore</Action.Label>
+          </Action.Root>
+        </Blur>
+      </Box>
+    );
+  }
 
   return (
-    <React.Fragment>
-      {auth.isAuthenticated ? (
-        <Box px='xl'>
-          <Blur
-            px='lg'
-            py='base'
-            bg='bg.subtle'
-            style={{
-              overflow: 'hidden',
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderRadius: Border.radius.lg,
-            }}
-          >
-            <Box style={{ flex: 1 }}>
-              <Heading
-                size='base'
-                leading='base'
-              >
-                You're signed in
-              </Heading>
-              <Text
-                size='sm'
-                leading='sm'
-              >
-                You can now explore the app
-              </Text>
-            </Box>
-            <Action.Root
-              size='sm'
-              onPress={() => router.push('/(tabs)')}
-            >
-              <Action.Label>Explore</Action.Label>
-            </Action.Root>
-          </Blur>
-        </Box>
-      ) : null}
-      <Box
-        px='xl'
-        mx='auto'
-        style={{ gap: Space.xs, width: '100%', maxWidth: 320 }}
+    <Box
+      px='xl'
+      mx='auto'
+      style={{ gap: Space.xs, width: '100%', maxWidth: 320 }}
+    >
+      <Action.Root onPress={() => router.push('/register')}>
+        <Action.Label>Become a member</Action.Label>
+      </Action.Root>
+      <Action.Root
+        variant='ghost'
+        onPress={() => router.push('/login')}
       >
-        <Auth.Register>
-          {auth.isAuthenticated ? null : (
-            <Action.Root>
-              <Action.Label>Sign up</Action.Label>
-            </Action.Root>
-          )}
-        </Auth.Register>
-        <Auth.Login>
-          {auth.isAuthenticated ? null : (
-            <Action.Root variant='ghost'>
-              <Action.Label>Sign in</Action.Label>
-            </Action.Root>
-          )}
-        </Auth.Login>
-      </Box>
-    </React.Fragment>
+        <Action.Label>Access your account</Action.Label>
+      </Action.Root>
+    </Box>
   );
 };
 
 const Index = () => {
   const colors = useThemeColors();
 
-  // useDeleteAccessToken();
-
   return (
     <Box
       bg='bg.base'
       style={{ flex: 1 }}
     >
-      <Stack.Screen
-        name='index'
-        options={{
-          title: 'Onboard',
-          headerShown: false,
-        }}
-      />
-
-      {/* status bar */}
-      <StatusBar style='dark' />
       <Safe style={{ flex: 1 }}>
         <Box
           my='xl'

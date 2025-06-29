@@ -13,7 +13,7 @@ export type Action =
       type: 'LOGIN';
       payload: { auth: Auth };
     }
-  | { type: 'LOGOUT'; payload: never };
+  | { type: 'LOGOUT'; payload?: never };
 
 export type AuthContext = State & {
   setAuth: React.ActionDispatch<[Action]>;
@@ -49,7 +49,7 @@ export const useAuth = () => {
   return context;
 };
 
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const Provider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = React.useReducer(authReducer, {
     auth: {
       accessToken: null,
@@ -78,5 +78,3 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </authContext.Provider>
   );
 };
-
-export default AuthProvider;

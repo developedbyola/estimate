@@ -1,13 +1,13 @@
 import React from 'react';
 import { Image } from 'expo-image';
-import { Stack } from 'expo-router';
+import { User } from '@/features/user';
 import { excerpt } from '@/utils/excerpt';
 import { Border, Space } from '@/constants';
 import { Settings } from '@/features/settings';
-import { Box, Heading, Safe, Scroll, Text, useUser } from '@/components';
+import { Box, Heading, Safe, Scroll, Text } from '@/components';
 
 const SettingsPage = () => {
-  const { user } = useUser();
+  const { user } = User.useUser();
 
   return (
     <React.Fragment>

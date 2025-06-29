@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import argon2 from 'argon2';
 import { auth } from '../../utils/auth';
-import { publicProcedure, protectedProcedure, router } from '../middleware';
+import { publicProcedure, router } from '../middleware';
 
 // Strong password validation schema
 const passwordSchema = z
@@ -14,38 +14,6 @@ const passwordSchema = z
   .regex(/^\S+$/, 'Password cannot contain spaces');
 
 export const authRouter = router({
-  me: protectedProcedure.query(async ({ ctx }) => {
-    try {
-      const user = await ctx.supabase
-        .from('users')
-        .select('id, created_at, name, email')
-        .eq('id', ctx.actor.userId)
-        .single();
-
-      if (!user.data) {
-        return ctx.fail({
-          code: 'NOT_FOUND',
-          message:
-            'Your account could not be found. Please try logging in again or contact support if the issue persists.',
-        });
-      }
-
-      return ctx.ok(
-        {
-          user: {
-            id: user.data.id,
-            name: user.data.name,
-            email: user.data.email,
-            createdAt: user.data.created_at,
-          },
-        },
-        { httpStatus: 200, path: 'auth.me' }
-      );
-    } catch (err) {
-      return ctx.fail(err);
-    }
-  }),
-
   login: publicProcedure
     .input(
       z.object({
@@ -273,53 +241,6 @@ export const authRouter = router({
           { accessToken, refreshToken },
           { httpStatus: 200, path: 'auth.refresh' }
         );
-      } catch (err) {
-        return ctx.fail(err);
-      }
-    }),
-
-  sessions: protectedProcedure.query(async ({ ctx }) => {
-    try {
-      const sessions = await ctx.supabase
-        .from('user_sessions')
-        .select('*')
-        .eq('user_id', ctx.actor.userId)
-        .order('created_at', { ascending: false });
-
-      return ctx.ok(
-        {
-          sessions: sessions.data,
-        },
-        { httpStatus: 200, path: 'auth.sessions' }
-      );
-    } catch (err) {
-      return ctx.fail(err);
-    }
-  }),
-
-  revokeSession: protectedProcedure
-    .input(z.object({ sessionId: z.string() }))
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const session = await ctx.supabase
-          .from('user_sessions')
-          .update({ is_active: false })
-          .eq('id', input.sessionId)
-          .eq('user_id', ctx.actor.userId)
-          .select('*')
-          .single();
-
-        if (!session.data) {
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message:
-              'We encountered an issue while revoking your session. Please try again later.',
-          });
-        }
-
-        return ctx.ok({
-          success: true,
-        });
       } catch (err) {
         return ctx.fail(err);
       }

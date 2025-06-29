@@ -1,22 +1,21 @@
 export default {
   profile: [
     {
-      title: '',
       name: 'My profile',
-      icon: 'color-wand-outline',
       snapPoints: ['50%'],
-      content: null,
+      href: '/(modals)/profile',
+      icon: 'color-wand-outline',
     },
 
     {
-      title: '',
+      href: '',
       name: 'Password',
       icon: 'key-outline',
       snapPoints: ['50%'],
       content: null,
     },
     {
-      title: '',
+      href: '',
       content: null,
       snapPoints: ['50%'],
       icon: 'mail-outline',
@@ -25,15 +24,14 @@ export default {
   ],
   others: [
     {
-      title: '',
+      href: '',
       content: null,
       icon: 'people-outline',
       snapPoints: ['50%'],
       name: 'Community',
     },
     {
-      title: '',
-      content: null,
+      href: '/(modals)/health',
       icon: 'pulse-outline',
       snapPoints: ['50%'],
       name: 'System Check',
@@ -41,14 +39,14 @@ export default {
   ],
   language: [
     {
-      title: '',
+      href: '',
       content: null,
       icon: 'language-outline',
       snapPoints: ['50%'],
       name: 'Currency',
     },
     {
-      title: '',
+      href: '',
       content: null,
       icon: 'globe-outline',
       snapPoints: ['50%'],
@@ -57,7 +55,7 @@ export default {
   ],
   session: [
     {
-      title: '',
+      href: '',
       content: null,
       icon: 'recording-outline',
       snapPoints: ['50%'],
@@ -66,14 +64,14 @@ export default {
   ],
   code: [
     {
-      title: '',
+      href: '',
       content: null,
       icon: 'code',
       snapPoints: ['50%'],
       name: 'Developer',
     },
     {
-      title: '',
+      href: '',
       content: null,
       snapPoints: ['50%'],
       name: 'Source code',
@@ -82,14 +80,14 @@ export default {
   ],
   help: [
     {
-      title: '',
+      href: '',
       name: 'Contact support',
       icon: 'chatbox-ellipses-outline',
       snapPoints: ['50%'],
       content: null,
     },
     {
-      title: '',
+      href: '',
       content: null,
       icon: 'information-circle-outline',
       snapPoints: ['50%'],

@@ -76,7 +76,7 @@ const Item = (props: ItemProps) => {
         activeOpacity={0.6}
         onPress={() => {
           setFarms({ type: 'SET_FARM', payload: { farm } });
-          router.push('/(modals)/farm');
+          router.push('/farm');
         }}
         style={{
           flex: 1,

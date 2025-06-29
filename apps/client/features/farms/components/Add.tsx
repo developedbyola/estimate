@@ -86,6 +86,7 @@ const Name = () => {
                   height: '100%',
                   paddingHorizontal: Space.lg,
                   fontSize: Typography.size.lg,
+                  color: colors.getColor('text.strong'),
                 }}
                 onChangeText={field.onChange}
               />
@@ -175,6 +176,7 @@ const Location = () => {
                     height: '100%',
                     paddingHorizontal: Space.lg,
                     fontSize: Typography.size.lg,
+                    color: colors.getColor('text.strong'),
                   }}
                   onChangeText={field.onChange}
                 />
@@ -209,6 +211,7 @@ const Location = () => {
                     height: '100%',
                     paddingHorizontal: Space.lg,
                     fontSize: Typography.size.lg,
+                    color: colors.getColor('text.strong'),
                   }}
                   onChangeText={field.onChange}
                 />
@@ -241,6 +244,7 @@ const Location = () => {
                     height: '100%',
                     paddingHorizontal: Space.lg,
                     fontSize: Typography.size.lg,
+                    color: colors.getColor('text.strong'),
                   }}
                   onChangeText={field.onChange}
                 />
@@ -282,6 +286,7 @@ const Size = () => {
                   height: '100%',
                   paddingHorizontal: Space.lg,
                   fontSize: Typography.size.lg,
+                  color: colors.getColor('text.strong'),
                 }}
                 onChangeText={field.onChange}
               />
@@ -415,7 +420,10 @@ export const Add = ({ children, farm }: Props) => {
     <FormProvider {...form}>
       <Overlay.Provider value={overlay}>
         <Overlay.SheetTrigger>{children}</Overlay.SheetTrigger>
-        <Overlay.Sheet snapPoints={['55%']}>
+        <Overlay.Sheet
+          snapPoints={['55%']}
+          onDismiss={() => overlay.onToggle(false)}
+        >
           <Overlay.SheetHeader>
             <Heading
               size='2xl'
@@ -453,9 +461,9 @@ export const Add = ({ children, farm }: Props) => {
                           height: 44,
                           alignItems: 'center',
                           flexDirection: 'row',
-                          borderColor: 'white',
+                          borderColor: colors.getColor('border.soft'),
                           borderBottomWidth:
-                            options.length - 1 === index ? 0 : 1.5,
+                            options.length - 1 === index ? 0 : 1,
                         }}
                       >
                         <Heading

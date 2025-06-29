@@ -1,11 +1,11 @@
 import React from 'react';
 import { trpc } from '@/lib/trpc';
-import { useAuth } from '@/components/Auth';
+import { useAuth } from './Provider';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const useRefreshToken = () => {
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
 
   const refresh = trpc.auth.refresh.useMutation({
     onSuccess: async (data: any) => {
@@ -13,13 +13,14 @@ const useRefreshToken = () => {
       await SecureStore.setItemAsync('refresh_token', data.refreshToken);
     },
     onError: (err) => {
+      if (err.message.includes('expired')) {
+        setAuth({ type: 'LOGOUT' });
+      }
       console.error('Token refresh failed:', err);
-      return;
     },
   });
 
   const mutate = React.useCallback(async () => {
-    const accessToken = await AsyncStorage.getItem('access_token');
     const refreshToken = (await SecureStore.getItemAsync('refresh_token'))!;
     refresh.mutate({ refreshToken });
   }, [refresh.mutate]);
@@ -35,15 +36,14 @@ const useRefreshToken = () => {
 
     return () => clearInterval(interval);
   }, [auth.isAuthenticated, mutate]);
-
-  return { isAuthenticated: auth.isAuthenticated };
 };
 
 type Props = {
   children: React.ReactNode;
 };
-export default function Protected({ children }: Props) {
-  const { isAuthenticated } = useRefreshToken();
 
-  return isAuthenticated ? <React.Fragment>{children}</React.Fragment> : null;
-}
+export const RefreshToken = ({ children }: Props) => {
+  useRefreshToken();
+
+  return children;
+};

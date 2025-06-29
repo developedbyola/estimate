@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import { Text } from '@/components';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { StatusBar } from 'expo-status-bar';
 
 const Layout = () => {
   const colors = useThemeColors();
@@ -40,9 +41,11 @@ const Layout = () => {
         },
       }}
     >
+      <StatusBar style='auto' />
       <Tabs.Screen
         name='categories'
         options={{
+          title: 'Categories',
           tabBarIcon: (props) => {
             return (
               <Ionicons
@@ -58,6 +61,7 @@ const Layout = () => {
       <Tabs.Screen
         name='index'
         options={{
+          title: 'Farms',
           tabBarIcon: (props) => {
             return (
               <Ionicons
@@ -73,6 +77,7 @@ const Layout = () => {
       <Tabs.Screen
         name='settings'
         options={{
+          title: 'Settings',
           tabBarIcon: (props) => {
             return (
               <Ionicons

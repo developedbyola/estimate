@@ -12,6 +12,38 @@ const passwordSchema = z
   .regex(/^\S+$/, 'Password must not contain any spaces');
 
 export const usersRouter = router({
+  profile: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const user = await ctx.supabase
+        .from('users')
+        .select('id, created_at, name, email')
+        .eq('id', ctx.actor.userId)
+        .single();
+
+      if (!user.data) {
+        return ctx.fail({
+          code: 'NOT_FOUND',
+          message:
+            'Your account could not be found. Please try logging in again or contact support if the issue persists.',
+        });
+      }
+
+      return ctx.ok(
+        {
+          user: {
+            id: user.data.id,
+            name: user.data.name,
+            email: user.data.email,
+            createdAt: user.data.created_at,
+          },
+        },
+        { httpStatus: 200, path: 'users.profile' }
+      );
+    } catch (err) {
+      return ctx.fail(err);
+    }
+  }),
+
   getById: publicProcedure
     .input(
       z.object({

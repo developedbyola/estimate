@@ -136,7 +136,7 @@ const Control = React.forwardRef<ControlRef, ControlProps>((props, ref) => {
           alignItems: 'center',
           position: 'relative',
           borderRadius: Border.radius['base'],
-          backgroundColor: colors.getColor('bg.soft'),
+          backgroundColor: colors.getColor('bg.subtle'),
         },
         style,
       ]}

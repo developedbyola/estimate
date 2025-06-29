@@ -101,10 +101,13 @@ const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
 });
 
 type RootRef = React.ComponentRef<typeof Box>;
-type RootProps = React.ComponentProps<typeof Box>;
+type RootProps = React.ComponentProps<typeof Box> & {
+  open?: boolean;
+  onToggle?: (open: boolean) => void;
+};
 const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
-  const { style, ...restProps } = props;
-  const context = useOverlay();
+  const { style, open = false, ...restProps } = props;
+  const context = useOverlay({ open });
 
   return (
     <Provider value={context}>
@@ -253,12 +256,12 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           ref={bottomSheet.ref}
           enableDynamicSizing={false}
           keyboardBehavior='fillParent'
-          index={memoizedSnapPoints.length - 1}
-          style={{
+          backgroundStyle={{
             overflow: 'hidden',
             borderRadius: Border.radius['3xl'],
-            backgroundColor: colors.getColor('bg.soft'),
+            backgroundColor: colors.getColor('bg.base'),
           }}
+          index={memoizedSnapPoints.length - 1}
           handleIndicatorStyle={{
             height: 6,
             width: 64,
@@ -279,6 +282,7 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
             style={[
               {
                 flex: 1,
+
                 height: '100%',
               },
               style,
@@ -314,12 +318,12 @@ type SheetContentRef = React.ComponentRef<typeof Scroll>;
 type SheetContentProps = React.ComponentProps<typeof Scroll>;
 const SheetContent = React.forwardRef<SheetContentRef, SheetContentProps>(
   (props, ref) => {
-    const { style, px = 'xl', ...restProps } = props;
+    const { style, contentContainerStyle, px = 'xl', ...restProps } = props;
     return (
       <Scroll
         ref={ref}
         px={px}
-        style={[style]}
+        contentContainerStyle={[style]}
         {...restProps}
       />
     );
