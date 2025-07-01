@@ -26,7 +26,7 @@ export const farmSchema = z.object({
     .max(255, 'Address cannot exceed 255 characters')
     .trim(),
 
-  category_id: z.string().uuid('Please select a valid category'),
+  categoryId: z.string().uuid('Please select a valid category'),
 
   size: z
     .string()
@@ -41,7 +41,7 @@ export const farmSchema = z.object({
     )
     .default('1'),
 
-  size_unit: z
+  sizeUnit: z
     .enum(['hectares', 'acres', 'square meters'], {
       errorMap: () => ({ message: 'Size unit must be either hectare or acre' }),
     })

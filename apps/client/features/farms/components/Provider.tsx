@@ -1,11 +1,17 @@
 import React from 'react';
 import { trpc } from '@/lib/trpc';
-import { FarmSchema } from '../schemas';
 import { Category } from '@/features/categories';
 
-export type Farm = FarmSchema & {
+export type Farm = {
   id: string;
+  size: string;
+  name: string;
+  city: string;
+  state: string;
+  address: string;
+  category_id: string;
   category: Omit<Category, 'created_at'>;
+  size_unit: 'hectares' | 'acres' | 'square meters';
 };
 
 type State = {

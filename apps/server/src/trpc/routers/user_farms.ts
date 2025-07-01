@@ -95,7 +95,7 @@ export const userFarmsRouter = router({
             city: input.city,
             state: input.state,
             address: input.address,
-            sizeUnit: input.sizeUnit,
+            size_unit: input.sizeUnit,
             category_id: input.categoryId,
           })
           .eq('id', input.farmId)
@@ -183,8 +183,8 @@ export const userFarmsRouter = router({
             state: input.state,
             user_id: ctx.actor.userId,
             address: input.address,
-            sizeUnit: input.sizeUnit,
-            categoryId: input.categoryId,
+            size_unit: input.sizeUnit,
+            category_id: input.categoryId,
           })
           .select(SELECT)
           .single();

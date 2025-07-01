@@ -369,8 +369,8 @@ export const Add = () => {
       size: farm?.size || '1',
       address: farm?.address || '',
       name: farm?.name || 'My farm',
-      category_id: farm?.category_id || '',
-      size_unit: farm?.size_unit || 'acres',
+      categoryId: farm?.category_id || '',
+      sizeUnit: farm?.size_unit || 'acres',
     },
   });
 
@@ -400,21 +400,21 @@ export const Add = () => {
   });
 
   const loading = create.isPending || update.isPending;
-  const buttonLabel = loading ? '...' : farm ? 'Update' : 'Create';
+  const buttonLabel = farm ? 'Update' : 'Create';
 
   const onSubmit = async (data: any) => {
     if (farm) {
       await update.mutateAsync({
         ...data,
         farmId: farm.id,
-        size_unit: data.size_unit,
-        categoryId: data.category_id,
+        sizeUnit: data.sizeUnit,
+        categoryId: data.categoryId,
       });
     } else {
       await create.mutateAsync({
         ...data,
-        size_unit: data.size_unit,
-        categoryId: data.category_id,
+        sizeUnit: data.sizeUnit,
+        categoryId: data.categoryId,
       });
     }
   };
@@ -444,7 +444,6 @@ export const Add = () => {
                   const values = form.getValues();
                   await onSubmit(values);
                 }}
-                disabled={!form.formState.isValid}
               />
             );
           },

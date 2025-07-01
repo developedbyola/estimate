@@ -9,6 +9,7 @@ import { Farms, useFarms } from '@/features/farms';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import Icons from '@/features/categories/constants/Icons';
 import { Action, Box, Heading, Safe, Scroll, Text } from '@/components';
+import Estimates from './Estimates';
 
 export const Single = () => {
   const router = useRouter();
@@ -166,6 +167,12 @@ export const Single = () => {
                   color={colors.getColor('icon.inactive')}
                 />
               </TouchableOpacity>
+            </Box>
+            <Box
+              mt='xl'
+              style={{ gap: Space['xs'] }}
+            >
+              <Estimates />
             </Box>
           </Box>
         </Scroll>

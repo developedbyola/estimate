@@ -1,14 +1,18 @@
 import React from 'react';
-import { Calculations } from '../schemas';
+
+type CalculationItem = {
+  id: string;
+  quantity: string;
+  unit_price: string;
+  description: string;
+  operation: 'add' | 'subtract';
+  attached_to: string | null;
+};
 
 type Estimate = {
   id: string;
-  description: string;
-  quantity: string;
-  unitPrice: string;
-  operation: 'add' | 'subtract';
-  attachedTo: string | null;
-  calculations: Calculations;
+  title: string;
+  calculations: CalculationItem[];
 };
 
 type State = {
@@ -19,15 +23,15 @@ type State = {
 type Action =
   | {
       type: 'SET_ESTIMATES';
-      payload: State;
+      payload: { estimates: State['estimates'] };
     }
   | {
       type: 'SET_ESTIMATE';
-      payload: { estimate: Estimate | null };
+      payload: { estimate: State['estimate'] };
     }
   | {
       type: 'ADD_ESTIMATE';
-      payload: { estimate: Estimate };
+      payload: { estimate: NonNullable<State['estimate']> };
     }
   | {
       type: 'REMOVE_ESTIMATE';
@@ -35,11 +39,10 @@ type Action =
     }
   | {
       type: 'UPDATE_ESTIMATE';
-      payload: { estimate: Estimate };
+      payload: { estimate: NonNullable<State['estimate']> };
     };
 
-type EstimateContext = {
-  estimates: Estimate[];
+type EstimateContext = State & {
   setEstimates: React.ActionDispatch<[Action]>;
 };
 
@@ -109,7 +112,11 @@ export const Provider: React.FC<Props> = ({
 
   return (
     <estimateContext.Provider
-      value={{ estimates: state.estimates, setEstimates: dispatch }}
+      value={{
+        setEstimates: dispatch,
+        estimate: state.estimate,
+        estimates: state.estimates,
+      }}
     >
       {children}
     </estimateContext.Provider>
