@@ -10,10 +10,7 @@ export type Farm = FarmSchema & {
 
 type State = {
   farms: Farm[];
-  loading: boolean;
   farm: Farm | null;
-  error: ReturnType<typeof trpc.userFarms.list.useQuery>['error'];
-  refetch: ReturnType<typeof trpc.userFarms.list.useQuery>['refetch'];
 };
 
 type Action =
@@ -23,7 +20,7 @@ type Action =
     }
   | {
       type: 'SET_FARM';
-      payload: { farm: Farm };
+      payload: { farm: Farm | null };
     }
   | {
       type: 'ADD_FARM';
@@ -99,11 +96,8 @@ export const Provider = ({
 }: FarmsProviderProps) => {
   const list = trpc.userFarms.list.useQuery();
   const [state, dispatch] = React.useReducer(farmsReducer, {
-    farm: null,
-    error: null,
-    loading: false,
     farms: initialFarms,
-    refetch: list.refetch,
+    farm: null,
   });
 
   React.useEffect(() => {
@@ -121,11 +115,8 @@ export const Provider = ({
     <farmsContext.Provider
       value={{
         farm: state.farm,
-        error: list.error,
         setFarms: dispatch,
         farms: state.farms,
-        loading: list.isLoading,
-        refetch: list.refetch,
       }}
     >
       {children}

@@ -7,7 +7,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useCategories } from '@/features/categories';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Border, Space, Typography } from '@/constants';
-import { Alert, TouchableHighlight } from 'react-native';
+import {
+  Alert,
+  Button,
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import {
   Controller,
@@ -16,26 +21,27 @@ import {
   useFormContext,
 } from 'react-hook-form';
 import {
-  Action,
+  ActivityIndicator,
   Box,
   Field,
   Heading,
-  Overlay,
+  Scroll,
   Text,
   useOverlay,
 } from '@/components';
 import { trpc } from '@/lib/trpc';
 import { useFarms } from './Provider';
+import { Stack, useRouter } from 'expo-router';
 
 const Category = () => {
   const { categories } = useCategories();
   const { control } = useFormContext<{
-    categoryId: string;
+    category_id: string;
   }>();
 
   return (
     <Controller
-      name='categoryId'
+      name='category_id'
       control={control}
       render={({ field }) => {
         return (
@@ -349,15 +355,10 @@ const options = [
   },
 ];
 
-type Props = {
-  farm?: any;
-  children: React.ReactNode;
-};
-
-export const Add = ({ children, farm }: Props) => {
-  const { setFarms } = useFarms();
+export const Add = () => {
+  const router = useRouter();
   const colors = useThemeColors();
-  const overlay = useOverlay();
+  const { farm, setFarms } = useFarms();
 
   const form = useForm({
     mode: 'all',
@@ -368,7 +369,7 @@ export const Add = ({ children, farm }: Props) => {
       size: farm?.size || '1',
       address: farm?.address || '',
       name: farm?.name || 'My farm',
-      categoryId: farm?.category_id || '',
+      category_id: farm?.category_id || '',
       size_unit: farm?.size_unit || 'acres',
     },
   });
@@ -377,10 +378,10 @@ export const Add = ({ children, farm }: Props) => {
     onSuccess: (data: any) => {
       setFarms({ type: 'ADD_FARM', payload: { farm: data?.farm || {} } });
       form.reset();
-      overlay.onToggle(false);
+      router.back();
     },
-    onError: (err: any) => {
-      Alert.alert('Error', err?.message || 'Failed to create farm', [
+    onError: (err) => {
+      Alert.alert('Error', err.message || 'Failed to create farm', [
         { text: 'OK' },
       ]);
     },
@@ -389,120 +390,113 @@ export const Add = ({ children, farm }: Props) => {
     onSuccess: (data: any) => {
       setFarms({ type: 'UPDATE_FARM', payload: { farm: data?.farm || {} } });
       form.reset();
-      overlay.onToggle(false);
+      router.back();
     },
-    onError: (err: any) => {
-      Alert.alert('Error', err?.message || 'Failed to update farm', [
+    onError: (err) => {
+      Alert.alert('Error', err.message || 'Failed to update farm', [
         { text: 'OK' },
       ]);
     },
   });
 
   const loading = create.isPending || update.isPending;
-  const buttonLabel = loading ? '...' : farm ? 'Update farm' : 'Create farm';
+  const buttonLabel = loading ? '...' : farm ? 'Update' : 'Create';
 
   const onSubmit = async (data: any) => {
     if (farm) {
       await update.mutateAsync({
-        farmId: farm.id,
         ...data,
+        farmId: farm.id,
+        size_unit: data.size_unit,
+        categoryId: data.category_id,
       });
     } else {
-      await create.mutateAsync(data);
+      await create.mutateAsync({
+        ...data,
+        size_unit: data.size_unit,
+        categoryId: data.category_id,
+      });
     }
   };
 
-  const title = farm
-    ? 'Update your farm record'
-    : 'Add new farm to your record';
-
   return (
     <FormProvider {...form}>
-      <Overlay.Provider value={overlay}>
-        <Overlay.SheetTrigger>{children}</Overlay.SheetTrigger>
-        <Overlay.Sheet
-          snapPoints={['55%']}
-          onDismiss={() => overlay.onToggle(false)}
+      <Stack.Screen
+        options={{
+          headerStyle: {
+            backgroundColor: colors.getColor('bg.soft'),
+          },
+          headerTitleStyle: {
+            fontWeight: '500',
+            color: colors.getColor('text.strong'),
+          },
+          title: farm ? 'Update farm' : 'Create farm',
+
+          headerRight: () => {
+            if (loading) {
+              return <ActivityIndicator />;
+            }
+
+            return (
+              <Button
+                title={buttonLabel}
+                onPress={async () => {
+                  const values = form.getValues();
+                  await onSubmit(values);
+                }}
+                disabled={!form.formState.isValid}
+              />
+            );
+          },
+        }}
+      />
+      <Box
+        bg='bg.base'
+        style={{ flex: 1 }}
+      >
+        <Scroll
+          px='xl'
+          style={{ flex: 1 }}
         >
-          <Overlay.SheetHeader>
-            <Heading
-              size='2xl'
-              leading='lg'
-              align='center'
-              weight='medium'
-              style={{ maxWidth: 200, marginHorizontal: 'auto' }}
-            >
-              {title}
-            </Heading>
-          </Overlay.SheetHeader>
-
-          <Overlay.SheetContent mt='3xl'>
-            <Box
-              bg='bg.subtle'
-              style={{
-                overflow: 'hidden',
-                borderRadius: Border.radius.xl,
-              }}
-            >
-              {options.map((option, index) => {
-                return (
-                  <Modal
-                    key={index}
-                    title={option.title}
-                    content={<option.content />}
-                    snapPoints={option.snapPoints}
+          {options.map((option, index) => {
+            return (
+              <Modal
+                key={index}
+                title={option.title}
+                content={<option.content />}
+                snapPoints={option.snapPoints}
+              >
+                <TouchableOpacity activeOpacity={0.6}>
+                  <Box
+                    style={{
+                      height: 48,
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                      borderColor: colors.getColor('border.soft'),
+                      borderBottomWidth: options.length - 1 === index ? 0 : 1,
+                    }}
                   >
-                    <TouchableHighlight
-                      underlayColor={colors.getColor('bg.soft')}
+                    <Heading
+                      size='lg'
+                      leading='sm'
+                      weight='normal'
+                      style={{ flex: 1 }}
                     >
-                      <Box
-                        px='lg'
-                        style={{
-                          height: 44,
-                          alignItems: 'center',
-                          flexDirection: 'row',
-                          borderColor: colors.getColor('border.soft'),
-                          borderBottomWidth:
-                            options.length - 1 === index ? 0 : 1,
-                        }}
-                      >
-                        <Heading
-                          size='lg'
-                          leading='sm'
-                          weight='normal'
-                          style={{ flex: 1 }}
-                        >
-                          {option.name}
-                        </Heading>
+                      {option.name}
+                    </Heading>
 
-                        <Ionicons
-                          size={16}
-                          name='chevron-forward'
-                          color={colors.getColor('icon.inactive')}
-                        />
-                      </Box>
-                    </TouchableHighlight>
-                  </Modal>
-                );
-              })}
-            </Box>
-          </Overlay.SheetContent>
-
-          <Overlay.SheetFooter>
-            <Action.Root
-              loading={loading}
-              onPress={async () => {
-                const values = form.getValues();
-                await onSubmit(values);
-              }}
-              disabled={!form.formState.isValid}
-            >
-              <Action.Loader />
-              <Action.Label>{buttonLabel}</Action.Label>
-            </Action.Root>
-          </Overlay.SheetFooter>
-        </Overlay.Sheet>
-      </Overlay.Provider>
+                    <Ionicons
+                      size={16}
+                      name='chevron-forward'
+                      color={colors.getColor('icon.inactive')}
+                    />
+                  </Box>
+                </TouchableOpacity>
+              </Modal>
+            );
+          })}
+        </Scroll>
+      </Box>
     </FormProvider>
   );
 };

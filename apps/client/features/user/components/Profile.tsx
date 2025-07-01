@@ -14,30 +14,30 @@ const useProfile = () => {
 
   React.useEffect(() => {
     const data = profile.data as any;
-    if (!data) return;
-
-    setUser({ type: 'SET_USER', payload: { user: data?.user } });
-  }, [profile.data]);
+    if (profile.status === 'error') {
+      Alert.alert(
+        'Failed to load profile',
+        profile.error?.message || 'Please try again later',
+        [
+          { text: 'OK', isPreferred: false },
+          {
+            text: 'Retry',
+            isPreferred: true,
+            onPress: () => profile.refetch(),
+          },
+        ]
+      );
+    }
+    if (profile.status === 'success') {
+      setUser({ type: 'SET_USER', payload: { user: data?.user } });
+    }
+  }, [profile.status]);
 
   return { profile };
 };
 
 export const Profile = ({ children }: { children: React.ReactNode }) => {
-  const { profile } = useProfile();
-
-  if (profile.error) {
-    Alert.alert(
-      'Failed to load user',
-      profile.error?.message || 'Please try again later',
-      [
-        { text: 'OK' },
-        {
-          text: 'Retry',
-          onPress: () => profile.refetch(),
-        },
-      ]
-    );
-  }
+  useProfile();
 
   return children;
 };

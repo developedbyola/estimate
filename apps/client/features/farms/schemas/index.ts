@@ -26,7 +26,7 @@ export const farmSchema = z.object({
     .max(255, 'Address cannot exceed 255 characters')
     .trim(),
 
-  categoryId: z.string().uuid('Please select a valid category'),
+  category_id: z.string().uuid('Please select a valid category'),
 
   size: z
     .string()

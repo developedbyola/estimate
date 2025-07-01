@@ -76,7 +76,7 @@ export const userFarmsRouter = router({
           .string()
           .min(1, 'Please select a valid category')
           .optional(),
-        size_unit: z
+        sizeUnit: z
           .enum(['acres', 'hectares', 'square meters'], {
             errorMap: () => ({
               message: 'Please select a valid unit of measurement',
@@ -95,7 +95,7 @@ export const userFarmsRouter = router({
             city: input.city,
             state: input.state,
             address: input.address,
-            size_unit: input.size_unit,
+            sizeUnit: input.sizeUnit,
             category_id: input.categoryId,
           })
           .eq('id', input.farmId)
@@ -165,7 +165,7 @@ export const userFarmsRouter = router({
             (value) => !isNaN(Number(value)) && Number(value) > 0,
             'Please enter a valid positive number for the farm size'
           ),
-        size_unit: z.enum(['acres', 'hectares', 'square meters'], {
+        sizeUnit: z.enum(['acres', 'hectares', 'square meters'], {
           errorMap: () => ({
             message: 'Please select a valid unit of measurement',
           }),
@@ -183,8 +183,8 @@ export const userFarmsRouter = router({
             state: input.state,
             user_id: ctx.actor.userId,
             address: input.address,
-            size_unit: input.size_unit,
-            category_id: input.categoryId,
+            sizeUnit: input.sizeUnit,
+            categoryId: input.categoryId,
           })
           .select(SELECT)
           .single();
@@ -199,6 +199,33 @@ export const userFarmsRouter = router({
 
         return ctx.ok({
           farm: farm.data,
+        });
+      } catch (err) {
+        return ctx.fail(err);
+      }
+    }),
+
+  estimates: protectedProcedure
+    .input(z.object({ farmId: z.string().min(1, 'Farm ID is required') }))
+    .query(async ({ input, ctx }) => {
+      try {
+        const estimates = await ctx.supabase
+          .from('user_estimates')
+          .select('*')
+          .eq('farm_id', input.farmId)
+          .eq('user_id', ctx.actor.userId)
+          .order('created_at', { ascending: false });
+
+        if (estimates.error) {
+          return ctx.fail({
+            code: 'NOT_FOUND',
+            message:
+              "We couldn't find any saved estimates in your account. Try creating a new estimate to get started!",
+          });
+        }
+
+        return ctx.ok({
+          estimates: estimates.data,
         });
       } catch (err) {
         return ctx.fail(err);

@@ -1,28 +1,26 @@
 import React from 'react';
+import { Space } from '@/constants';
+import { Stack } from 'expo-router';
+import { Alert, Button } from 'react-native';
 import Calculations from './Calculations';
 import { estimateSchema } from '../schemas';
-import { useCurrency } from '@/features/currency';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  FormProvider,
-  useForm,
-  useFormContext,
-  useWatch,
-} from 'react-hook-form';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { useForm, useWatch, FormProvider } from 'react-hook-form';
 import {
   Action,
+  ActivityIndicator,
   Box,
   Field,
-  Heading,
   Overlay,
+  Safe,
   Scroll,
-  Text,
   useOverlay,
 } from '@/components';
-import { Stack } from 'expo-router';
-import { Button } from 'react-native';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { Space } from '@/constants';
+import { useEstimates } from './Provider';
+import { trpc } from '@/lib/trpc';
+import { useFarms } from '@/features/farms';
+import { useRouter } from 'expo-router';
 
 const Title = ({
   trigger,
@@ -60,8 +58,10 @@ const Title = ({
 };
 
 export const Add = () => {
+  const router = useRouter();
+  const { farm } = useFarms();
   const colors = useThemeColors();
-  const { currency } = useCurrency();
+  const { setEstimates } = useEstimates();
 
   const form = useForm({
     resolver: zodResolver(estimateSchema),
@@ -69,12 +69,12 @@ export const Add = () => {
       title: 'New Estimate',
       calculations: [
         {
-          id: Date.now().toString(),
-          description: 'Electricity',
           quantity: '1',
           unitPrice: '100',
           operation: 'add',
           attachedTo: null,
+          id: Date.now().toString(),
+          description: 'Electricity',
         },
       ],
     },
@@ -82,39 +82,75 @@ export const Add = () => {
 
   const values = useWatch({ control: form.control });
 
-  return (
-    <FormProvider {...form}>
-      <Stack.Screen
-        options={{
-          title: values.title,
-          headerStyle: {
-            backgroundColor: colors.getColor('bg.soft'),
-          },
-          headerTitleStyle: {
-            fontWeight: '500',
-            color: colors.getColor('text.strong'),
-          },
-          headerLeft: () => {
-            return (
-              <Title
-                control={form.control}
-                trigger={<Button title='Edit' />}
-              />
-            );
-          },
-          headerRight: () => {
-            return <Button title='Create' />;
-          },
-        }}
-      />
+  const create = trpc.userEstimates.create.useMutation({
+    onSuccess: (data: any) => {
+      setEstimates({
+        type: 'ADD_ESTIMATE',
+        payload: { estimate: data?.estimate },
+      });
+      form.reset();
+      router.back();
+    },
+    onError: () => {
+      Alert.alert('Error', 'Failed to create estimate');
+    },
+  });
 
-      <Scroll
-        bg='bg.base'
-        style={{ flex: 1 }}
-      >
-        <Box py='lg' />
-        <Calculations />
+  const onSubmit = async () => {
+    const values = form.getValues();
+    await create.mutateAsync({
+      title: values.title,
+      farmId: farm?.id || '',
+      calculations: values.calculations,
+    });
+  };
+
+  const isLoading = create.isPending;
+
+  return (
+    <Safe
+      bg='bg.base'
+      style={{ flex: 1 }}
+    >
+      <Scroll style={{ flex: 1 }}>
+        <FormProvider {...form}>
+          <Stack.Screen
+            options={{
+              title: values.title,
+              headerStyle: {
+                backgroundColor: colors.getColor('bg.soft'),
+              },
+              headerTitleStyle: {
+                fontWeight: '500',
+                color: colors.getColor('text.strong'),
+              },
+              headerLeft: () => {
+                return (
+                  <Title
+                    control={form.control}
+                    trigger={<Button title='Title' />}
+                  />
+                );
+              },
+              headerRight: () => {
+                if (isLoading) {
+                  return <ActivityIndicator />;
+                }
+
+                return (
+                  <Button
+                    title='Create'
+                    onPress={async () => await onSubmit()}
+                  />
+                );
+              },
+            }}
+          />
+          <Box mt='3xl'>
+            <Calculations />
+          </Box>
+        </FormProvider>
       </Scroll>
-    </FormProvider>
+    </Safe>
   );
 };

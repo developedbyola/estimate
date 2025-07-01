@@ -39,7 +39,7 @@ const Calculations = () => {
       quantity: '1',
       unitPrice: '50',
       description: 'Fertilizer',
-      attachedTo: parentId, // Mark this as a subnode of the parent
+      attachedTo: parentId,
     });
   };
 
@@ -107,65 +107,57 @@ const Calculations = () => {
           <Controller
             name={`calculations.${index}.operation`}
             control={control}
-            render={({ field: operationField }) => {
-              return (
-                <RadioGroup.Root
-                  value={operationField.value}
-                  style={{ alignItems: 'center' }}
-                  onValueChange={({ value }) => operationField.onChange(value)}
+            render={({ field: operationField }) => (
+              <RadioGroup.Root
+                value={operationField.value}
+                style={{ alignItems: 'center' }}
+                onValueChange={(value) => operationField.onChange(value)}
+              >
+                <Box
+                  bg='bg.soft'
+                  style={{
+                    overflow: 'hidden',
+                    flexDirection: 'row',
+                    borderRadius: Border.radius.xl,
+                  }}
                 >
-                  <Box
-                    bg='bg.soft'
-                    style={{
-                      overflow: 'hidden',
-                      flexDirection: 'row',
-                      borderRadius: Border.radius.xl,
-                    }}
-                  >
-                    {Operations.map((operation, index) => {
-                      const isActive = operationField.value === operation.value;
-
-                      return (
-                        <RadioGroup.Item
-                          px='sm'
-                          key={index}
-                          value={operation.value}
-                          bg={isActive ? 'bg.subtle' : undefined}
-                          style={{
-                            height: 22,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                          onPress={() =>
-                            addNewCalculation(operationField.value, field.id)
-                          }
-                        >
-                          <Ionicons
-                            size={16}
-                            name={operation.icon as any}
-                          />
-                        </RadioGroup.Item>
-                      );
-                    })}
-                  </Box>
-                </RadioGroup.Root>
-              );
-            }}
+                  {Operations.map((operation) => {
+                    const isActive = operationField.value === operation.value;
+                    return (
+                      <RadioGroup.Item
+                        px='sm'
+                        key={operation.value}
+                        value={operation.value}
+                        bg={isActive ? 'bg.inactive' : undefined}
+                        style={{
+                          height: 22,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                        onPress={() =>
+                          addNewCalculation(operation.value, field.id)
+                        }
+                      >
+                        <Ionicons
+                          size={16}
+                          name={operation.icon as any}
+                          color={colors.getColor('icon.strong')}
+                        />
+                      </RadioGroup.Item>
+                    );
+                  })}
+                </Box>
+              </RadioGroup.Root>
+            )}
           />
         </Box>
       </Box>
     );
   };
 
-  const renderNode = (field: any, depth = 0) => {
+  const renderNode = (field: CalculationItem) => {
     const index = fields.findIndex((f) => f.id === field.id);
-    const children = React.useMemo(() => {
-      const map = new Map<string, CalculationItem>();
-      fields.forEach((field) => {
-        if (field.attachedTo) map.set(field.attachedTo, field);
-      });
-      return map;
-    }, [fields]);
+    const children = fields.filter((f) => f.attachedTo === field.id);
 
     return (
       <Box key={field.id}>
@@ -173,7 +165,7 @@ const Calculations = () => {
           field={field}
           index={index}
         />
-        {children && renderNode(children.get(field.id), depth + 1)}
+        {children.map((child) => renderNode(child))}
       </Box>
     );
   };

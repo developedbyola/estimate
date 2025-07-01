@@ -38,6 +38,18 @@ const Stacks = () => {
             presentation: 'modal',
           }}
         />
+        <Stack.Screen
+          name='add-category'
+          options={{
+            presentation: 'modal',
+          }}
+        />
+        <Stack.Screen
+          name='add-farm'
+          options={{
+            presentation: 'modal',
+          }}
+        />
       </Stack.Protected>
       {/* unauthenticated screens */}
       <Stack.Screen

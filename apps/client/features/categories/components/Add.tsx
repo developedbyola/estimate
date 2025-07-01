@@ -1,34 +1,39 @@
 import React from 'react';
-import { Border, Space, Typography } from '@/constants';
+import Modal from './shared/Modal';
 import Icons from '../constants/Icons';
 import { excerpt } from '@/utils/excerpt';
 import { categorySchema } from '../schemas';
 import { Ionicons } from '@expo/vector-icons';
-import Modal from './shared/Modal';
-import { Alert, TouchableHighlight } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { Border, Space, Typography } from '@/constants';
 import {
+  Alert,
+  Button,
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  useForm,
+  useWatch,
   Controller,
   FormProvider,
-  useForm,
   useFormContext,
-  useWatch,
 } from 'react-hook-form';
 import {
   Box,
-  Action,
-  Heading,
-  Overlay,
+  Flow,
   Text,
   Field,
-  RadioGroup,
-  Flow,
   useFlow,
+  Heading,
+  RadioGroup,
+  ActivityIndicator,
 } from '@/components';
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { trpc } from '@/lib/trpc';
 import { useCategories } from './Provider';
+import { Stack, useRouter } from 'expo-router';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 const Name = () => {
   const colors = useThemeColors();
@@ -56,6 +61,7 @@ const Name = () => {
                   height: '100%',
                   paddingHorizontal: Space.lg,
                   fontSize: Typography.size.lg,
+                  color: colors.getColor('text.strong'),
                 }}
               />
             </Field.Control>
@@ -77,6 +83,7 @@ const Icon = () => {
       render={({ field }) => {
         return (
           <RadioGroup.Root
+            mt='base'
             value={field.value}
             style={{ flexDirection: 'row', gap: '1.5%', flexWrap: 'wrap' }}
             onValueChange={({ value }) => field.onChange(value)}
@@ -99,7 +106,7 @@ const Icon = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       backgroundColor: item.lightColor,
-                      borderRadius: Border.radius['xl'],
+                      borderRadius: Border.radius.full,
                     }}
                   >
                     <Ionicons
@@ -114,7 +121,7 @@ const Icon = () => {
                         borderWidth: 2,
                         borderStyle: 'solid',
                         borderColor: item.normalColor,
-                        borderRadius: Border.radius['xl'],
+                        borderRadius: Border.radius.full,
                         alignItems: 'flex-end',
                       }}
                       value={item.id}
@@ -176,13 +183,7 @@ const Form = () => {
   const icon = Icons.find((icon) => icon.id === values.icon);
 
   return (
-    <Box
-      bg='bg.soft'
-      style={{
-        overflow: 'hidden',
-        borderRadius: Border.radius.xl,
-      }}
-    >
+    <Box px='lg'>
       {options.map((option, index) => {
         return (
           <Modal
@@ -191,15 +192,17 @@ const Form = () => {
             snapPoints={option.snapPoints}
             headingText={option.headingText}
           >
-            <TouchableHighlight underlayColor={colors.getColor('bg.subtle')}>
+            <TouchableOpacity activeOpacity={0.7}>
               <Box
                 px='lg'
+                pt='xl'
+                pb='base'
                 style={{
-                  height: 44,
+                  flexWrap: 'wrap',
                   alignItems: 'center',
                   flexDirection: 'row',
-                  borderColor: 'white',
-                  borderBottomWidth: options.length - 1 === index ? 0 : 1.5,
+                  borderColor: colors.getColor('border.soft'),
+                  borderBottomWidth: options.length - 1 === index ? 0 : 1,
                 }}
               >
                 <Heading
@@ -210,35 +213,44 @@ const Form = () => {
                 >
                   {option.name}
                 </Heading>
-                {index === 1 ? (
-                  <Box
-                    style={{
-                      width: 24,
-                      aspectRatio: '1/1',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: Border.radius.full,
-                      backgroundColor: icon?.lightColor,
-                    }}
-                  >
-                    <Ionicons
-                      size={16}
-                      color={icon?.normalColor}
-                      name={icon?.icon || ('' as any)}
-                    />
-                  </Box>
-                ) : null}
-                {index === 0 ? (
-                  <Text
-                    size='lg'
-                    leading='sm'
-                    color='text.inactive'
-                  >
-                    {excerpt(values.name || 'e.g Cereals', 20)}
-                  </Text>
-                ) : null}
+
+                <Ionicons
+                  size={20}
+                  name='chevron-forward'
+                  color={colors.getColor('icon.inactive')}
+                />
+
+                <Box style={{ width: '100%', marginTop: Space['xl'] }}>
+                  {index === 1 ? (
+                    <Box
+                      style={{
+                        width: 24,
+                        aspectRatio: '1/1',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: Border.radius.full,
+                        backgroundColor: icon?.lightColor,
+                      }}
+                    >
+                      <Ionicons
+                        size={16}
+                        color={icon?.normalColor}
+                        name={icon?.icon || ('' as any)}
+                      />
+                    </Box>
+                  ) : null}
+                  {index === 0 ? (
+                    <Text
+                      size='base'
+                      leading='sm'
+                      color='text.inactive'
+                    >
+                      {values.name || 'Enter a name to see it here'}
+                    </Text>
+                  ) : null}
+                </Box>
               </Box>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </Modal>
         );
       })}
@@ -246,48 +258,11 @@ const Form = () => {
   );
 };
 
-const Success = ({ isUpdate }: { isUpdate: boolean }) => {
+export const Add = () => {
+  const router = useRouter();
   const colors = useThemeColors();
+  const { category, setCategories } = useCategories();
 
-  return (
-    <React.Fragment>
-      <Ionicons
-        size={40}
-        name='bonfire-outline'
-        color={colors.getColor('success.base')}
-        style={{ marginInline: 'auto', marginTop: Space.xl }}
-      />
-      <Heading
-        size='2xl'
-        align='center'
-        leading='lg'
-        weight='medium'
-        style={{ marginTop: Space['2xl'], maxWidth: 200, marginInline: 'auto' }}
-      >
-        {isUpdate
-          ? 'Category updated successfully'
-          : 'Category created successfully'}
-      </Heading>
-      <Text
-        size='lg'
-        align='center'
-        leading='base'
-        weight='normal'
-        style={{ marginTop: Space.base, maxWidth: 320, marginInline: 'auto' }}
-      >
-        The new category is ready, Making it easier to manage and track
-        different agricultural locations.
-      </Text>
-    </React.Fragment>
-  );
-};
-
-type Props = {
-  category?: any;
-  children: React.ReactNode;
-};
-
-export const Add = ({ children, category }: Props) => {
   const form = useForm({
     mode: 'all',
     resolver: zodResolver(categorySchema),
@@ -296,9 +271,7 @@ export const Add = ({ children, category }: Props) => {
       icon: category?.icon || Icons[0].id,
     },
   });
-
   const flow = useFlow({ count: 1 });
-  const { setCategories } = useCategories();
 
   const updateCategory = trpc.userCategories.update.useMutation({
     onSuccess: (data: any) => {
@@ -306,7 +279,7 @@ export const Add = ({ children, category }: Props) => {
         type: 'UPDATE_CATEGORY',
         payload: { category: data.category },
       });
-      flow.onNextStep();
+      router.back();
     },
     onError: (err) => {
       Alert.alert('Failed to update category', err.message);
@@ -319,24 +292,23 @@ export const Add = ({ children, category }: Props) => {
         type: 'ADD_CATEGORY',
         payload: { category: data.category },
       });
-      flow.onNextStep();
+      router.back();
     },
     onError: (err) => {
       Alert.alert('Failed to create category', err.message);
     },
   });
 
-  const isUpdate = !!category;
   const isLoading = createCategory.isPending || updateCategory.isPending;
-  const mutate = () => {
+  const mutate = async () => {
     if (category) {
-      updateCategory.mutate({
+      await updateCategory.mutateAsync({
         categoryId: category.id,
         name: form.getValues().name,
         icon: form.getValues().icon,
       });
     } else {
-      createCategory.mutate({
+      await createCategory.mutateAsync({
         name: form.getValues().name,
         icon: form.getValues().icon,
       });
@@ -344,58 +316,44 @@ export const Add = ({ children, category }: Props) => {
   };
 
   return (
-    <FormProvider {...form}>
-      <Overlay.Root>
-        <Overlay.SheetTrigger>{children}</Overlay.SheetTrigger>
-        <Overlay.Sheet
-          snapPoints={['37%']}
-          onDismiss={() => {
-            flow.reset();
-          }}
-          style={{ justifyContent: 'space-between' }}
-        >
-          <Flow.Provider
-            value={flow}
-            style={{ flex: 1 }}
-          >
-            <Flow.Success>
-              <Success isUpdate={isUpdate} />
-            </Flow.Success>
-            <Flow.Content index={0}>
-              <Overlay.SheetHeader>
-                <Heading
-                  size='2xl'
-                  align='center'
-                  leading='lg'
-                  weight='medium'
-                  style={{ maxWidth: 200, marginHorizontal: 'auto' }}
-                >
-                  {isUpdate
-                    ? 'Review and update this category'
-                    : 'Sort your farms meaningfully.'}
-                </Heading>
-              </Overlay.SheetHeader>
+    <React.Fragment>
+      <Stack.Screen
+        options={{
+          headerTitleStyle: {
+            fontWeight: '500',
+            color: colors.getColor('text.strong'),
+          },
+          headerStyle: {
+            backgroundColor: colors.getColor('bg.soft'),
+          },
+          title: category ? 'Update category' : 'Create category',
+          headerRight: () => {
+            if (isLoading) {
+              return <ActivityIndicator />;
+            }
 
-              <Overlay.SheetContent mt='2xl'>
-                <Form />
-              </Overlay.SheetContent>
-
-              <Overlay.SheetFooter>
-                <Action.Root
-                  loading={isLoading}
-                  onPress={() => mutate()}
-                  disabled={!form.formState.isValid}
-                >
-                  <Action.Loader />
-                  <Action.Label>
-                    {isUpdate ? 'Update category' : 'Create category'}
-                  </Action.Label>
-                </Action.Root>
-              </Overlay.SheetFooter>
-            </Flow.Content>
+            return (
+              <Button
+                disabled={!form.formState.isValid}
+                onPress={async () => await mutate()}
+                title={category ? 'Update' : 'Create'}
+              />
+            );
+          },
+        }}
+      />
+      <Box
+        bg={'bg.base'}
+        style={{ flex: 1 }}
+      >
+        <FormProvider {...form}>
+          <Flow.Provider value={flow}>
+            <Box mt='2xl'>
+              <Form />
+            </Box>
           </Flow.Provider>
-        </Overlay.Sheet>
-      </Overlay.Root>
-    </FormProvider>
+        </FormProvider>
+      </Box>
+    </React.Fragment>
   );
 };

@@ -185,10 +185,10 @@ const Colors = {
       soft: '#7f1d1d', // red-900
     },
     bg: {
-      soft: '#1f2937', // neutral-800
-      base: '#111827', // neutral-900
+      soft: '#1e2939', // neutral-800
+      base: '#101828', // neutral-900
       inactive: '#374151', // neutral-700
-      subtle: '#1f2937', // neutral-800
+      subtle: '#1e2939', // neutral-800
       strong: '#f9fafb', // neutral-50
       overlay: 'rgba(17, 24, 39, 0.9)', // semi-transparent dark
       backdrop: 'rgba(0, 0, 0, 0.6)', // darker overlay for modals

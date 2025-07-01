@@ -9,6 +9,7 @@ import { Box, Heading, Text, ActivityIndicator } from '@/components';
 import Icons from '@/features/categories/constants/Icons';
 import { MotiView } from 'moti';
 import { useRouter } from 'expo-router';
+import { trpc } from '@/lib/trpc';
 
 const Loader = () => {
   return <ActivityIndicator />;
@@ -113,21 +114,43 @@ const Item = (props: ItemProps) => {
   );
 };
 
+const useFarmList = () => {
+  const { setFarms } = useFarms();
+  const list = trpc.userFarms.list.useQuery();
+
+  React.useEffect(() => {
+    if (list.status === 'error') {
+      Alert.alert('Unable to fetch farms', list.error.message, [
+        { text: 'Cancel' },
+        {
+          text: 'Retry',
+          onPress: () => list.refetch().catch(console.error),
+        },
+      ]);
+    }
+
+    if (list.status === 'success') {
+      const data = list.data as any;
+      if (!data) return;
+
+      setFarms({
+        type: 'SET_FARMS',
+        payload: {
+          farms: (list.data as any)?.farms || [],
+        },
+      });
+    }
+  }, [list.status]);
+
+  return { isLoading: list.isLoading };
+};
+
 export const List = () => {
-  const { farms, loading, error, refetch } = useFarms();
+  const { farms } = useFarms();
 
-  if (loading) return <Loader />;
-  if (error) {
-    Alert.alert('Server Error', error?.message || 'Failed to load farms', [
-      { text: 'OK' },
-      {
-        text: 'Retry',
-        onPress: () => refetch?.(),
-      },
-    ]);
+  const { isLoading } = useFarmList();
 
-    return <Empty />;
-  }
+  if (isLoading) return <Loader />;
   if (farms.length === 0) return <Empty />;
 
   return (
