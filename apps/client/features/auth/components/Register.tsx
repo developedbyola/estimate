@@ -36,26 +36,13 @@ export const Register = () => {
           style={{ flex: 1 }}
         >
           <Box
-            mt='6xl'
             px='xl'
+            mt='4xl'
             style={{ gap: 8 }}
           >
-            <Heading
-              size='3xl'
-              leading='xl'
-              align='center'
-              weight='bold'
-              style={{ maxWidth: 280, marginInline: 'auto' }}
-            >
-              Create an account
-            </Heading>
             <Text
               size='lg'
-              align='center'
-              style={{
-                maxWidth: 320,
-                marginInline: 'auto',
-              }}
+              color='text.strong'
             >
               Join our community and start your journey with us. Create an
               account to get started.
@@ -65,17 +52,18 @@ export const Register = () => {
           <Box
             px='xl'
             mt='4xl'
-            style={{ gap: 8, flex: 1 }}
+            style={{ gap: 20, flex: 1 }}
           >
             <Field.Root
               name='email'
               control={form.control as any}
             >
+              <Field.Label>Email</Field.Label>
               <Field.Control>
                 <Field.TextInput
                   keyboardType='email-address'
                   textContentType='emailAddress'
-                  placeholder='Your email address'
+                  placeholder='e.g sam@icloud.com'
                 />
               </Field.Control>
               <Field.Feedback />
@@ -84,6 +72,7 @@ export const Register = () => {
               name='password'
               control={form.control as any}
             >
+              <Field.Label>Password</Field.Label>
               <Field.Control>
                 <Password.Root>
                   <Password.TextInput
@@ -99,12 +88,16 @@ export const Register = () => {
 
           <Box px='xl'>
             <Action.Root
+              size='xl'
               loading={status === 'pending'}
               style={{ marginTop: Space['xl'] }}
               disabled={status === 'pending' || !form.formState.isValid}
+              onPress={async () => {
+                await mutate(form.getValues());
+              }}
             >
               <Action.Loader />
-              <Action.Label>Create an account</Action.Label>
+              <Action.Label style={{ fontSize: 18 }}>Create</Action.Label>
             </Action.Root>
           </Box>
         </Safe>

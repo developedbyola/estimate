@@ -74,10 +74,14 @@ const Footer = () => {
       px='xl'
       style={{ gap: Space.xs }}
     >
-      <Action.Root onPress={() => router.push('/register')}>
+      <Action.Root
+        size='lg'
+        onPress={() => router.push('/register')}
+      >
         <Action.Label>Become a member</Action.Label>
       </Action.Root>
       <Action.Root
+        size='lg'
         variant='ghost'
         onPress={() => router.push('/login')}
       >

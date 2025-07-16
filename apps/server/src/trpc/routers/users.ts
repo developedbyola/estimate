@@ -5,18 +5,21 @@ import { protectedProcedure, publicProcedure, router } from '../middleware';
 const passwordSchema = z
   .string()
   .min(8, 'Password must be at least 8 characters long')
+  .regex(/^\S+$/, 'Password must not contain any spaces')
+  .regex(/[0-9]/, 'Password must contain at least one number')
   .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
   .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-  .regex(/[0-9]/, 'Password must contain at least one number')
-  .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character')
-  .regex(/^\S+$/, 'Password must not contain any spaces');
+  .regex(
+    /[^A-Za-z0-9]/,
+    'Password must contain at least one special character'
+  );
 
 export const usersRouter = router({
-  profile: protectedProcedure.query(async ({ ctx }) => {
+  me: protectedProcedure.query(async ({ ctx }) => {
     try {
       const user = await ctx.supabase
         .from('users')
-        .select('id, created_at, first_name, last_name, email')
+        .select('id, created_at, is_onboarded, email')
         .eq('id', ctx.actor.userId)
         .single();
 
@@ -32,10 +35,9 @@ export const usersRouter = router({
         {
           user: {
             id: user.data.id,
-            firstName: user.data.first_name,
-            lastName: user.data.last_name,
             email: user.data.email,
             createdAt: user.data.created_at,
+            isOnboarded: user.data.is_onboarded,
           },
         },
         { httpStatus: 200, path: 'users.profile' }
@@ -55,7 +57,7 @@ export const usersRouter = router({
       try {
         const user = await ctx.supabase
           .from('users')
-          .select('id, name, created_at')
+          .select('id, email, is_onboarded, created_at')
           .eq('id', input.userId)
           .single();
 
@@ -68,63 +70,14 @@ export const usersRouter = router({
         }
 
         return ctx.ok({
-          user: user.data,
-        });
-      } catch (err) {}
-    }),
-
-  update: protectedProcedure
-    .input(
-      z.object({
-        firstName: z
-          .string()
-          .min(2, 'First   name must be at least 2 characters long')
-          .max(100, 'First name cannot exceed 100 characters')
-          .regex(
-            /^[\p{L}\s'-]+$/u,
-            'First name can only contain letters, spaces, hyphens, and apostrophes'
-          )
-          .optional(),
-        lastName: z
-          .string()
-          .min(2, 'Last name must be at least 2 characters long')
-          .max(100, 'Last name cannot exceed 100 characters')
-          .regex(
-            /^[\p{L}\s'-]+$/u,
-            'Last name can only contain letters, spaces, hyphens, and apostrophes'
-          )
-          .optional(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const user = await ctx.supabase
-          .from('users')
-          .update({ first_name: input.firstName, last_name: input.lastName })
-          .eq('id', ctx.actor.userId)
-          .select('id, email, first_name, last_name, created_at')
-          .single();
-
-        if (!user.data) {
-          return ctx.fail({
-            message:
-              'We encountered an issue while updating your profile. Please try again in a few moments.',
-            code: 'INTERNAL_SERVER_ERROR',
-          });
-        }
-
-        return ctx.ok({
           user: {
             id: user.data.id,
             email: user.data.email,
-            firstName: user.data.first_name,
-            lastName: user.data.last_name,
             createdAt: user.data.created_at,
+            isOnboarded: user.data.is_onboarded,
           },
         });
-      } catch (err) {
-        return ctx.fail(err);
-      }
+      } catch (err) {}
     }),
 
   changePassword: protectedProcedure

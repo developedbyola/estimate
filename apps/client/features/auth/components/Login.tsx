@@ -37,40 +37,26 @@ export const Login = () => {
         >
           <Box
             px='xl'
-            mt='6xl'
-            style={{ gap: 8 }}
+            mt='4xl'
           >
-            <Heading
-              size='3xl'
-              leading='xl'
-              align='center'
-              weight='bold'
-              style={{ maxWidth: 280, marginInline: 'auto' }}
-            >
-              Welcome back!
-            </Heading>
             <Text
               size='lg'
-              align='center'
-              style={{
-                maxWidth: 320,
-                marginInline: 'auto',
-              }}
+              color='text.strong'
             >
-              Good to have you! Sign in to access your account and continue
-              where you left off.
+              Sign in to access your account and continue where you left off.
             </Text>
           </Box>
 
           <Box
             px={'xl'}
             mt='4xl'
-            style={{ flex: 1, gap: 8 }}
+            style={{ flex: 1, gap: 20 }}
           >
             <Field.Root
               name='email'
               control={form.control as any}
             >
+              <Field.Label>Email</Field.Label>
               <Field.Control>
                 <Field.TextInput
                   keyboardType='email-address'
@@ -85,6 +71,7 @@ export const Login = () => {
               name='password'
               control={form.control as any}
             >
+              <Field.Label>Password</Field.Label>
               <Field.Control>
                 <Password.Root>
                   <Password.TextInput
@@ -100,7 +87,7 @@ export const Login = () => {
 
           <Box px={'xl'}>
             <Action.Root
-              size='lg'
+              size='xl'
               onPress={async () => {
                 await mutate(form.getValues());
               }}
@@ -108,7 +95,7 @@ export const Login = () => {
               disabled={!form.formState.isValid || status === 'pending'}
             >
               <Action.Loader />
-              <Action.Label>Sign in</Action.Label>
+              <Action.Label style={{ fontSize: 18 }}>Sign in</Action.Label>
             </Action.Root>
           </Box>
         </Safe>

@@ -10,8 +10,13 @@ const LoginPage = () => {
     <React.Fragment>
       <Stack.Screen
         options={{
+          sheetCornerRadius: 32,
+          contentStyle: {
+            height: '100%',
+            backgroundColor: colors.getColor('bg.base'),
+          },
           headerStyle: {
-            backgroundColor: colors.getColor('bg.soft'),
+            backgroundColor: colors.getColor('bg.base'),
           },
           headerTitleStyle: {
             color: colors.getColor('text.strong'),

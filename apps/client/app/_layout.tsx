@@ -9,7 +9,6 @@ import { Currency } from '@/features/currency';
 import { Estimates } from '@/features/estimates';
 import { Categories } from '@/features/categories';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { KeyboardAvoidingView, Platform } from 'react-native';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -78,13 +77,13 @@ const Stacks = () => {
       <Stack.Screen
         name='login'
         options={{
-          presentation: 'modal',
+          presentation: 'formSheet',
         }}
       />
       <Stack.Screen
         name='register'
         options={{
-          presentation: 'modal',
+          presentation: 'formSheet',
         }}
       />
     </Stack>
@@ -106,14 +105,7 @@ const Layout = () => {
                         <Farms.Provider>
                           <Estimates.Provider>
                             <Popup.Provider>
-                              <KeyboardAvoidingView
-                                behavior={
-                                  Platform.OS === 'ios' ? 'padding' : 'height'
-                                }
-                                style={{ flex: 1 }}
-                              >
-                                <Stacks />
-                              </KeyboardAvoidingView>
+                              <Stacks />
                             </Popup.Provider>
                           </Estimates.Provider>
                         </Farms.Provider>

@@ -20,30 +20,12 @@ export const authRouter = router({
   register: publicProcedure
     .input(
       z.object({
-        firstName: z
-          .string()
-          .min(2, 'First   name must be at least 2 characters long')
-          .max(100, 'First name cannot exceed 100 characters')
-          .regex(
-            /^[\p{L}\s'-]+$/u,
-            'First name can only contain letters, spaces, hyphens, and apostrophes'
-          )
-          .optional(),
-        lastName: z
-          .string()
-          .min(2, 'Last name must be at least 2 characters long')
-          .max(100, 'Last name cannot exceed 100 characters')
-          .regex(
-            /^[\p{L}\s'-]+$/u,
-            'Last name can only contain letters, spaces, hyphens, and apostrophes'
-          )
-          .optional(),
         email: z.string().email('Please enter a valid email address'),
         password: passwordSchema,
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { firstName, lastName, email, password } = input;
+      const { email, password } = input;
 
       try {
         const previousUser = await ctx.supabase
@@ -65,12 +47,10 @@ export const authRouter = router({
         const user = await ctx.supabase
           .from('users')
           .insert({
-            first_name: firstName?.toLowerCase(),
-            last_name: lastName?.toLowerCase(),
             email: email.toLowerCase(),
             password: hashedPassword,
           })
-          .select('id, created_at, first_name, last_name, email')
+          .select('id, created_at, is_onboarded, email')
           .single();
 
         if (user.error) {
@@ -84,10 +64,9 @@ export const authRouter = router({
           {
             user: {
               id: user.data.id,
-              firstName: user.data.first_name,
-              lastName: user.data.last_name,
               email: user.data.email,
               createdAt: user.data.created_at,
+              isOnboarded: user.data.is_onboarded,
             },
           },
           { httpStatus: 200, path: 'auth.register' }
@@ -110,7 +89,7 @@ export const authRouter = router({
       try {
         const user = await ctx.supabase
           .from('users')
-          .select('id, created_at, first_name, last_name, email, password')
+          .select('id, created_at, is_onboarded, email, password')
           .eq('email', email.trim().toLowerCase())
           .single();
 
@@ -219,9 +198,8 @@ export const authRouter = router({
         const userData = {
           id: user.data.id,
           email: user.data.email,
-          firstName: user.data.first_name,
-          lastName: user.data.last_name,
           createdAt: user.data.created_at,
+          isOnboarded: user.data.is_onboarded,
         };
 
         // Return access token and user data

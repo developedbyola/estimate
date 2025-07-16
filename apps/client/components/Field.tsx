@@ -72,28 +72,6 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
   );
 });
 
-type LabelRef = React.ComponentRef<typeof Heading>;
-type LabelProps = React.ComponentProps<typeof Heading>;
-const Label = React.forwardRef<LabelRef, LabelProps>((props, ref) => {
-  const { style, ...restProps } = props;
-  const colors = useThemeColors();
-
-  return (
-    <Heading
-      ref={ref}
-      style={[
-        {
-          fontSize: Typography.size.base,
-          color: colors.getColor('text.subtle'),
-          fontWeight: Typography.weight.medium,
-        },
-        style,
-      ]}
-      {...restProps}
-    />
-  );
-});
-
 type TextInputRef = React.ComponentRef<typeof BaseTextInput>;
 type TextInputProps = React.ComponentProps<typeof BaseTextInput>;
 const TextInput = React.forwardRef<TextInputRef, TextInputProps>(
@@ -189,6 +167,29 @@ const Hint = React.forwardRef<HintRef, HintProps>((props, ref) => {
   );
 });
 
+type LabelRef = React.ComponentRef<typeof Text>;
+type LabelProps = React.ComponentProps<typeof Text>;
+const Label = React.forwardRef<LabelRef, LabelProps>((props, ref) => {
+  const { style, ...restProps } = props;
+  useFieldContext();
+  const colors = useThemeColors();
+
+  return (
+    <Text
+      ref={ref}
+      style={[
+        {
+          fontSize: 17,
+          fontWeight: '600',
+          color: colors.getColor('text.subtle'),
+        },
+        style,
+      ]}
+      {...restProps}
+    />
+  );
+});
+
 type FeedbackRef = React.ComponentRef<typeof Text>;
 type FeedbackProps = React.ComponentProps<typeof Text>;
 const Feedback = React.forwardRef<FeedbackRef, FeedbackProps>((props, ref) => {
@@ -206,9 +207,9 @@ const Feedback = React.forwardRef<FeedbackRef, FeedbackProps>((props, ref) => {
       leading={leading}
       style={[
         {
+          fontSize: 16,
+          fontWeight: '400',
           color: colors.getColor('error.base'),
-          fontSize: 14,
-          fontWeight: 'medium',
         },
         style,
       ]}

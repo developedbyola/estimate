@@ -159,7 +159,7 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
       height: 48,
     },
     xl: {
-      height: 56,
+      height: 52,
     },
     base: {
       height: 44,
@@ -178,7 +178,7 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
             flexDirection: 'row',
             justifyContent: 'center',
             paddingInline: Space['xl'],
-            borderRadius: Border.radius['full'],
+            borderRadius: Border.radius['xl'],
             opacity: disabled || loading ? 0.5 : 1,
           },
           {

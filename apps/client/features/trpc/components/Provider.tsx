@@ -20,7 +20,9 @@ export const Provider = ({ children }: ProviderProps) => {
   const trpcClient = trpc.createClient({
     links: [
       httpBatchLink({
-        url: `${process.env.EXPO_PUBLIC_API_URL}/api/trpc`,
+        url: `${
+          process.env.SERVER_API_URL || 'https://estimate-server.onrender.com'
+        }/api/trpc`,
         headers: {
           'x-app-version': '0.0.1',
           'x-device-name': Device.deviceName || '',
