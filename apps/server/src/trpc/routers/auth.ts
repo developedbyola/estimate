@@ -28,22 +28,7 @@ export const authRouter = router({
       const { email, password } = input;
 
       try {
-        const previousUser = await ctx.supabase
-          .from('users')
-          .select('email')
-          .eq('email', email)
-          .single();
-
-        if (previousUser.data) {
-          return ctx.fail({
-            code: 'CONFLICT',
-            message:
-              'An account with this email already exists. Please use a different email or try logging in instead.',
-          });
-        }
-
         const hashedPassword = await argon2.hash(password);
-
         const user = await ctx.supabase
           .from('users')
           .insert({
@@ -54,6 +39,14 @@ export const authRouter = router({
           .single();
 
         if (user.error) {
+          if (user.error.code === '23505') {
+            return ctx.fail({
+              code: 'CONFLICT',
+              message:
+                'An account with this email already exists. Please use a different email or try logging in instead.',
+            });
+          }
+
           return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
             message: `We encountered an issue creating your account. ${user.error.message}`,
