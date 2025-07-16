@@ -30,7 +30,7 @@ export const authRouter = router({
       try {
         const previousUser = await ctx.supabase
           .from('users')
-          .select('id, created_at, first_name, last_name, email')
+          .select('email')
           .eq('email', email)
           .single();
 
