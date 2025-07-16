@@ -124,7 +124,7 @@ export const usersRouter = router({
             password: hashedPassword,
           })
           .eq('id', ctx.actor.userId)
-          .select('id, name, created_at')
+          .select('id, created_at')
           .single();
 
         if (updatedUser.error) {
