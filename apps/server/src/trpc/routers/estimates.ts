@@ -1,36 +1,53 @@
 import z from 'zod';
 import { protectedProcedure, router } from '../middleware';
 
-export const userEstimatesRouter = router({
-  list: protectedProcedure.query(async ({ ctx }) => {
-    try {
-      const estimates = await ctx.supabase
-        .from('user_estimates')
-        .select('*')
-        .eq('user_id', ctx.actor.userId)
-        .order('created_at', { ascending: false });
+export const estimatesRouter = router({
+  list: protectedProcedure
+    .input(
+      z.object({
+        farmId: z.string().min(1, 'Farm ID is required').optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        let query = ctx.supabase
+          .from('estimates')
+          .select('*')
+          .eq('user_id', ctx.actor.userId);
 
-      if (estimates.error) {
-        return ctx.fail({
-          code: 'NOT_FOUND',
-          message:
-            "We couldn't find any saved estimates in your account. Try creating a new estimate to get started!",
+        if (input.farmId) {
+          query = query.eq('farm_id', input.farmId);
+        }
+
+        const estimates = await query.order('created_at', { ascending: false });
+
+        if (estimates.error) {
+          return ctx.fail({
+            code: 'NOT_FOUND',
+            message:
+              "We couldn't find any saved estimates in your account. Try creating a new estimate to get started!",
+          });
+        }
+
+        return ctx.ok({
+          estimates: estimates.data.map((estimate) => ({
+            id: estimate.id,
+            title: estimate.title,
+            farmId: estimate.farm_id,
+            createdAt: estimate.created_at,
+            calculations: estimate.calculations,
+          })),
         });
+      } catch (err) {
+        return ctx.fail(err);
       }
-
-      return ctx.ok({
-        estimates: estimates.data,
-      });
-    } catch (err) {
-      return ctx.fail(err);
-    }
-  }),
+    }),
   get: protectedProcedure
     .input(z.object({ estimateId: z.string() }))
     .query(async ({ input, ctx }) => {
       try {
         const estimate = await ctx.supabase
-          .from('user_estimates')
+          .from('estimates')
           .select('*')
           .eq('id', input.estimateId)
           .eq('user_id', ctx.actor.userId)
@@ -45,7 +62,13 @@ export const userEstimatesRouter = router({
         }
 
         return ctx.ok({
-          estimate: estimate.data,
+          estimate: {
+            id: estimate.data.id,
+            title: estimate.data.title,
+            farmId: estimate.data.farm_id,
+            createdAt: estimate.data.created_at,
+            calculations: estimate.data.calculations,
+          },
         });
       } catch (err) {
         return ctx.fail(err);
@@ -67,7 +90,7 @@ export const userEstimatesRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const estimate = await ctx.supabase
-          .from('user_estimates')
+          .from('estimates')
           .insert({
             title: input.title,
             farm_id: input.farmId,
@@ -86,7 +109,13 @@ export const userEstimatesRouter = router({
         }
 
         return ctx.ok({
-          estimate: estimate.data,
+          estimate: {
+            id: estimate.data.id,
+            title: estimate.data.title,
+            farmId: estimate.data.farm_id,
+            createdAt: estimate.data.created_at,
+            calculations: estimate.data.calculations,
+          },
         });
       } catch (err) {
         return ctx.fail(err);
@@ -110,7 +139,7 @@ export const userEstimatesRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const estimate = await ctx.supabase
-          .from('user_estimates')
+          .from('estimates')
           .update({
             title: input.title,
             calculations: input.calculations,
@@ -143,7 +172,7 @@ export const userEstimatesRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const estimate = await ctx.supabase
-          .from('user_estimates')
+          .from('estimates')
           .delete()
           .eq('id', input.estimateId)
           .select('*')
@@ -158,7 +187,13 @@ export const userEstimatesRouter = router({
         }
 
         return ctx.ok({
-          estimate: estimate.data,
+          estimate: {
+            id: estimate.data.id,
+            title: estimate.data.title,
+            farmId: estimate.data.farm_id,
+            createdAt: estimate.data.created_at,
+            calculations: estimate.data.calculations,
+          },
         });
       } catch (err) {
         return ctx.fail(err);

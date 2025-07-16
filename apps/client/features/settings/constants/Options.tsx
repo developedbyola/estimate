@@ -1,10 +1,10 @@
 export default {
   profile: [
     {
-      name: 'My profile',
+      name: 'Account',
       snapPoints: ['50%'],
-      href: '/(modals)/profile',
-      icon: 'color-wand-outline',
+      href: '/(settings)/profile',
+      icon: 'at-circle-outline',
     },
 
     {

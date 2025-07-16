@@ -1,54 +1,66 @@
 import React from 'react';
-import { trpc } from '@/lib/trpc';
 import { useAuth } from './Provider';
 import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Trpc } from '@/features/trpc';
 
 const useRefreshToken = () => {
-  const { auth, setAuth } = useAuth();
   const router = useRouter();
+  const { auth, setAuth } = useAuth();
 
-  const refresh = trpc.auth.refresh.useMutation({
+  const refresh = Trpc.client.auth.refresh.useMutation({
     onSuccess: async (data: any) => {
-      await AsyncStorage.setItem('access_token', data.accessToken);
-      await SecureStore.setItemAsync('refresh_token', data.refreshToken);
+      setAuth({
+        type: 'SET_TOKENS',
+        payload: {
+          auth: {
+            accessToken: data?.accessToken,
+            refreshToken: data?.refreshToken,
+          },
+        },
+      });
     },
-    onError: (err) => {
-      console.log(err);
-      if (err.message.includes('expired')) {
-        Alert.alert('Session expired', 'Please login again', [
+    onError: (err, input) => {
+      if (err.message.toLowerCase().includes('sign in')) {
+        Alert.alert('Session expired', err.message, [
           {
-            text: 'OK',
+            text: 'Sign in',
             onPress: async () => {
               setAuth({ type: 'LOGOUT' });
-              await AsyncStorage.removeItem('access_token');
-              await SecureStore.deleteItemAsync('refresh_token');
               router.replace('/login');
             },
           },
         ]);
+        return;
       }
+
+      Alert.alert('Authentication error', err.message, [
+        {
+          text: 'Retry',
+          onPress: () => {
+            refresh.mutate(input);
+          },
+        },
+      ]);
     },
   });
 
   const mutate = React.useCallback(async () => {
-    const refreshToken = (await SecureStore.getItemAsync('refresh_token'))!;
-    await refresh.mutateAsync({ refreshToken });
-  }, []);
+    if (!auth.refreshToken) return;
+    await refresh.mutateAsync({ refreshToken: auth.refreshToken });
+  }, [auth.refreshToken]);
 
   React.useEffect(() => {
-    if (!auth.isAuthenticated) return;
-
-    mutate();
+    if (auth.isLoading) {
+      mutate();
+    }
 
     const interval = setInterval(() => {
       mutate();
-    }, 1000 * 60 * 30);
+    }, 1000 * 60 * 25);
 
     return () => clearInterval(interval);
-  }, [auth.isAuthenticated, mutate]);
+  }, [auth.isLoading, mutate]);
 };
 
 type Props = {

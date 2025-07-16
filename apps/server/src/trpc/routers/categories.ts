@@ -1,11 +1,11 @@
 import z from 'zod';
 import { protectedProcedure, router } from '../middleware';
 
-export const userCategoriesRouter = router({
+export const categoriesRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
     try {
       const categories = await ctx.supabase
-        .from('user_categories')
+        .from('categories')
         .select('*')
         .eq('user_id', ctx.actor.userId)
         .order('created_at', { ascending: false });
@@ -19,7 +19,12 @@ export const userCategoriesRouter = router({
       }
 
       return ctx.ok({
-        categories: categories.data,
+        categories: categories.data.map((category) => ({
+          id: category.id,
+          name: category.name,
+          icon: category.icon,
+          createdAt: category.created_at,
+        })),
       });
     } catch (err) {
       return ctx.fail(err);
@@ -30,7 +35,7 @@ export const userCategoriesRouter = router({
     .query(async ({ input, ctx }) => {
       try {
         const category = await ctx.supabase
-          .from('user_categories')
+          .from('categories')
           .select('*')
           .eq('id', input.categoryId)
           .eq('user_id', ctx.actor.userId)
@@ -45,7 +50,12 @@ export const userCategoriesRouter = router({
         }
 
         return ctx.ok({
-          category: category.data,
+          category: {
+            id: category.data.id,
+            name: category.data.name,
+            icon: category.data.icon,
+            createdAt: category.data.created_at,
+          },
         });
       } catch (err) {
         return ctx.fail({
@@ -68,7 +78,7 @@ export const userCategoriesRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const category = await ctx.supabase
-          .from('user_categories')
+          .from('categories')
           .insert({
             name: input.name,
             icon: input.icon,
@@ -87,7 +97,12 @@ export const userCategoriesRouter = router({
         }
 
         return ctx.ok({
-          category: category.data,
+          category: {
+            id: category.data.id,
+            name: category.data.name,
+            icon: category.data.icon,
+            createdAt: category.data.created_at,
+          },
         });
       } catch (err) {
         return ctx.fail(err);
@@ -108,7 +123,7 @@ export const userCategoriesRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const category = await ctx.supabase
-          .from('user_categories')
+          .from('categories')
           .update({ name: input.name, icon: input.icon })
           .eq('id', input.categoryId)
           .eq('user_id', ctx.actor.userId)
@@ -124,7 +139,12 @@ export const userCategoriesRouter = router({
         }
 
         return ctx.ok({
-          category: category.data,
+          category: {
+            id: category.data.id,
+            name: category.data.name,
+            icon: category.data.icon,
+            createdAt: category.data.created_at,
+          },
         });
       } catch (err) {
         return ctx.fail(err);
@@ -137,7 +157,7 @@ export const userCategoriesRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const category = await ctx.supabase
-          .from('user_categories')
+          .from('categories')
           .delete()
           .eq('id', input.categoryId)
           .eq('user_id', ctx.actor.userId)
@@ -153,7 +173,12 @@ export const userCategoriesRouter = router({
         }
 
         return ctx.ok({
-          category: category.data,
+          category: {
+            id: category.data.id,
+            name: category.data.name,
+            icon: category.data.icon,
+            createdAt: category.data.created_at,
+          },
         });
       } catch (err) {
         return ctx.fail(err);

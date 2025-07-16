@@ -1,17 +1,19 @@
 import { router } from '@/trpc/middleware';
 import { authRouter } from '@/trpc/routers/auth';
 import { usersRouter } from '@/trpc/routers/users';
-import { userFarmsRouter } from '@/trpc/routers/user_farms';
-import { userEstimatesRouter } from '@/trpc/routers/user_estimates';
-import { userCategoriesRouter } from '@/trpc/routers/user_categories';
+import { farmsRouter } from '@/trpc/routers/farms';
 import { systemRouter } from '@/trpc/routers/system';
+import { sessionsRouter } from '@/trpc/routers/sessions';
+import { estimatesRouter } from '@/trpc/routers/estimates';
+import { categoriesRouter } from '@/trpc/routers/categories';
 
 export const appRouter = router({
   auth: authRouter,
   users: usersRouter,
-  userFarms: userFarmsRouter,
-  userCategories: userCategoriesRouter,
-  userEstimates: userEstimatesRouter,
+  sessions: sessionsRouter,
+  farms: farmsRouter,
+  categories: categoriesRouter,
+  estimates: estimatesRouter,
   system: systemRouter,
 });
 

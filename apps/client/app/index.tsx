@@ -72,8 +72,7 @@ const Footer = () => {
   return (
     <Box
       px='xl'
-      mx='auto'
-      style={{ gap: Space.xs, width: '100%', maxWidth: 320 }}
+      style={{ gap: Space.xs }}
     >
       <Action.Root onPress={() => router.push('/register')}>
         <Action.Label>Become a member</Action.Label>

@@ -3,11 +3,11 @@ import { protectedProcedure, router } from '../middleware';
 
 const SELECT = `*, category:category_id(id, name, icon, created_at)`;
 
-export const userFarmsRouter = router({
+export const farmsRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
     try {
       const farms = await ctx.supabase
-        .from('user_farms')
+        .from('farms')
         .select(SELECT)
         .eq('user_id', ctx.actor.userId)
         .order('created_at', { ascending: false });
@@ -21,7 +21,23 @@ export const userFarmsRouter = router({
       }
 
       return ctx.ok({
-        farms: farms.data,
+        farms: farms.data.map((farm) => ({
+          id: farm.id,
+          name: farm.name,
+          size: farm.size,
+          city: farm.city,
+          state: farm.state,
+          address: farm.address,
+          sizeUnit: farm.size_unit,
+          categoryId: farm.category_id,
+          createdAt: farm.created_at,
+          category: {
+            id: farm.category.id,
+            name: farm.category.name,
+            icon: farm.category.icon,
+            createdAt: farm.category.created_at,
+          },
+        })),
       });
     } catch (err) {
       return ctx.fail(err);
@@ -33,7 +49,7 @@ export const userFarmsRouter = router({
     .query(async ({ input, ctx }) => {
       try {
         const farm = await ctx.supabase
-          .from('user_farms')
+          .from('farms')
           .select(SELECT)
           .eq('id', input.farmId)
           .eq('user_id', ctx.actor.userId)
@@ -48,7 +64,23 @@ export const userFarmsRouter = router({
         }
 
         return ctx.ok({
-          farm: farm.data,
+          farm: {
+            id: farm.data.id,
+            name: farm.data.name,
+            size: farm.data.size,
+            city: farm.data.city,
+            state: farm.data.state,
+            address: farm.data.address,
+            sizeUnit: farm.data.size_unit,
+            categoryId: farm.data.category_id,
+            createdAt: farm.data.created_at,
+            category: {
+              id: farm.data.category.id,
+              name: farm.data.category.name,
+              icon: farm.data.category.icon,
+              createdAt: farm.data.category.created_at,
+            },
+          },
         });
       } catch (err) {
         return ctx.fail(err);
@@ -88,7 +120,7 @@ export const userFarmsRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const farm = await ctx.supabase
-          .from('user_farms')
+          .from('farms')
           .update({
             name: input.name,
             size: input.size,
@@ -112,7 +144,23 @@ export const userFarmsRouter = router({
         }
 
         return ctx.ok({
-          farm: farm.data,
+          farm: {
+            id: farm.data.id,
+            name: farm.data.name,
+            size: farm.data.size,
+            city: farm.data.city,
+            state: farm.data.state,
+            address: farm.data.address,
+            sizeUnit: farm.data.size_unit,
+            categoryId: farm.data.category_id,
+            createdAt: farm.data.created_at,
+            category: {
+              id: farm.data.category.id,
+              name: farm.data.category.name,
+              icon: farm.data.category.icon,
+              createdAt: farm.data.category.created_at,
+            },
+          },
         });
       } catch (err) {
         return ctx.fail(err);
@@ -124,7 +172,7 @@ export const userFarmsRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const farm = await ctx.supabase
-          .from('user_farms')
+          .from('farms')
           .delete()
           .eq('id', input.farmId)
           .eq('user_id', ctx.actor.userId)
@@ -139,7 +187,23 @@ export const userFarmsRouter = router({
         }
 
         return ctx.ok({
-          farm: farm.data,
+          farm: {
+            id: farm.data.id,
+            name: farm.data.name,
+            size: farm.data.size,
+            city: farm.data.city,
+            state: farm.data.state,
+            address: farm.data.address,
+            sizeUnit: farm.data.size_unit,
+            categoryId: farm.data.category_id,
+            createdAt: farm.data.created_at,
+            category: {
+              id: farm.data.category.id,
+              name: farm.data.category.name,
+              icon: farm.data.category.icon,
+              createdAt: farm.data.category.created_at,
+            },
+          },
         });
       } catch (err) {
         return ctx.fail(err);
@@ -175,7 +239,7 @@ export const userFarmsRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const farm = await ctx.supabase
-          .from('user_farms')
+          .from('farms')
           .insert({
             name: input.name,
             city: input.city,
@@ -198,34 +262,23 @@ export const userFarmsRouter = router({
         }
 
         return ctx.ok({
-          farm: farm.data,
-        });
-      } catch (err) {
-        return ctx.fail(err);
-      }
-    }),
-
-  estimates: protectedProcedure
-    .input(z.object({ farmId: z.string().min(1, 'Farm ID is required') }))
-    .query(async ({ input, ctx }) => {
-      try {
-        const estimates = await ctx.supabase
-          .from('user_estimates')
-          .select('*')
-          .eq('farm_id', input.farmId)
-          .eq('user_id', ctx.actor.userId)
-          .order('created_at', { ascending: false });
-
-        if (estimates.error) {
-          return ctx.fail({
-            code: 'NOT_FOUND',
-            message:
-              "We couldn't find any saved estimates in your account. Try creating a new estimate to get started!",
-          });
-        }
-
-        return ctx.ok({
-          estimates: estimates.data,
+          farm: {
+            id: farm.data.id,
+            name: farm.data.name,
+            size: farm.data.size,
+            city: farm.data.city,
+            state: farm.data.state,
+            address: farm.data.address,
+            sizeUnit: farm.data.size_unit,
+            categoryId: farm.data.category_id,
+            createdAt: farm.data.created_at,
+            category: {
+              id: farm.data.category.id,
+              name: farm.data.category.name,
+              icon: farm.data.category.icon,
+              createdAt: farm.data.category.created_at,
+            },
+          },
         });
       } catch (err) {
         return ctx.fail(err);

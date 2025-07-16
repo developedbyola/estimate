@@ -1,47 +1,24 @@
 import React from 'react';
-import Modal from './shared/Modal';
-import { farmSchema } from '../schemas';
+import Modal from './Modal';
 import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useCategories } from '@/features/categories';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Border, Space, Typography } from '@/constants';
-import {
-  Alert,
-  Button,
-  TouchableHighlight,
-  TouchableOpacity,
-} from 'react-native';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
-import {
-  Controller,
-  FormProvider,
-  useForm,
-  useFormContext,
-} from 'react-hook-form';
-import {
-  ActivityIndicator,
-  Box,
-  Field,
-  Heading,
-  Scroll,
-  Text,
-  useOverlay,
-} from '@/components';
-import { trpc } from '@/lib/trpc';
-import { useFarms } from './Provider';
-import { Stack, useRouter } from 'expo-router';
+import { Controller, useFormContext } from 'react-hook-form';
+import { Box, Field, Heading, Scroll, Text } from '@/components';
 
 const Category = () => {
   const { categories } = useCategories();
   const { control } = useFormContext<{
-    category_id: string;
+    categoryId: string;
   }>();
 
   return (
     <Controller
-      name='category_id'
+      name='categoryId'
       control={control}
       render={({ field }) => {
         return (
@@ -355,147 +332,56 @@ const options = [
   },
 ];
 
-export const Add = () => {
-  const router = useRouter();
+export const Form = () => {
   const colors = useThemeColors();
-  const { farm, setFarms } = useFarms();
-
-  const form = useForm({
-    mode: 'all',
-    resolver: zodResolver(farmSchema),
-    defaultValues: {
-      city: farm?.city || '',
-      state: farm?.state || '',
-      size: farm?.size || '1',
-      address: farm?.address || '',
-      name: farm?.name || 'My farm',
-      categoryId: farm?.category_id || '',
-      sizeUnit: farm?.size_unit || 'acres',
-    },
-  });
-
-  const create = trpc.userFarms.create.useMutation({
-    onSuccess: (data: any) => {
-      setFarms({ type: 'ADD_FARM', payload: { farm: data?.farm || {} } });
-      form.reset();
-      router.back();
-    },
-    onError: (err) => {
-      Alert.alert('Error', err.message || 'Failed to create farm', [
-        { text: 'OK' },
-      ]);
-    },
-  });
-  const update = trpc.userFarms.update.useMutation({
-    onSuccess: (data: any) => {
-      setFarms({ type: 'UPDATE_FARM', payload: { farm: data?.farm || {} } });
-      form.reset();
-      router.back();
-    },
-    onError: (err) => {
-      Alert.alert('Error', err.message || 'Failed to update farm', [
-        { text: 'OK' },
-      ]);
-    },
-  });
-
-  const loading = create.isPending || update.isPending;
-  const buttonLabel = farm ? 'Update' : 'Create';
-
-  const onSubmit = async (data: any) => {
-    if (farm) {
-      await update.mutateAsync({
-        ...data,
-        farmId: farm.id,
-        sizeUnit: data.sizeUnit,
-        categoryId: data.categoryId,
-      });
-    } else {
-      await create.mutateAsync({
-        ...data,
-        sizeUnit: data.sizeUnit,
-        categoryId: data.categoryId,
-      });
-    }
-  };
 
   return (
-    <FormProvider {...form}>
-      <Stack.Screen
-        options={{
-          headerStyle: {
-            backgroundColor: colors.getColor('bg.soft'),
-          },
-          headerTitleStyle: {
-            fontWeight: '500',
-            color: colors.getColor('text.strong'),
-          },
-          title: farm ? 'Update farm' : 'Create farm',
-
-          headerRight: () => {
-            if (loading) {
-              return <ActivityIndicator />;
-            }
-
-            return (
-              <Button
-                title={buttonLabel}
-                onPress={async () => {
-                  const values = form.getValues();
-                  await onSubmit(values);
-                }}
-              />
-            );
-          },
-        }}
-      />
-      <Box
-        bg='bg.base'
+    <Box
+      bg='bg.base'
+      style={{ flex: 1 }}
+    >
+      <Scroll
+        px='xl'
         style={{ flex: 1 }}
       >
-        <Scroll
-          px='xl'
-          style={{ flex: 1 }}
-        >
-          {options.map((option, index) => {
-            return (
-              <Modal
-                key={index}
-                title={option.title}
-                content={<option.content />}
-                snapPoints={option.snapPoints}
-              >
-                <TouchableOpacity activeOpacity={0.6}>
-                  <Box
-                    style={{
-                      height: 48,
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      borderColor: colors.getColor('border.soft'),
-                      borderBottomWidth: options.length - 1 === index ? 0 : 1,
-                    }}
+        {options.map((option, index) => {
+          return (
+            <Modal
+              key={index}
+              title={option.title}
+              content={<option.content />}
+              snapPoints={option.snapPoints}
+            >
+              <TouchableOpacity activeOpacity={0.6}>
+                <Box
+                  style={{
+                    height: 48,
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    borderColor: colors.getColor('border.soft'),
+                    borderBottomWidth: options.length - 1 === index ? 0 : 1,
+                  }}
+                >
+                  <Heading
+                    size='lg'
+                    leading='sm'
+                    weight='normal'
+                    style={{ flex: 1 }}
                   >
-                    <Heading
-                      size='lg'
-                      leading='sm'
-                      weight='normal'
-                      style={{ flex: 1 }}
-                    >
-                      {option.name}
-                    </Heading>
+                    {option.name}
+                  </Heading>
 
-                    <Ionicons
-                      size={16}
-                      name='chevron-forward'
-                      color={colors.getColor('icon.inactive')}
-                    />
-                  </Box>
-                </TouchableOpacity>
-              </Modal>
-            );
-          })}
-        </Scroll>
-      </Box>
-    </FormProvider>
+                  <Ionicons
+                    size={16}
+                    name='chevron-forward'
+                    color={colors.getColor('icon.inactive')}
+                  />
+                </Box>
+              </TouchableOpacity>
+            </Modal>
+          );
+        })}
+      </Scroll>
+    </Box>
   );
 };

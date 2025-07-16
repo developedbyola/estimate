@@ -1,8 +1,18 @@
 import React from 'react';
-import { App } from '@/components';
 import { Stack } from 'expo-router';
+import { Popup } from '@/components';
 import { Auth } from '@/features/auth';
+import { Trpc } from '@/features/trpc';
+import { User } from '@/features/users';
+import { Farms } from '@/features/farms';
+import { Currency } from '@/features/currency';
+import { Estimates } from '@/features/estimates';
+import { Categories } from '@/features/categories';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { KeyboardAvoidingView, Platform } from 'react-native';
+import { RootSiblingParent } from 'react-native-root-siblings';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stacks = () => {
   const { auth } = Auth.useAuth();
@@ -19,7 +29,6 @@ const Stacks = () => {
       }}
     >
       <Stack.Protected guard={auth.isAuthenticated}>
-        {/* authenticated screens */}
         <Stack.Screen
           name='(tabs)'
           options={{
@@ -50,8 +59,15 @@ const Stacks = () => {
             presentation: 'modal',
           }}
         />
+        <Stack.Screen
+          name='(settings)'
+          options={{
+            title: 'Settings',
+            headerShown: false,
+            presentation: 'modal',
+          }}
+        />
       </Stack.Protected>
-      {/* unauthenticated screens */}
       <Stack.Screen
         name='index'
         options={{
@@ -77,9 +93,40 @@ const Stacks = () => {
 
 const Layout = () => {
   return (
-    <App>
-      <Stacks />
-    </App>
+    <RootSiblingParent>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BottomSheetModalProvider>
+          <Auth.Provider>
+            <Trpc.Provider>
+              <Auth.RefreshToken>
+                <User.Provider>
+                  <User.Profile>
+                    <Currency.Provider>
+                      <Categories.Provider>
+                        <Farms.Provider>
+                          <Estimates.Provider>
+                            <Popup.Provider>
+                              <KeyboardAvoidingView
+                                behavior={
+                                  Platform.OS === 'ios' ? 'padding' : 'height'
+                                }
+                                style={{ flex: 1 }}
+                              >
+                                <Stacks />
+                              </KeyboardAvoidingView>
+                            </Popup.Provider>
+                          </Estimates.Provider>
+                        </Farms.Provider>
+                      </Categories.Provider>
+                    </Currency.Provider>
+                  </User.Profile>
+                </User.Provider>
+              </Auth.RefreshToken>
+            </Trpc.Provider>
+          </Auth.Provider>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
+    </RootSiblingParent>
   );
 };
 

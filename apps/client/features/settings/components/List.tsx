@@ -37,7 +37,7 @@ const Group = ({ group }: { group: keyof typeof Options }) => {
               <Ionicons
                 size={24}
                 name={option.icon}
-                color={colors.getColor('text.inactive')}
+                color={colors.getColor('text.strong')}
               />
               <Text
                 size='lg'

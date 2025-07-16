@@ -4,12 +4,11 @@ export type Category = {
   id: string;
   name: string;
   icon: string;
-  created_at: string;
+  createdAt: string;
 };
 
 type State = {
   categories: Category[];
-  category: null | Category;
 };
 
 type Action =
@@ -18,16 +17,8 @@ type Action =
       payload: { categories: Category[] };
     }
   | {
-      type: 'SET_CATEGORY';
-      payload: { category: Category | null };
-    }
-  | {
       type: 'ADD_CATEGORY';
       payload: { category: Category };
-    }
-  | {
-      type: 'REMOVE_CATEGORY';
-      payload: { id: string };
     }
   | {
       type: 'UPDATE_CATEGORY';
@@ -51,22 +42,10 @@ const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'SET_CATEGORIES':
       return { ...state, categories: action.payload.categories };
-    case 'SET_CATEGORY':
-      return {
-        ...state,
-        category: action.payload.category,
-      };
     case 'ADD_CATEGORY':
       return {
         ...state,
         categories: [...state.categories, action.payload.category],
-      };
-    case 'REMOVE_CATEGORY':
-      return {
-        ...state,
-        categories: state.categories.filter(
-          (category) => category.id !== action.payload.id
-        ),
       };
     case 'UPDATE_CATEGORY':
       return {
@@ -84,23 +63,19 @@ const reducer = (state: State, action: Action): State => {
 
 type CategoryProviderProps = {
   children: React.ReactNode;
-  initialCategories?: Category[];
+  initialState?: State;
 };
 
 export const Provider = ({
   children,
-  initialCategories = [],
+  initialState = { categories: [] },
 }: CategoryProviderProps) => {
-  const [state, dispatch] = React.useReducer(reducer, {
-    category: null,
-    categories: initialCategories,
-  });
+  const [state, dispatch] = React.useReducer(reducer, initialState);
 
   return (
     <categoryContext.Provider
       value={{
         setCategories: dispatch,
-        category: state.category,
         categories: state.categories,
       }}
     >

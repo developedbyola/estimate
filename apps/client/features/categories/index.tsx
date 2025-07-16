@@ -1,10 +1,10 @@
-import { Add } from './components/Add';
 import { List } from './components/List';
+import { Form } from './components/shared/Form';
 import { useCategories, Provider, Category } from './components/Provider';
 
 const Categories = {
   Provider,
-  Add,
+  Form,
   List,
 };
 

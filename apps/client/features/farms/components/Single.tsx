@@ -1,21 +1,30 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 import { useRouter } from 'expo-router';
+import { Farms } from '@/features/farms';
 import { excerpt } from '@/utils/excerpt';
 import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
-import { Farms, useFarms } from '@/features/farms';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import Icons from '@/features/categories/constants/Icons';
-import { Action, Box, Heading, Safe, Scroll, Text } from '@/components';
-import Estimates from './Estimates';
+import {
+  Box,
+  Safe,
+  Text,
+  Action,
+  Scroll,
+  Heading,
+  ActivityIndicator,
+} from '@/components';
+import { useGetFarm } from '../hooks/useGetFarm';
 
 export const Single = () => {
   const router = useRouter();
   const colors = useThemeColors();
-  const { farm, setFarms } = useFarms();
+  const { status, data: farm } = useGetFarm();
 
+  if (status === 'pending') return <ActivityIndicator />;
   if (!farm) return null;
 
   const icon = Icons.find((icon) => icon.id === farm.category.icon);
@@ -71,7 +80,7 @@ export const Single = () => {
             <Text
               leading='base'
               style={{ textTransform: 'capitalize', marginTop: Space['xs'] }}
-            >{`${farm.size} ${farm.size_unit}`}</Text>
+            >{`${farm.size} ${farm.sizeUnit}`}</Text>
             <Box
               mt='xl'
               style={{
@@ -87,7 +96,6 @@ export const Single = () => {
                 hitSlop={24}
                 style={{ paddingInline: Space['lg'] }}
                 onPress={() => {
-                  setFarms({ type: 'UPDATE_FARM', payload: { farm } });
                   router.push('/add-farm');
                 }}
               >
@@ -159,7 +167,9 @@ export const Single = () => {
                   borderRadius: Border.radius.full,
                   backgroundColor: colors.getColor('bg.base'),
                 }}
-                onPress={() => router.push('/add-estimate')}
+                onPress={() => {
+                  router.push('/add-estimate');
+                }}
               >
                 <Ionicons
                   size={20}
@@ -171,9 +181,7 @@ export const Single = () => {
             <Box
               mt='xl'
               style={{ gap: Space['xs'] }}
-            >
-              <Estimates />
-            </Box>
+            ></Box>
           </Box>
         </Scroll>
       </Safe>

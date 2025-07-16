@@ -1,38 +1,13 @@
 import React from 'react';
-import Modal from './shared/Modal';
-import Icons from '../constants/Icons';
+import Modal from './Modal';
+import Icons from '../../constants/Icons';
 import { excerpt } from '@/utils/excerpt';
-import { categorySchema } from '../schemas';
 import { Ionicons } from '@expo/vector-icons';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Border, Space, Typography } from '@/constants';
-import {
-  Alert,
-  Button,
-  TouchableHighlight,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  useForm,
-  useWatch,
-  Controller,
-  FormProvider,
-  useFormContext,
-} from 'react-hook-form';
-import {
-  Box,
-  Flow,
-  Text,
-  Field,
-  useFlow,
-  Heading,
-  RadioGroup,
-  ActivityIndicator,
-} from '@/components';
-import { trpc } from '@/lib/trpc';
-import { useCategories } from './Provider';
-import { Stack, useRouter } from 'expo-router';
+import { useWatch, Controller, useFormContext } from 'react-hook-form';
+import { Box, Text, Field, Heading, RadioGroup } from '@/components';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 const Name = () => {
@@ -175,7 +150,7 @@ const options = [
   },
 ];
 
-const Form = () => {
+const Fields = () => {
   const colors = useThemeColors();
   const formContext = useFormContext<{ name: string; icon: string }>();
   const values = useWatch({ control: formContext.control });
@@ -258,102 +233,15 @@ const Form = () => {
   );
 };
 
-export const Add = () => {
-  const router = useRouter();
-  const colors = useThemeColors();
-  const { category, setCategories } = useCategories();
-
-  const form = useForm({
-    mode: 'all',
-    resolver: zodResolver(categorySchema),
-    defaultValues: {
-      name: category?.name || '',
-      icon: category?.icon || Icons[0].id,
-    },
-  });
-  const flow = useFlow({ count: 1 });
-
-  const updateCategory = trpc.userCategories.update.useMutation({
-    onSuccess: (data: any) => {
-      setCategories({
-        type: 'UPDATE_CATEGORY',
-        payload: { category: data.category },
-      });
-      router.back();
-    },
-    onError: (err) => {
-      Alert.alert('Failed to update category', err.message);
-    },
-  });
-
-  const createCategory = trpc.userCategories.create.useMutation({
-    onSuccess: (data: any) => {
-      setCategories({
-        type: 'ADD_CATEGORY',
-        payload: { category: data.category },
-      });
-      router.back();
-    },
-    onError: (err) => {
-      Alert.alert('Failed to create category', err.message);
-    },
-  });
-
-  const isLoading = createCategory.isPending || updateCategory.isPending;
-  const mutate = async () => {
-    if (category) {
-      await updateCategory.mutateAsync({
-        categoryId: category.id,
-        name: form.getValues().name,
-        icon: form.getValues().icon,
-      });
-    } else {
-      await createCategory.mutateAsync({
-        name: form.getValues().name,
-        icon: form.getValues().icon,
-      });
-    }
-  };
-
+export const Form = () => {
   return (
-    <React.Fragment>
-      <Stack.Screen
-        options={{
-          headerTitleStyle: {
-            fontWeight: '500',
-            color: colors.getColor('text.strong'),
-          },
-          headerStyle: {
-            backgroundColor: colors.getColor('bg.soft'),
-          },
-          title: category ? 'Update category' : 'Create category',
-          headerRight: () => {
-            if (isLoading) {
-              return <ActivityIndicator />;
-            }
-
-            return (
-              <Button
-                disabled={!form.formState.isValid}
-                onPress={async () => await mutate()}
-                title={category ? 'Update' : 'Create'}
-              />
-            );
-          },
-        }}
-      />
-      <Box
-        bg={'bg.base'}
-        style={{ flex: 1 }}
-      >
-        <FormProvider {...form}>
-          <Flow.Provider value={flow}>
-            <Box mt='2xl'>
-              <Form />
-            </Box>
-          </Flow.Provider>
-        </FormProvider>
+    <Box
+      bg={'bg.base'}
+      style={{ flex: 1 }}
+    >
+      <Box mt='2xl'>
+        <Fields />
       </Box>
-    </React.Fragment>
+    </Box>
   );
 };

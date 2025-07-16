@@ -9,7 +9,7 @@ type CalculationItem = {
   attached_to: string | null;
 };
 
-type Estimate = {
+export type Estimate = {
   id: string;
   title: string;
   calculations: CalculationItem[];
@@ -17,7 +17,6 @@ type Estimate = {
 
 type State = {
   estimates: Estimate[];
-  estimate: Estimate | null;
 };
 
 type Action =
@@ -26,12 +25,8 @@ type Action =
       payload: { estimates: State['estimates'] };
     }
   | {
-      type: 'SET_ESTIMATE';
-      payload: { estimate: State['estimate'] };
-    }
-  | {
       type: 'ADD_ESTIMATE';
-      payload: { estimate: NonNullable<State['estimate']> };
+      payload: { estimate: Estimate };
     }
   | {
       type: 'REMOVE_ESTIMATE';
@@ -39,7 +34,7 @@ type Action =
     }
   | {
       type: 'UPDATE_ESTIMATE';
-      payload: { estimate: NonNullable<State['estimate']> };
+      payload: { estimate: Estimate };
     };
 
 type EstimateContext = State & {
@@ -52,16 +47,6 @@ const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'SET_ESTIMATES':
       return { ...state, estimates: action.payload.estimates };
-    case 'SET_ESTIMATE':
-      return {
-        ...state,
-        estimates: state.estimates.map((estimate) =>
-          estimate.id === action.payload?.estimate?.id
-            ? action.payload.estimate
-            : estimate
-        ),
-        estimate: action.payload.estimate,
-      };
     case 'ADD_ESTIMATE':
       return {
         ...state,
@@ -98,23 +83,21 @@ export const useEstimates = () => {
 
 type Props = {
   children: React.ReactNode;
-  initialEstimates?: Estimate[];
+  initialState?: State;
 };
 
 export const Provider: React.FC<Props> = ({
   children,
-  initialEstimates = [],
+  initialState = {
+    estimates: [],
+  },
 }) => {
-  const [state, dispatch] = React.useReducer(reducer, {
-    estimates: initialEstimates,
-    estimate: null,
-  });
+  const [state, dispatch] = React.useReducer(reducer, initialState);
 
   return (
     <estimateContext.Provider
       value={{
         setEstimates: dispatch,
-        estimate: state.estimate,
         estimates: state.estimates,
       }}
     >

@@ -1,7 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
+import * as SecureStore from 'expo-secure-store';
 
 export type Auth = {
+  isLoading: boolean;
+  refreshToken: string | null;
   accessToken: string | null;
   isAuthenticated: boolean;
 };
@@ -11,7 +13,15 @@ type State = { auth: Auth };
 export type Action =
   | {
       type: 'LOGIN';
-      payload: { auth: Auth };
+      payload: {
+        auth: Pick<Auth, 'accessToken' | 'refreshToken'>;
+      };
+    }
+  | {
+      type: 'SET_TOKENS';
+      payload: {
+        auth: Pick<Auth, 'accessToken' | 'refreshToken'>;
+      };
     }
   | { type: 'LOGOUT'; payload?: never };
 
@@ -24,16 +34,36 @@ export const authContext = React.createContext<AuthContext | null>(null);
 export const authReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'LOGIN':
-      return {
-        ...state,
-        ...action.payload,
-      };
-    case 'LOGOUT':
+      SecureStore.setItem('refresh_token', action.payload.auth.refreshToken!);
       return {
         ...state,
         auth: {
-          accessToken: null,
+          isLoading: false,
+          isAuthenticated: true,
+          accessToken: action.payload.auth.accessToken,
+          refreshToken: action.payload.auth.refreshToken,
+        },
+      };
+    case 'SET_TOKENS':
+      SecureStore.setItem('refresh_token', action.payload.auth.refreshToken!);
+      return {
+        ...state,
+        auth: {
+          isLoading: false,
+          isAuthenticated: true,
+          accessToken: action.payload.auth.accessToken,
+          refreshToken: action.payload.auth.refreshToken,
+        },
+      };
+    case 'LOGOUT':
+      SecureStore.setItem('refresh_token', '');
+      return {
+        ...state,
+        auth: {
+          isLoading: false,
           isAuthenticated: false,
+          accessToken: null,
+          refreshToken: null,
         },
       };
     default:
@@ -49,28 +79,21 @@ export const useAuth = () => {
   return context;
 };
 
-export const Provider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = React.useReducer(authReducer, {
+export const Provider = ({
+  children,
+  initialState = {
     auth: {
+      isLoading: false,
       accessToken: null,
       isAuthenticated: false,
+      refreshToken: SecureStore.getItem('refresh_token'),
     },
-  });
-
-  React.useEffect(() => {
-    const validateAuth = async () => {
-      const accessToken = await AsyncStorage.getItem('access_token');
-
-      if (!accessToken) return;
-
-      dispatch({
-        type: 'LOGIN',
-        payload: { auth: { accessToken, isAuthenticated: true } },
-      });
-    };
-
-    validateAuth();
-  }, []);
+  },
+}: {
+  children: React.ReactNode;
+  initialState?: State;
+}) => {
+  const [state, dispatch] = React.useReducer(authReducer, initialState);
 
   return (
     <authContext.Provider value={{ ...state, setAuth: dispatch }}>

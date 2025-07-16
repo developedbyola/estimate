@@ -1,12 +1,5 @@
 import { z } from 'zod';
 
-export const nameSchema = z
-  .string({
-    required_error: 'Enter your fullname',
-    invalid_type_error: 'Name must be a string',
-  })
-  .min(3, 'Name must be at least 3 characters');
-
 export const emailSchema = z
   .string({
     required_error: 'Enter your email',
@@ -24,7 +17,6 @@ export const passwordSchema = z
   .regex(/[^A-Za-z0-9]/, 'Must include at least one special character');
 
 export const registerSchema = z.object({
-  name: nameSchema,
   email: emailSchema,
   password: passwordSchema,
 });

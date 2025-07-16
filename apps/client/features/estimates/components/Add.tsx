@@ -1,7 +1,7 @@
 import React from 'react';
 import { Space } from '@/constants';
 import { Stack } from 'expo-router';
-import { Alert, Button } from 'react-native';
+import { Button } from 'react-native';
 import Calculations from './Calculations';
 import { estimateSchema } from '../schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +9,6 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { useForm, useWatch, FormProvider } from 'react-hook-form';
 import {
   Action,
-  ActivityIndicator,
   Box,
   Field,
   Overlay,
@@ -17,10 +16,6 @@ import {
   Scroll,
   useOverlay,
 } from '@/components';
-import { useEstimates } from './Provider';
-import { trpc } from '@/lib/trpc';
-import { useFarms } from '@/features/farms';
-import { useRouter } from 'expo-router';
 
 const Title = ({
   trigger,
@@ -58,17 +53,13 @@ const Title = ({
 };
 
 export const Add = () => {
-  const router = useRouter();
-  const { farm } = useFarms();
   const colors = useThemeColors();
-
-  const { estimate, setEstimates } = useEstimates();
 
   const form = useForm({
     resolver: zodResolver(estimateSchema),
     defaultValues: {
-      title: estimate?.title || 'New Estimate',
-      calculations: estimate?.calculations || [
+      title: 'New Estimate',
+      calculations: [
         {
           quantity: '1',
           unitPrice: '100',
@@ -82,53 +73,6 @@ export const Add = () => {
   });
 
   const values = useWatch({ control: form.control });
-
-  const update = trpc.userEstimates.update.useMutation({
-    onSuccess: (data: any) => {
-      setEstimates({
-        type: 'UPDATE_ESTIMATE',
-        payload: { estimate: data?.estimate },
-      });
-      form.reset();
-      router.back();
-    },
-    onError: (err) => {
-      Alert.alert('Failed to update estimate', err.message);
-    },
-  });
-
-  const create = trpc.userEstimates.create.useMutation({
-    onSuccess: (data: any) => {
-      setEstimates({
-        type: 'ADD_ESTIMATE',
-        payload: { estimate: data?.estimate },
-      });
-      form.reset();
-      router.back();
-    },
-    onError: (err) => {
-      Alert.alert('Failed to create estimate', err.message);
-    },
-  });
-
-  const onSubmit = async () => {
-    const values = form.getValues();
-    if (estimate) {
-      await update.mutateAsync({
-        estimateId: estimate.id,
-        title: values.title,
-        calculations: values.calculations,
-      });
-    } else {
-      await create.mutateAsync({
-        title: values.title,
-        farmId: farm?.id || '',
-        calculations: values.calculations,
-      });
-    }
-  };
-
-  const isLoading = create.isPending || update.isPending;
 
   return (
     <Safe
@@ -156,16 +100,11 @@ export const Add = () => {
                 );
               },
               headerRight: () => {
-                if (isLoading) {
-                  return <ActivityIndicator />;
-                }
+                // if (isLoading) {
+                //   return <ActivityIndicator />;
+                // }
 
-                return (
-                  <Button
-                    title={estimate ? 'Update' : 'Create'}
-                    onPress={async () => await onSubmit()}
-                  />
-                );
+                return <Button title={'Create'} />;
               },
             }}
           />

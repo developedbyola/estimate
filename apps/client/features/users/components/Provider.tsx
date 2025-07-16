@@ -64,10 +64,16 @@ export const userReducer = (state: State, action: Action): State => {
   }
 };
 
-export const Provider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = React.useReducer(userReducer, {
+export const Provider = ({
+  children,
+  initialState = {
     user: null,
-  });
+  },
+}: {
+  children: React.ReactNode;
+  initialState?: State;
+}) => {
+  const [state, dispatch] = React.useReducer(userReducer, initialState);
 
   return (
     <userContext.Provider value={{ ...state, setUser: dispatch }}>

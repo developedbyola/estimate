@@ -16,7 +16,7 @@ export const usersRouter = router({
     try {
       const user = await ctx.supabase
         .from('users')
-        .select('id, created_at, name, email')
+        .select('id, created_at, first_name, last_name, email')
         .eq('id', ctx.actor.userId)
         .single();
 
@@ -32,7 +32,8 @@ export const usersRouter = router({
         {
           user: {
             id: user.data.id,
-            name: user.data.name,
+            firstName: user.data.first_name,
+            lastName: user.data.last_name,
             email: user.data.email,
             createdAt: user.data.created_at,
           },
@@ -75,13 +76,22 @@ export const usersRouter = router({
   update: protectedProcedure
     .input(
       z.object({
-        name: z
+        firstName: z
           .string()
-          .min(2, 'Name must be at least 2 characters long')
-          .max(100, 'Name cannot exceed 100 characters')
+          .min(2, 'First   name must be at least 2 characters long')
+          .max(100, 'First name cannot exceed 100 characters')
           .regex(
             /^[\p{L}\s'-]+$/u,
-            'Name can only contain letters, spaces, hyphens, and apostrophes'
+            'First name can only contain letters, spaces, hyphens, and apostrophes'
+          )
+          .optional(),
+        lastName: z
+          .string()
+          .min(2, 'Last name must be at least 2 characters long')
+          .max(100, 'Last name cannot exceed 100 characters')
+          .regex(
+            /^[\p{L}\s'-]+$/u,
+            'Last name can only contain letters, spaces, hyphens, and apostrophes'
           )
           .optional(),
       })
@@ -90,9 +100,9 @@ export const usersRouter = router({
       try {
         const user = await ctx.supabase
           .from('users')
-          .update({ name: input.name })
+          .update({ first_name: input.firstName, last_name: input.lastName })
           .eq('id', ctx.actor.userId)
-          .select('id, name, created_at')
+          .select('id, email, first_name, last_name, created_at')
           .single();
 
         if (!user.data) {
@@ -104,7 +114,13 @@ export const usersRouter = router({
         }
 
         return ctx.ok({
-          user: user.data,
+          user: {
+            id: user.data.id,
+            email: user.data.email,
+            firstName: user.data.first_name,
+            lastName: user.data.last_name,
+            createdAt: user.data.created_at,
+          },
         });
       } catch (err) {
         return ctx.fail(err);

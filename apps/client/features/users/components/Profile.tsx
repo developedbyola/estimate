@@ -1,14 +1,14 @@
 import React from 'react';
-import { trpc } from '@/lib/trpc';
 import { useUser } from './Provider';
 import { Alert } from 'react-native';
 import { Auth } from '@/features/auth';
+import { Trpc } from '@/features/trpc';
 
 const useProfile = () => {
   const { auth } = Auth.useAuth();
   const { user, setUser } = useUser();
 
-  const profile = trpc.users.profile.useQuery(undefined, {
+  const profile = Trpc.client.users.profile.useQuery(undefined, {
     enabled: auth.isAuthenticated && !user,
   });
 
@@ -33,11 +33,11 @@ const useProfile = () => {
     }
   }, [profile.status]);
 
-  return { profile };
+  return { status: profile.status };
 };
 
 export const Profile = ({ children }: { children: React.ReactNode }) => {
-  useProfile();
+  const _ = useProfile();
 
   return children;
 };

@@ -1,5 +1,5 @@
-import { config } from 'dotenv';
-config();
+// import { config } from 'dotenv';
+// config();
 
 import { Hono } from 'hono';
 import { appRouter } from '@/trpc';

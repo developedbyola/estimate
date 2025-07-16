@@ -71,7 +71,7 @@ const Indicator = React.forwardRef<IndicatorRef, IndicatorProps>(
           size={size || 20}
           color={colors.getColor('text.inactive')}
           name={showPassword ? 'lock-closed-outline' : 'lock-open-outline'}
-          style={[{ paddingInline: Space['xl'] }, style]}
+          style={[{ paddingInline: Space['lg'] }, style]}
           {...restProps}
         />
       </TouchableOpacity>

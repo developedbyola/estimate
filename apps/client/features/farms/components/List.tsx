@@ -1,15 +1,15 @@
 import React from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
-import { Farm, useFarms } from './Provider';
-import { excerpt } from '@/utils/excerpt';
-import { Border, Space } from '@/constants';
-import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { Box, Heading, Text, ActivityIndicator } from '@/components';
-import Icons from '@/features/categories/constants/Icons';
 import { MotiView } from 'moti';
 import { useRouter } from 'expo-router';
-import { trpc } from '@/lib/trpc';
+import { excerpt } from '@/utils/excerpt';
+import { Border, Space } from '@/constants';
+import { Farm, useFarms } from './Provider';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
+import { useGetFarms } from '../hooks/useGetFarms';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import Icons from '@/features/categories/constants/Icons';
+import { Box, Heading, Text, ActivityIndicator } from '@/components';
 
 const Loader = () => {
   return <ActivityIndicator />;
@@ -104,7 +104,7 @@ const Item = (props: ItemProps) => {
           <Text
             size='sm'
             leading='sm'
-          >{`${farm.size} ${farm.size_unit} at ${excerpt(
+          >{`${farm.size} ${farm.sizeUnit} at ${excerpt(
             farm.address,
             20
           )}`}</Text>
@@ -114,43 +114,11 @@ const Item = (props: ItemProps) => {
   );
 };
 
-const useFarmList = () => {
-  const { setFarms } = useFarms();
-  const list = trpc.userFarms.list.useQuery();
-
-  React.useEffect(() => {
-    if (list.status === 'error') {
-      Alert.alert('Unable to fetch farms', list.error.message, [
-        { text: 'Cancel' },
-        {
-          text: 'Retry',
-          onPress: () => list.refetch().catch(console.error),
-        },
-      ]);
-    }
-
-    if (list.status === 'success') {
-      const data = list.data as any;
-      if (!data) return;
-
-      setFarms({
-        type: 'SET_FARMS',
-        payload: {
-          farms: (list.data as any)?.farms || [],
-        },
-      });
-    }
-  }, [list.status]);
-
-  return { isLoading: list.isLoading };
-};
-
 export const List = () => {
   const { farms } = useFarms();
+  const { status } = useGetFarms();
 
-  const { isLoading } = useFarmList();
-
-  if (isLoading) return <Loader />;
+  if (status === 'pending') return <Loader />;
   if (farms.length === 0) return <Empty />;
 
   return (

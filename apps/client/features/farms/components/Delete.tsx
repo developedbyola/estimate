@@ -1,38 +1,28 @@
 import React from 'react';
-import { trpc } from '@/lib/trpc';
-import { Alert, TouchableOpacity } from 'react-native';
 import { useFarms } from './Provider';
 import { useRouter } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 import { ActivityIndicator } from '@/components';
+import { useDeleteFarm } from '../hooks/useDeleteFarm';
 
 type Props = {
   children: React.ReactNode;
-  onSuccess?: (data: any) => any;
 };
 
-const Delete = ({ children, onSuccess }: Props) => {
+const Delete = ({ children }: Props) => {
   const router = useRouter();
-  const { farm, setFarms } = useFarms();
+  const { farm } = useFarms();
 
-  const remove = trpc.userFarms.delete.useMutation({
-    onSuccess: (data) => {
-      setFarms({ type: 'REMOVE_FARM', payload: { farmId: farm!.id } });
-      onSuccess?.(data);
+  const { status, mutate } = useDeleteFarm({
+    onSuccess: () => {
       router.back();
-    },
-    onError: (err) => {
-      Alert.alert('We couldn’t delete the farm', err.message, [
-        { text: 'Okay' },
-      ]);
     },
   });
 
-  if (remove.isPending) return <ActivityIndicator />;
+  if (status === 'pending') return <ActivityIndicator />;
 
   return (
-    <TouchableOpacity
-      onPress={async () => remove.mutateAsync({ farmId: farm!.id })}
-    >
+    <TouchableOpacity onPress={async () => await mutate({ farmId: farm!.id })}>
       {children}
     </TouchableOpacity>
   );

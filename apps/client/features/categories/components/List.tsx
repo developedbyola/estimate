@@ -1,14 +1,14 @@
 import React from 'react';
 import { MotiView } from 'moti';
-import { trpc } from '@/lib/trpc';
 import Icons from '../constants/Icons';
 import { useRouter } from 'expo-router';
 import { useCategories } from './Provider';
 import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { useGetCategories } from '../hooks/useGetCategories';
+import { Button, TouchableWithoutFeedback } from 'react-native';
 import { ActivityIndicator, Box, Gradient, Heading, Text } from '@/components';
-import { Alert, Button, TouchableWithoutFeedback } from 'react-native';
 
 const Empty = () => {
   const router = useRouter();
@@ -82,17 +82,12 @@ const Item = ({ category, index }: { category: any; index: number }) => {
   const OUTER_HEIGHT = 120;
   const router = useRouter();
   const colors = useThemeColors();
-  const { setCategories } = useCategories();
   const icon = Icons.find((icon) => icon.id === category.icon)!;
 
   return (
     <TouchableWithoutFeedback
       onPress={() => {
         router.push('/add-category');
-        setCategories({
-          type: 'SET_CATEGORY',
-          payload: { category },
-        });
       }}
     >
       <MotiView
@@ -145,42 +140,11 @@ const Item = ({ category, index }: { category: any; index: number }) => {
   );
 };
 
-const useCategoryList = () => {
-  const list = trpc.userCategories.list.useQuery();
-  const { setCategories } = useCategories();
-
-  React.useEffect(() => {
-    if (list.status === 'error') {
-      Alert.alert('Unable to fetch categories', list.error.message, [
-        { text: 'Cancel', isPreferred: false },
-        {
-          text: 'Retry',
-          isPreferred: true,
-          onPress: () => list.refetch().catch(console.error),
-        },
-      ]);
-    }
-    if (list.status === 'success') {
-      const data = list.data as any;
-      if (!data) return;
-
-      setCategories({
-        type: 'SET_CATEGORIES',
-        payload: {
-          categories: data?.categories || [],
-        },
-      });
-    }
-  }, [list.status]);
-
-  return { isLoading: list.isLoading };
-};
-
 export const List = () => {
-  const { isLoading } = useCategoryList();
+  const { status } = useGetCategories();
   const { categories } = useCategories();
 
-  if (isLoading) return <Loader />;
+  if (status === 'pending') return <Loader />;
   if (categories.length === 0) return <Empty />;
 
   return (

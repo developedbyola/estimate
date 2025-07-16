@@ -65,7 +65,7 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
     <Provider value={field}>
       <Box
         ref={ref}
-        style={[{ gap: Space.sm }, style]}
+        style={[{ gap: Space['2xs'] }, style]}
         {...restProps}
       />
     </Provider>
@@ -131,11 +131,11 @@ const Control = React.forwardRef<ControlRef, ControlProps>((props, ref) => {
       ref={ref}
       style={[
         {
-          height: 40,
+          height: 44,
           flexDirection: 'row',
           alignItems: 'center',
           position: 'relative',
-          borderRadius: Border.radius['base'],
+          borderRadius: Border.radius['lg'],
           backgroundColor: colors.getColor('bg.subtle'),
         },
         style,
@@ -204,7 +204,14 @@ const Feedback = React.forwardRef<FeedbackRef, FeedbackProps>((props, ref) => {
     <Text
       ref={ref}
       leading={leading}
-      style={[{ color: colors.getColor('error.base') }, style]}
+      style={[
+        {
+          color: colors.getColor('error.base'),
+          fontSize: 14,
+          fontWeight: 'medium',
+        },
+        style,
+      ]}
       {...restProps}
     >
       {error.message?.toString()}

@@ -1,9 +1,9 @@
 import { Add } from './components/Add';
-import { Provider, useEstimates } from './components/Provider';
+import { Provider, useEstimates, type Estimate } from './components/Provider';
 
 const Estimates = {
   Provider,
   Add,
 };
 
-export { Estimates, useEstimates };
+export { Estimates, useEstimates, Estimate };
