@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { protectedProcedure, router } from '../middleware';
 
-export const profileRouters = router({
+export const profilesRouter = router({
   get: protectedProcedure.query(async ({ ctx }) => {
     try {
       const profile = await ctx.supabase

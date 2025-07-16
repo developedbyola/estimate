@@ -6,6 +6,7 @@ import { systemRouter } from '@/trpc/routers/system';
 import { sessionsRouter } from '@/trpc/routers/sessions';
 import { estimatesRouter } from '@/trpc/routers/estimates';
 import { categoriesRouter } from '@/trpc/routers/categories';
+import { profilesRouter } from '@/trpc/routers/profiles';
 
 export const appRouter = router({
   auth: authRouter,
@@ -14,6 +15,7 @@ export const appRouter = router({
   farms: farmsRouter,
   categories: categoriesRouter,
   estimates: estimatesRouter,
+  profiles: profilesRouter,
   system: systemRouter,
 });
 
