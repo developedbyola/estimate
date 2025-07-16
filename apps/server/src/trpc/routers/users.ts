@@ -15,213 +15,217 @@ const passwordSchema = z
   );
 
 export const usersRouter = router({
-  me: protectedProcedure.query(async ({ ctx }) => {
-    try {
-      const user = await ctx.supabase
-        .from('users')
-        .select('id, created_at, is_onboarded, email')
-        .eq('id', ctx.actor.userId)
-        .single();
-
-      if (!user.data) {
-        return ctx.fail({
-          code: 'NOT_FOUND',
-          message:
-            'Your account could not be found. Please try logging in again or contact support if the issue persists.',
-        });
-      }
-
-      return ctx.ok(
-        {
-          user: {
-            id: user.data.id,
-            email: user.data.email,
-            createdAt: user.data.created_at,
-            isOnboarded: user.data.is_onboarded,
-          },
-        },
-        { httpStatus: 200, path: 'users.profile' }
-      );
-    } catch (err) {
-      return ctx.fail(err);
-    }
-  }),
-
-  getById: publicProcedure
-    .input(
-      z.object({
-        userId: z.string().min(1, 'User ID is required'),
-      })
-    )
-    .query(async ({ input, ctx }) => {
+  me: {
+    get: protectedProcedure.query(async ({ ctx }) => {
       try {
         const user = await ctx.supabase
           .from('users')
-          .select('id, email, is_onboarded, created_at')
-          .eq('id', input.userId)
-          .single();
-
-        if (!user.data) {
-          return ctx.fail({
-            message:
-              'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
-            code: 'NOT_FOUND',
-          });
-        }
-
-        return ctx.ok({
-          user: {
-            id: user.data.id,
-            email: user.data.email,
-            createdAt: user.data.created_at,
-            isOnboarded: user.data.is_onboarded,
-          },
-        });
-      } catch (err) {}
-    }),
-
-  changePassword: protectedProcedure
-    .input(
-      z.object({
-        newPassword: passwordSchema,
-        currentPassword: z.string().min(3, 'Current password is required'),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const user = await ctx.supabase
-          .from('users')
-          .select('password')
+          .select('id, created_at, is_onboarded, email')
           .eq('id', ctx.actor.userId)
           .single();
 
         if (!user.data) {
           return ctx.fail({
-            message:
-              'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
             code: 'NOT_FOUND',
+            message:
+              'Your account could not be found. Please try logging in again or contact support if the issue persists.',
           });
         }
 
-        const isSamePassword = await argon2.verify(
-          user.data.password,
-          input.currentPassword
+        return ctx.ok(
+          {
+            user: {
+              id: user.data.id,
+              email: user.data.email,
+              createdAt: user.data.created_at,
+              isOnboarded: user.data.is_onboarded,
+            },
+          },
+          { httpStatus: 200, path: 'users.profile' }
         );
-
-        if (!isSamePassword) {
-          return ctx.fail({
-            message: 'The password you entered is incorrect. Please try again.',
-            code: 'UNAUTHORIZED',
-          });
-        }
-
-        const hashedPassword = await argon2.hash(input.newPassword);
-
-        // Update password using Supabase Auth
-        const updatedUser = await ctx.supabase
-          .from('users')
-          .update({
-            password: hashedPassword,
-          })
-          .eq('id', ctx.actor.userId)
-          .select('id, created_at')
-          .single();
-
-        if (updatedUser.error) {
-          console.error('Password update error:', updatedUser.error);
-          return ctx.fail({
-            message:
-              'We encountered an issue while updating your password. Please try again later.',
-            code: 'INTERNAL_SERVER_ERROR',
-          });
-        }
-
-        return ctx.ok({
-          success: true,
-        });
       } catch (err) {
         return ctx.fail(err);
       }
     }),
+    changePassword: protectedProcedure
+      .input(
+        z.object({
+          newPassword: passwordSchema,
+          currentPassword: z.string().min(3, 'Current password is required'),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        try {
+          const user = await ctx.supabase
+            .from('users')
+            .select('password')
+            .eq('id', ctx.actor.userId)
+            .single();
 
-  changeEmail: protectedProcedure
-    .input(
-      z.object({
-        email: z.string().email('Please enter a valid email address'),
-        password: z
-          .string()
-          .min(3, 'Password is required to confirm this change'),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      try {
-        // Verify password first
-        const user = await ctx.supabase
-          .from('users')
-          .select('password')
-          .eq('id', ctx.actor.userId)
-          .single();
+          if (!user.data) {
+            return ctx.fail({
+              message:
+                'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
+              code: 'NOT_FOUND',
+            });
+          }
 
-        if (!user.data) {
-          return ctx.fail({
-            message:
-              'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
-            code: 'NOT_FOUND',
+          const isSamePassword = await argon2.verify(
+            user.data.password,
+            input.currentPassword
+          );
+
+          if (!isSamePassword) {
+            return ctx.fail({
+              message:
+                'The password you entered is incorrect. Please try again.',
+              code: 'UNAUTHORIZED',
+            });
+          }
+
+          const hashedPassword = await argon2.hash(input.newPassword);
+
+          // Update password using Supabase Auth
+          const updatedUser = await ctx.supabase
+            .from('users')
+            .update({
+              password: hashedPassword,
+            })
+            .eq('id', ctx.actor.userId)
+            .select('id, created_at')
+            .single();
+
+          if (updatedUser.error) {
+            console.error('Password update error:', updatedUser.error);
+            return ctx.fail({
+              message:
+                'We encountered an issue while updating your password. Please try again later.',
+              code: 'INTERNAL_SERVER_ERROR',
+            });
+          }
+
+          return ctx.ok({
+            success: true,
           });
+        } catch (err) {
+          return ctx.fail(err);
         }
+      }),
 
-        const isSamePassword = await argon2.verify(
-          user.data.password,
-          input.password
-        );
+    changeEmail: protectedProcedure
+      .input(
+        z.object({
+          email: z.string().email('Please enter a valid email address'),
+          password: z
+            .string()
+            .min(3, 'Password is required to confirm this change'),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        try {
+          // Verify password first
+          const user = await ctx.supabase
+            .from('users')
+            .select('password')
+            .eq('id', ctx.actor.userId)
+            .single();
 
-        if (!isSamePassword) {
-          return ctx.fail({
-            message: 'The password you entered is incorrect. Please try again.',
-            code: 'UNAUTHORIZED',
+          if (!user.data) {
+            return ctx.fail({
+              message:
+                'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
+              code: 'NOT_FOUND',
+            });
+          }
+
+          const isSamePassword = await argon2.verify(
+            user.data.password,
+            input.password
+          );
+
+          if (!isSamePassword) {
+            return ctx.fail({
+              message:
+                'The password you entered is incorrect. Please try again.',
+              code: 'UNAUTHORIZED',
+            });
+          }
+
+          // Check if email is already in use by another account
+          const existingUser = await ctx.supabase
+            .from('users')
+            .select('id')
+            .eq('email', input.email)
+            .neq('id', ctx.actor.userId)
+            .single();
+
+          if (existingUser.data) {
+            return ctx.fail({
+              message:
+                'This email address is already associated with another account. Please use a different email address.',
+              code: 'CONFLICT',
+            });
+          }
+
+          // Update email using Supabase Auth
+          const { error: updateError } = await ctx.supabase
+            .from('users')
+            .update({
+              email: input.email,
+            })
+            .eq('id', ctx.actor.userId)
+            .select('id, name, created_at')
+            .single();
+
+          if (updateError) {
+            console.error('Email update error:', updateError);
+            return ctx.fail({
+              message:
+                'We encountered an issue while updating your email address. Please try again later.',
+              code: 'INTERNAL_SERVER_ERROR',
+            });
+          }
+
+          return ctx.ok({
+            success: true,
           });
+        } catch (err) {
+          return ctx.fail(err);
         }
+      }),
+  },
+  public: {
+    getById: publicProcedure
+      .input(
+        z.object({
+          userId: z.string().min(1, 'User ID is required'),
+        })
+      )
+      .query(async ({ input, ctx }) => {
+        try {
+          const user = await ctx.supabase
+            .from('users')
+            .select('id, email, is_onboarded, created_at')
+            .eq('id', input.userId)
+            .single();
 
-        // Check if email is already in use by another account
-        const existingUser = await ctx.supabase
-          .from('users')
-          .select('id')
-          .eq('email', input.email)
-          .neq('id', ctx.actor.userId)
-          .single();
+          if (!user.data) {
+            return ctx.fail({
+              message:
+                'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
+              code: 'NOT_FOUND',
+            });
+          }
 
-        if (existingUser.data) {
-          return ctx.fail({
-            message:
-              'This email address is already associated with another account. Please use a different email address.',
-            code: 'CONFLICT',
+          return ctx.ok({
+            user: {
+              id: user.data.id,
+              email: user.data.email,
+              createdAt: user.data.created_at,
+              isOnboarded: user.data.is_onboarded,
+            },
           });
-        }
-
-        // Update email using Supabase Auth
-        const { error: updateError } = await ctx.supabase
-          .from('users')
-          .update({
-            email: input.email,
-          })
-          .eq('id', ctx.actor.userId)
-          .select('id, name, created_at')
-          .single();
-
-        if (updateError) {
-          console.error('Email update error:', updateError);
-          return ctx.fail({
-            message:
-              'We encountered an issue while updating your email address. Please try again later.',
-            code: 'INTERNAL_SERVER_ERROR',
-          });
-        }
-
-        return ctx.ok({
-          success: true,
-        });
-      } catch (err) {
-        return ctx.fail(err);
-      }
-    }),
+        } catch (err) {}
+      }),
+  },
 });

@@ -3,6 +3,7 @@ import { parseEnv } from '@/utils/parseEnv';
 export const env = {
   PORT: Number(parseEnv('PORT')),
   NODE_ENV: parseEnv('NODE_ENV'),
+  VERSION: parseEnv('VERSION'),
   MAX_SESSIONS: Number(parseEnv('MAX_SESSIONS')),
   SUPABASE_URL: parseEnv('SUPABASE_URL'),
   ACCESS_TOKEN_EXPIRY: Number(parseEnv('ACCESS_TOKEN_EXPIRY')),
