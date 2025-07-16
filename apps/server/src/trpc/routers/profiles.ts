@@ -46,7 +46,6 @@ export const profileRouters = router({
           .update({
             first_name: input.firstName,
             last_name: input.lastName,
-            updated_at: new Date().toISOString(),
           })
           .eq('user_id', ctx.actor.userId)
           .select()
