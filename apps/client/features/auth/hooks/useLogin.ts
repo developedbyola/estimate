@@ -24,13 +24,18 @@ export const useLogin = () => {
         type: 'SET_USER',
         payload: { user: data?.user },
       });
-      router.replace('/(tabs)');
+      if (data?.user?.isOnboarded) {
+        router.replace('/(tabs)');
+      } else {
+        router.replace('/onboard');
+      }
     },
     onError: (error, input) => {
       Alert.alert('Login failed', error.message, [
         { text: 'Cancel' },
         {
           text: 'Retry',
+          isPreferred: true,
           onPress: async () => {
             await login.mutateAsync(input);
           },
