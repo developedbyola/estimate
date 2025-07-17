@@ -294,7 +294,7 @@ export const authRouter = router({
               refresh_token: await argon2.hash(newRefreshToken),
               last_active_at: new Date().toISOString(),
             })
-            .eq('id', sessionId)
+            .eq('refresh_token', refreshToken)
             .eq('user_id', userId);
 
           if (updatedSession.error) {
@@ -325,15 +325,14 @@ export const authRouter = router({
       .mutation(async ({ ctx, input }) => {
         try {
           const refreshToken = input.refreshToken;
-          const { userId, sessionId } = await jwt.verify<{
+          const { userId } = await jwt.verify<{
             userId: string;
-            sessionId: string;
           }>(env.REFRESH_TOKEN_SECRET, refreshToken);
 
           const session = await ctx.supabase
             .from('sessions')
             .select('*')
-            .eq('id', sessionId)
+            .eq('refresh_token', refreshToken)
             .eq('user_id', userId)
             .single();
 
@@ -359,7 +358,7 @@ export const authRouter = router({
           const deletedSession = await ctx.supabase
             .from('sessions')
             .delete()
-            .eq('id', sessionId)
+            .eq('refresh_token', refreshToken)
             .eq('user_id', userId);
 
           if (deletedSession.error) {
