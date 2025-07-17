@@ -20,7 +20,7 @@ const passwordSchema = z
 export const authRouter = router({
   public: {
     register: publicProcedure
-      .use(rateLimiter({ points: 10, duration: 60 }))
+      .use(rateLimiter({ points: 10, duration: 5 }))
       .input(
         z.object({
           email: z.string().email('Please enter a valid email address'),
@@ -73,6 +73,7 @@ export const authRouter = router({
       }),
 
     login: publicProcedure
+      .use(rateLimiter({ points: 10, duration: 5 }))
       .input(
         z.object({
           password: passwordSchema,
