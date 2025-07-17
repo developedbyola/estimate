@@ -17,8 +17,14 @@ export const useRegister = () => {
         actions: [{ text: 'OK', onPress: () => router.back() }],
       });
     },
-    onError: (error) => {
-      Alert.alert('Registration failed', error.message, [{ text: 'Cancel' }]);
+    onError: (error, input) => {
+      Alert.alert('Registration failed', error.message, [
+        { text: 'Cancel' },
+        {
+          text: 'Retry',
+          onPress: async () => await register.mutateAsync(input),
+        },
+      ]);
     },
   });
 
