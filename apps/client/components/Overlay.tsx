@@ -257,7 +257,6 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           enableDynamicSizing={false}
           keyboardBehavior='fillParent'
           backgroundStyle={{
-            padding: 20,
             backgroundColor: 'transparent',
           }}
           index={memoizedSnapPoints.length - 1}
