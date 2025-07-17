@@ -257,19 +257,14 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           enableDynamicSizing={false}
           keyboardBehavior='fillParent'
           backgroundStyle={{
-            margin: 16,
             padding: 20,
-            overflow: 'hidden',
-            borderRadius: Border.radius['3xl'],
-            backgroundColor: colors.getColor('bg.base'),
+            backgroundColor: 'transparent',
           }}
           index={memoizedSnapPoints.length - 1}
           handleIndicatorStyle={{
-            bottom: -200,
             height: 6,
             width: 64,
             marginTop: 24,
-            position: 'absolute',
             borderRadius: Border.radius.full,
             backgroundColor: colors.getColor('border.soft'),
           }}
@@ -288,6 +283,8 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
               {
                 flex: 1,
                 height: '100%',
+                borderRadius: Border.radius['3xl'],
+                backgroundColor: colors.getColor('bg.base'),
               },
               style,
             ]}
