@@ -96,6 +96,16 @@ const Stacks = () => {
   );
 };
 
+const Protected = () => {
+  const { auth } = Auth.useAuth();
+
+  if (!auth.isAuthenticated) {
+    return <Stack.Screen name='index' />;
+  }
+
+  return <Stacks />;
+};
+
 const Layout = () => {
   return (
     <RootSiblingParent>
