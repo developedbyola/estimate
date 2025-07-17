@@ -150,14 +150,6 @@ export const authRouter = router({
           const ip_address = getClientIp(ctx.req as any);
           const user_agent = ctx.req.header('user-agent');
           const expires_at = time.milliseconds(env.REFRESH_TOKEN_EXPIRY);
-          console.log(
-            'Refresh token expiry (seconds):',
-            env.REFRESH_TOKEN_EXPIRY
-          );
-          console.log({ env });
-          console.log('Calculated expires_at (ms):', expires_at);
-          console.log('Date from timestamp:', new Date(expires_at));
-          console.log('ISO String:', new Date(expires_at).toISOString());
 
           const session = await ctx.supabase
             .from('sessions')
