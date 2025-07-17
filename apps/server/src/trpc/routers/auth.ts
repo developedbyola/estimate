@@ -157,7 +157,6 @@ export const authRouter = router({
             time.unix(env.ACCESS_TOKEN_EXPIRY),
             {
               userId: user.data.id,
-              sessionId: session.data.id,
             }
           );
 
@@ -167,7 +166,6 @@ export const authRouter = router({
             time.unix(env.REFRESH_TOKEN_EXPIRY),
             {
               userId: user.data.id,
-              sessionId: session.data.id,
             }
           );
 
@@ -221,12 +219,11 @@ export const authRouter = router({
           const refreshToken = input.refreshToken;
 
           // Verify the refresh token
-          const { userId, sessionId } = await jwt.verify<{
+          const { userId } = await jwt.verify<{
             userId: string;
-            sessionId: string;
           }>(env.REFRESH_TOKEN_SECRET, refreshToken);
 
-          if (!userId || !sessionId) {
+          if (!userId) {
             return ctx.fail({
               code: 'UNAUTHORIZED',
               message:
@@ -237,7 +234,7 @@ export const authRouter = router({
           const session = await ctx.supabase
             .from('sessions')
             .select('*')
-            .eq('id', sessionId)
+            .eq('refresh_token', refreshToken)
             .eq('user_id', userId)
             .single();
 
@@ -279,7 +276,6 @@ export const authRouter = router({
             env.ACCESS_TOKEN_SECRET,
             time.unix(env.ACCESS_TOKEN_EXPIRY),
             {
-              sessionId: session.data.id,
               userId: session.data.user_id,
             }
           );
@@ -288,7 +284,6 @@ export const authRouter = router({
             env.REFRESH_TOKEN_SECRET,
             time.unix(env.REFRESH_TOKEN_EXPIRY),
             {
-              sessionId: session.data.id,
               userId: session.data.user_id,
             }
           );
