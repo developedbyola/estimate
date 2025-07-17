@@ -44,8 +44,8 @@ const PopupComponent = ({
 
   const bgColors = {
     success: [
-      colors.getColor('primary.base'),
-      colors.getColor('primary.subtle'),
+      colors.getColor('success.base'),
+      colors.getColor('success.subtle'),
     ],
     error: [colors.getColor('error.base'), colors.getColor('error.subtle')],
     warning: [
@@ -77,7 +77,7 @@ const PopupComponent = ({
         >
           <Ionicons
             size={32}
-            color={colors.getColor('icon.on')}
+            color={colors.getColor('icon.base')}
             name={iconName[config.variant || 'success'] as any}
           />
         </Gradient>
