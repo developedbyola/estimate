@@ -257,6 +257,8 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           enableDynamicSizing={false}
           keyboardBehavior='fillParent'
           backgroundStyle={{
+            margin: 20,
+            padding: 20,
             overflow: 'hidden',
             borderRadius: Border.radius['3xl'],
             backgroundColor: colors.getColor('bg.base'),
@@ -282,7 +284,6 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
             style={[
               {
                 flex: 1,
-
                 height: '100%',
               },
               style,
