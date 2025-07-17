@@ -17,7 +17,7 @@ const passwordSchema = z
   .regex(/^\S+$/, 'Password cannot contain spaces');
 
 export const authRouter = router({
-  publlc: {
+  public: {
     register: publicProcedure
       .input(
         z.object({

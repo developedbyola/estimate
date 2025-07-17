@@ -9,7 +9,7 @@ export const useLogin = () => {
   const { setAuth } = useAuth();
   const { setUser } = User.useUser();
 
-  const login = Trpc.client.auth.login.useMutation({
+  const login = Trpc.client.auth.public.login.useMutation({
     onSuccess: async (data: any) => {
       setAuth({
         type: 'LOGIN',

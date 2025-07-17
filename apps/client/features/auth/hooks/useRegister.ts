@@ -5,7 +5,7 @@ import { usePopupContext } from '@/components';
 
 export const useRegister = () => {
   const popup = usePopupContext();
-  const register = Trpc.client.auth.register.useMutation({
+  const register = Trpc.client.auth.public.register.useMutation({
     onSuccess: () => {
       popup.open({
         title: 'Congratulations 🎉',
