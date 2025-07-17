@@ -47,6 +47,39 @@ export const usersRouter = router({
         return ctx.fail(err);
       }
     }),
+    update: protectedProcedure
+      .input(
+        z.object({
+          isOnboarded: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        try {
+          const user = await ctx.supabase
+            .from('users')
+            .update({
+              is_onboarded: input.isOnboarded,
+            })
+            .eq('id', ctx.actor.userId)
+            .select('id, created_at')
+            .single();
+
+          if (user.error) {
+            console.error('User update error:', user.error);
+            return ctx.fail({
+              message:
+                'We encountered an issue while updating your profile. Please try again later.',
+              code: 'INTERNAL_SERVER_ERROR',
+            });
+          }
+
+          return ctx.ok({
+            success: true,
+          });
+        } catch (err) {
+          return ctx.fail(err);
+        }
+      }),
     changePassword: protectedProcedure
       .input(
         z.object({
