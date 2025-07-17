@@ -132,26 +132,6 @@ export const authRouter = router({
               .eq('id', sessions.data[0].id);
           }
 
-          const ip_address = getClientIp(ctx.req as any);
-
-          const session = await ctx.supabase
-            .from('sessions')
-            .insert({
-              user_id: user.data.id,
-              ip_address: ip_address || 'unknown',
-              user_agent: ctx.req.header('user-agent') || 'unknown',
-            })
-            .select('id')
-            .single();
-
-          if (session.error) {
-            return ctx.fail({
-              code: 'INTERNAL_SERVER_ERROR',
-              message: `We encountered an unexpected error while setting up your session. ${session.error.message}`,
-            });
-          }
-
-          // Sign access token
           const accessToken = await jwt.sign(
             env.ACCESS_TOKEN_SECRET,
             time.unix(env.ACCESS_TOKEN_EXPIRY),
@@ -169,20 +149,24 @@ export const authRouter = router({
             }
           );
 
-          // Update the session with the refresh token
-          const updatedSession = await ctx.supabase
+          const ip_address = getClientIp(ctx.req as any);
+
+          const session = await ctx.supabase
             .from('sessions')
-            .update({
+            .insert({
+              user_id: user.data.id,
+              ip_address: ip_address || 'unknown',
               refresh_token: await argon2.hash(refreshToken),
+              user_agent: ctx.req.header('user-agent') || 'unknown',
+              expires_at: new Date(time.milliseconds(env.REFRESH_TOKEN_EXPIRY)),
             })
-            .eq('id', session.data.id)
-            .select()
+            .select('id')
             .single();
 
-          if (updatedSession.error) {
+          if (session.error) {
             return ctx.fail({
               code: 'INTERNAL_SERVER_ERROR',
-              message: `Failed to store refresh token in session. ${updatedSession.error.message}`,
+              message: `We encountered an unexpected error while setting up your session. ${session.error.message}`,
             });
           }
 
