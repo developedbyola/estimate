@@ -89,9 +89,9 @@ const PopupComponent = ({
         <Heading
           size='2xl'
           leading='lg'
+          weight='bold'
           align='center'
-          weight='semibold'
-          style={{ marginTop: 12, maxWidth: 280, marginInline: 'auto' }}
+          style={{ marginTop: 12, maxWidth: 250, marginInline: 'auto' }}
         >
           {config.title}
         </Heading>
