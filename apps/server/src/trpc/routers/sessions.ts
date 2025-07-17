@@ -6,7 +6,7 @@ export const sessionsRouter = router({
     list: protectedProcedure.query(async ({ ctx }) => {
       try {
         const sessions = await ctx.supabase
-          .from('user_sessions')
+          .from('sessions')
           .select('*')
           .eq('user_id', ctx.actor.userId)
           .order('created_at', { ascending: false });
@@ -42,7 +42,7 @@ export const sessionsRouter = router({
     current: protectedProcedure.mutation(async ({ ctx }) => {
       try {
         const session = await ctx.supabase
-          .from('user_sessions')
+          .from('sessions')
           .select('*')
           .eq('user_id', ctx.actor.userId)
           .eq('id', ctx.actor.sessionId)
@@ -80,7 +80,7 @@ export const sessionsRouter = router({
       .mutation(async ({ input, ctx }) => {
         try {
           const session = await ctx.supabase
-            .from('user_sessions')
+            .from('sessions')
             .update({ revoked: true })
             .eq('id', input.sessionId)
             .eq('user_id', ctx.actor.userId);

@@ -114,7 +114,7 @@ export const authRouter = router({
           }
 
           const sessions = await ctx.supabase
-            .from('user_sessions')
+            .from('sessions')
             .select('*')
             .eq('user_id', user.data.id);
 
@@ -127,7 +127,7 @@ export const authRouter = router({
 
           if (sessions.data.length > env.MAX_SESSIONS) {
             await ctx.supabase
-              .from('user_sessions')
+              .from('sessions')
               .delete()
               .eq('id', sessions.data[0].id);
           }
@@ -135,7 +135,7 @@ export const authRouter = router({
           const ip_address = getClientIp(ctx.req as any);
 
           const session = await ctx.supabase
-            .from('user_sessions')
+            .from('sessions')
             .insert({
               user_id: user.data.id,
               ip_address: ip_address || 'unknown',
@@ -173,7 +173,7 @@ export const authRouter = router({
 
           // Update the session with the refresh token
           const updatedSession = await ctx.supabase
-            .from('user_sessions')
+            .from('sessions')
             .update({
               refresh_token: await argon2.hash(refreshToken),
             })
@@ -235,7 +235,7 @@ export const authRouter = router({
           }
 
           const session = await ctx.supabase
-            .from('user_sessions')
+            .from('sessions')
             .select('*')
             .eq('id', sessionId)
             .eq('user_id', userId)
@@ -294,7 +294,7 @@ export const authRouter = router({
           );
 
           const updatedSession = await ctx.supabase
-            .from('user_sessions')
+            .from('sessions')
             .update({
               refresh_token: await argon2.hash(newRefreshToken),
               last_active_at: new Date().toISOString(),
@@ -336,7 +336,7 @@ export const authRouter = router({
           }>(env.REFRESH_TOKEN_SECRET, refreshToken);
 
           const session = await ctx.supabase
-            .from('user_sessions')
+            .from('sessions')
             .select('*')
             .eq('id', sessionId)
             .eq('user_id', userId)
@@ -362,7 +362,7 @@ export const authRouter = router({
           }
 
           const deletedSession = await ctx.supabase
-            .from('user_sessions')
+            .from('sessions')
             .delete()
             .eq('id', sessionId)
             .eq('user_id', userId);
