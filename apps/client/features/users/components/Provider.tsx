@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'expo-router';
 
 export type User = {
   id: string;
@@ -74,6 +75,13 @@ export const Provider = ({
   initialState?: State;
 }) => {
   const [state, dispatch] = React.useReducer(userReducer, initialState);
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (state.user?.isOnboarded === false) {
+      router.replace('/onboard');
+    }
+  }, [state.user?.isOnboarded]);
 
   return (
     <userContext.Provider value={{ ...state, setUser: dispatch }}>

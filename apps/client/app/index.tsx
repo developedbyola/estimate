@@ -1,12 +1,10 @@
 import React from 'react';
 import { MotiImage } from 'moti';
 import { Button } from 'react-native';
-import { Auth } from '@/features/auth';
 import { useRouter } from 'expo-router';
 import { Border, Space } from '@/constants';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { Action, Heading, Box, Text, Safe, Overlay, Blur } from '@/components';
-import { Users } from '@/features/users';
+import { Action, Heading, Box, Text, Safe, Overlay } from '@/components';
 // import { useDeleteAccessToken } from '@/hooks/useTokens';
 
 const images = [
@@ -27,82 +25,10 @@ const images = [
   },
 ];
 
-const Footer = () => {
-  const router = useRouter();
-  const { auth } = Auth.useAuth();
-
-  if (auth.isAuthenticated) {
-    return (
-      <Box px='xl'>
-        <Blur
-          px='lg'
-          py='base'
-          bg='bg.subtle'
-          style={{
-            overflow: 'hidden',
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderRadius: Border.radius.lg,
-          }}
-        >
-          <Box style={{ flex: 1 }}>
-            <Heading
-              size='base'
-              leading='base'
-            >
-              You're signed in
-            </Heading>
-            <Text
-              size='sm'
-              leading='sm'
-            >
-              You can now explore the app
-            </Text>
-          </Box>
-          <Action.Root
-            size='sm'
-            onPress={() => router.push('/(tabs)')}
-          >
-            <Action.Label>Explore</Action.Label>
-          </Action.Root>
-        </Blur>
-      </Box>
-    );
-  }
-
-  return (
-    <Box
-      px='xl'
-      style={{ gap: Space.xs }}
-    >
-      <Action.Root
-        size='lg'
-        onPress={() => router.push('/register')}
-      >
-        <Action.Label>Become a member</Action.Label>
-      </Action.Root>
-      <Action.Root
-        size='lg'
-        variant='ghost'
-        onPress={() => router.push('/login')}
-      >
-        <Action.Label>Access your account</Action.Label>
-      </Action.Root>
-    </Box>
-  );
-};
-
 const Index = () => {
   const router = useRouter();
   const colors = useThemeColors();
-  const { user } = Users.useUser();
   // useDeleteAccessToken();
-
-  React.useEffect(() => {
-    if (user?.isOnboarded === false) {
-      router.push('/onboard');
-    }
-  }, [user]);
 
   return (
     <Box
@@ -189,7 +115,24 @@ const Index = () => {
           </Text>
         </Box>
 
-        <Footer />
+        <Box
+          px='xl'
+          style={{ gap: Space.xs }}
+        >
+          <Action.Root
+            size='lg'
+            onPress={() => router.push('/register')}
+          >
+            <Action.Label>Become a member</Action.Label>
+          </Action.Root>
+          <Action.Root
+            size='lg'
+            variant='ghost'
+            onPress={() => router.push('/login')}
+          >
+            <Action.Label>Access your account</Action.Label>
+          </Action.Root>
+        </Box>
       </Safe>
     </Box>
   );
