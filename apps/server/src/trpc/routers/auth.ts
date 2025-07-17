@@ -138,18 +138,13 @@ export const authRouter = router({
           const accessToken = await jwt.sign(
             env.ACCESS_TOKEN_SECRET,
             time.unix(env.ACCESS_TOKEN_EXPIRY),
-            {
-              userId: user.data.id,
-            }
+            { userId: user.data.id }
           );
 
-          // Sign refresh token
           const refreshToken = await jwt.sign(
             env.REFRESH_TOKEN_SECRET,
             time.unix(env.REFRESH_TOKEN_EXPIRY),
-            {
-              userId: user.data.id,
-            }
+            { userId: user.data.id }
           );
 
           const ip_address = getClientIp(ctx.req as any);
@@ -173,7 +168,6 @@ export const authRouter = router({
             });
           }
 
-          // Get user data
           const userData = {
             id: user.data.id,
             email: user.data.email,
@@ -181,7 +175,6 @@ export const authRouter = router({
             isOnboarded: user.data.is_onboarded,
           };
 
-          // Return access token and user data
           return ctx.ok(
             {
               accessToken,
