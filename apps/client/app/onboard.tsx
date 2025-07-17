@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack } from 'expo-router';
-import { Users } from '@/features/users';
+import { Auth } from '@/features/auth';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 const OnboardPage = () => {
@@ -25,7 +25,7 @@ const OnboardPage = () => {
           },
         }}
       />
-      <Users.Onboard />
+      <Auth.Onboard />
     </React.Fragment>
   );
 };
