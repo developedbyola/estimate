@@ -1,8 +1,7 @@
-import jwt from '@/utils/jwt';
 import { ZodError } from 'zod';
-import { env } from '@/configs/env';
+import { initTRPC } from '@trpc/server';
 import type { Context } from '@/trpc/context';
-import { initTRPC, TRPCError } from '@trpc/server';
+import { isAuthed } from '@/middlewares/isAuthed';
 import { getFirstValidationMessage } from '@/utils/validationMessage';
 
 export const t = initTRPC.context<Context>().create({
@@ -21,40 +20,6 @@ export const t = initTRPC.context<Context>().create({
       },
     };
   },
-});
-
-const isAuthed = t.middleware(async ({ ctx, next }) => {
-  const authorization = ctx.req.header('Authorization');
-  const accessToken = authorization?.split('Bearer ')[1];
-
-  let actor = null;
-  try {
-    if (accessToken) {
-      actor = await jwt.verify<{ userId: string; sessionId: string }>(
-        env.ACCESS_TOKEN_SECRET,
-        accessToken
-      );
-    }
-    if (!actor) {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: 'You must be logged in to access this feature.',
-      });
-    }
-
-    return next({
-      ctx: {
-        ...ctx,
-        actor,
-      },
-    });
-  } catch (error) {
-    throw new TRPCError({
-      code: 'INTERNAL_SERVER_ERROR',
-      message:
-        'We encountered an unexpected error while processing your request.',
-    });
-  }
 });
 
 export const router = t.router;

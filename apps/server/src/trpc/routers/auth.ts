@@ -4,7 +4,7 @@ import jwt from '@/utils/jwt';
 import time from '@/utils/time';
 import { env } from '@/configs/env';
 import { getClientIp } from 'request-ip';
-import { rateLimiter } from '@/utils/rateLimiter';
+import { rateLimiter } from '@/middlewares/rateLimiter';
 import { publicProcedure, router } from '../middleware';
 
 // Strong password validation schema
