@@ -2,10 +2,9 @@ import React from 'react';
 import * as Device from 'expo-device';
 import { Auth } from '@/features/auth';
 import { httpBatchLink } from '@trpc/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
 import { createTRPCReact } from '@trpc/react-query';
 import { type AppRouter } from '../../../../server/dist/trpc';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export const trpc = createTRPCReact<AppRouter>();
 
@@ -20,9 +19,7 @@ export const Provider = ({ children }: ProviderProps) => {
   const trpcClient = trpc.createClient({
     links: [
       httpBatchLink({
-        url: `${
-          process.env.SERVER_API_URL || 'https://estimate-server.onrender.com'
-        }/api/trpc`,
+        url: `${process.env.EXPO_PUBLIC_SERVER_API_URL}/api/trpc`,
         headers: {
           'x-app-version': '0.0.1',
           'x-device-name': Device.deviceName || '',
