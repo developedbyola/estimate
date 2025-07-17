@@ -25,6 +25,7 @@ export const useRegister = () => {
         { text: 'Cancel' },
         {
           text: 'Retry',
+          isPreferred: true,
           onPress: async () => await register.mutateAsync(input),
         },
       ]);
