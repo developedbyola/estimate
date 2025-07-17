@@ -13,7 +13,7 @@ export const useRegister = () => {
         title: 'Welcome to the community!',
         onDismiss: () => router.back(),
         message:
-          'Your account has been created successfully. Welcome to our community!',
+          'We’re thrilled to welcome you to our community! We’re excited to have you on board and can’t wait for you to explore everything we have to offer.',
         actions: [{ text: 'OK', onPress: () => router.back() }],
       });
     },
