@@ -4,6 +4,7 @@ import jwt from '@/utils/jwt';
 import time from '@/utils/time';
 import { env } from '@/configs/env';
 import { getClientIp } from 'request-ip';
+import { rateLimiter } from '@/utils/rateLimiter';
 import { publicProcedure, router } from '../middleware';
 
 // Strong password validation schema
@@ -19,6 +20,7 @@ const passwordSchema = z
 export const authRouter = router({
   public: {
     register: publicProcedure
+      .use(rateLimiter({ points: 10, duration: 60 }))
       .input(
         z.object({
           email: z.string().email('Please enter a valid email address'),
