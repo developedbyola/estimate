@@ -8,7 +8,7 @@ const useProfile = () => {
   const { auth } = Auth.useAuth();
   const { user, setUser } = useUser();
 
-  const profile = Trpc.client.users.profile.useQuery(undefined, {
+  const profile = Trpc.client.users.me.get.useQuery(undefined, {
     enabled: auth.isAuthenticated && !user,
   });
 
@@ -36,7 +36,7 @@ const useProfile = () => {
   return { status: profile.status };
 };
 
-export const Profile = ({ children }: { children: React.ReactNode }) => {
+export const Get = ({ children }: { children: React.ReactNode }) => {
   const _ = useProfile();
 
   return children;

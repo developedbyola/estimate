@@ -1,10 +1,10 @@
-import { Provider, useUser } from './components/Provider';
-import { Profile } from './components/Get';
+import { Get } from './components/Get';
 import { Onboard } from './components/Onboard';
+import { Provider, useUser } from './components/Provider';
 
 export const Users = {
-  Provider,
-  Profile,
+  Get,
   Onboard,
   useUser,
+  Provider,
 };
