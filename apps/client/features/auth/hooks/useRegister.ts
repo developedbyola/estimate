@@ -1,4 +1,3 @@
-import React from 'react';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
 import { Popup } from '@/components';
@@ -10,10 +9,10 @@ export const useRegister = () => {
     onSuccess: () => {
       popup.open({
         variant: 'success',
-        title: 'Welcome to the community!',
+        title: 'Congratulations, your account is now active.',
         onDismiss: () => router.back(),
         message:
-          'We’re thrilled to welcome you to our community! We’re excited to have you on board and can’t wait for you to explore everything we have to offer.',
+          'We’re excited to have you on board and can’t wait for you to explore everything we have to offer.',
         actions: [{ text: 'OK', onPress: () => router.back() }],
       });
     },
@@ -27,19 +26,6 @@ export const useRegister = () => {
       ]);
     },
   });
-
-  React.useEffect(() => {
-    if (register.status === 'idle') {
-      popup.open({
-        variant: 'success',
-        title: 'Welcome to the community!',
-        onDismiss: () => router.back(),
-        message:
-          'We’re excited to have you on board and can’t wait for you to explore everything we have to offer.',
-        actions: [{ text: 'OK', onPress: () => router.back() }],
-      });
-    }
-  }, [register.status]);
 
   return {
     status: register.status,
