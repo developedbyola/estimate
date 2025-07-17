@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { Popup } from '@/components';
 import { Auth } from '@/features/auth';
 import { Trpc } from '@/features/trpc';
@@ -96,14 +96,16 @@ const Stacks = () => {
   );
 };
 
-const Protected = () => {
+const Protected = ({ children }: { children: React.ReactNode }) => {
   const { auth } = Auth.useAuth();
 
-  if (!auth.isAuthenticated) {
-    return <Stack.Screen name='index' />;
-  }
+  React.useEffect(() => {
+    if (auth.isAuthenticated) {
+      router.replace('/(tabs)');
+    }
+  }, [auth.isAuthenticated]);
 
-  return <Stacks />;
+  return children;
 };
 
 const Layout = () => {
@@ -121,7 +123,9 @@ const Layout = () => {
                         <Farms.Provider>
                           <Estimates.Provider>
                             <Popup.Provider>
-                              <Stacks />
+                              <Protected>
+                                <Stacks />
+                              </Protected>
                             </Popup.Provider>
                           </Estimates.Provider>
                         </Farms.Provider>
