@@ -24,11 +24,7 @@ export const useLogin = () => {
         type: 'SET_USER',
         payload: { user: data?.user },
       });
-      if (data?.user?.isOnboarded) {
-        router.replace('/(tabs)');
-      } else {
-        router.replace('/onboard');
-      }
+      router.replace('/(tabs)');
     },
     onError: (error, input) => {
       Alert.alert('Login failed', error.message, [
