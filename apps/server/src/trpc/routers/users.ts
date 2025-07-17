@@ -261,4 +261,5 @@ export const usersRouter = router({
         } catch (err) {}
       }),
   },
+  admin: {},
 });

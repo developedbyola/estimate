@@ -8,9 +8,7 @@ export type User = {
 };
 
 export type State = {
-  me: {
-    user: User | null;
-  };
+  user: User | null;
 };
 
 export type Action =
