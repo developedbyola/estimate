@@ -58,7 +58,7 @@ const PopupComponent = ({
   return (
     <Overlay.Sheet
       onDismiss={close}
-      snapPoints={['48%']}
+      snapPoints={['45%']}
     >
       <Overlay.SheetContent
         mt='4xl'
