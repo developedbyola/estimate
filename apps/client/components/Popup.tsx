@@ -102,7 +102,7 @@ const PopupComponent = ({
         >
           {config.message}
         </Text>
-        <Overlay.SheetFooter>
+        {/* <Overlay.SheetFooter>
           {config.actions.map((action, index) => (
             <Action.Root
               key={index}
@@ -116,7 +116,7 @@ const PopupComponent = ({
               <Action.Label>{action.text}</Action.Label>
             </Action.Root>
           ))}
-        </Overlay.SheetFooter>
+        </Overlay.SheetFooter> */}
       </Overlay.SheetContent>
     </Overlay.Sheet>
   );

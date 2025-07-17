@@ -265,9 +265,11 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           }}
           index={memoizedSnapPoints.length - 1}
           handleIndicatorStyle={{
+            bottom: -200,
             height: 6,
             width: 64,
             marginTop: 24,
+            position: 'absolute',
             borderRadius: Border.radius.full,
             backgroundColor: colors.getColor('border.soft'),
           }}
