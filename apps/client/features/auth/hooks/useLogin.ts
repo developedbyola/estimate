@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { User } from '@/features/users';
+import { Users } from '@/features/users';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../components/Provider';
 import { Trpc } from '@/features/trpc';
@@ -7,7 +7,7 @@ import { Trpc } from '@/features/trpc';
 export const useLogin = () => {
   const router = useRouter();
   const { setAuth } = useAuth();
-  const { setUser } = User.useUser();
+  const { setUser } = Users.useUser();
 
   const login = Trpc.client.auth.public.login.useMutation({
     onSuccess: async (data: any) => {
