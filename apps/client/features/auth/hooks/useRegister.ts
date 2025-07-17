@@ -10,7 +10,7 @@ export const useRegister = () => {
     onSuccess: () => {
       popup.open({
         variant: 'success',
-        title: 'Congratulations 🎉',
+        title: 'Welcome to the community!',
         onDismiss: () => router.back(),
         message:
           'Your account has been created successfully. Welcome to our community!',
