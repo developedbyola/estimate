@@ -4,7 +4,7 @@ import type { Context } from '@/trpc/context';
 import { isAuthed } from '@/middlewares/isAuthed';
 import { getFirstValidationMessage } from '@/utils/validationMessage';
 
-export const t = initTRPC.context<Context>().create({
+const t = initTRPC.context<Context>().create({
   errorFormatter: (opts) => {
     const { shape, error } = opts;
     return {

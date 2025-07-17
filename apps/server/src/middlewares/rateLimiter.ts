@@ -1,6 +1,6 @@
-import { t } from '@/trpc/middleware';
 import { getClientIp } from 'request-ip';
 import { TRPCError } from '@trpc/server';
+import { middleware } from '@/trpc/middleware';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 export const rateLimiter = (options: { points: number; duration: number }) => {
@@ -9,7 +9,7 @@ export const rateLimiter = (options: { points: number; duration: number }) => {
     duration: options.duration,
   });
 
-  return t.middleware(async ({ ctx, next }) => {
+  return middleware(async ({ ctx, next }) => {
     const ip = getClientIp(ctx.req as any) || 'unknown';
 
     try {

@@ -1,9 +1,9 @@
-import { t } from '@/trpc/middleware';
 import jwt from '@/utils/jwt';
 import { env } from '@/configs/env';
 import { TRPCError } from '@trpc/server';
+import { middleware } from '@/trpc/middleware';
 
-export const isAuthed = t.middleware(async ({ ctx, next }) => {
+export const isAuthed = middleware(async ({ ctx, next }) => {
   const authorization = ctx.req.header('Authorization');
   const accessToken = authorization?.split('Bearer ')[1];
 
