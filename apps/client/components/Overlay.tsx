@@ -257,16 +257,16 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           enableDynamicSizing={false}
           keyboardBehavior='fillParent'
           backgroundStyle={{
-            overflow: 'visible',
-            backgroundColor: 'transparent',
+            overflow: 'hidden',
+            borderRadius: Border.radius['3xl'],
+            backgroundColor: colors.getColor('bg.base'),
           }}
           index={memoizedSnapPoints.length - 1}
           handleIndicatorStyle={{
             height: 6,
             width: 64,
-            marginTop: 24,
             borderRadius: Border.radius.full,
-            backgroundColor: colors.getColor('border.soft'),
+            backgroundColor: colors.getColor('border.subtle'),
           }}
           backdropComponent={backdrop}
           snapPoints={memoizedSnapPoints}
@@ -283,10 +283,6 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
               {
                 flex: 1,
                 height: '100%',
-                marginInline: 20,
-                marginTop: -20,
-                borderRadius: Border.radius['3xl'],
-                backgroundColor: colors.getColor('bg.base'),
               },
               style,
             ]}
@@ -340,9 +336,9 @@ const SheetFooter = React.forwardRef<SheetFooterRef, SheetFooterProps>(
     const {
       style,
       px = 'xl',
-      pt = 'base',
       pb = '4xl',
-      bg = 'bg.soft',
+      pt = 'base',
+      bg = 'bg.base',
       ...restProps
     } = props;
 
@@ -356,11 +352,11 @@ const SheetFooter = React.forwardRef<SheetFooterRef, SheetFooterProps>(
         bg={bg}
         style={[
           {
-            position: 'absolute',
-            borderTopWidth: 1,
-            borderTopColor: colors.getColor('border.soft'),
             bottom: 0,
             width: '100%',
+            borderTopWidth: 1,
+            position: 'absolute',
+            borderTopColor: colors.getColor('border.soft'),
           },
           style,
         ]}
