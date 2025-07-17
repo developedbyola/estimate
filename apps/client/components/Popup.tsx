@@ -62,7 +62,12 @@ const PopupComponent = ({
     >
       <Overlay.SheetContent
         mt='2xl'
-        style={{ gap: Space.base, alignItems: 'center' }}
+        style={{
+          flex: 1,
+          gap: Space.base,
+          alignItems: 'center',
+          flexDirection: 'column',
+        }}
       >
         <Gradient
           colors={bgColors[config.variant || 'success'] as any}
