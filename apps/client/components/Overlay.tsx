@@ -283,7 +283,7 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
                 flex: 1,
                 height: '100%',
                 marginInline: 20,
-                marginBottom: 200,
+                marginTop: -20,
                 borderRadius: Border.radius['3xl'],
                 backgroundColor: colors.getColor('bg.base'),
               },
