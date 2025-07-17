@@ -257,7 +257,7 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           enableDynamicSizing={false}
           keyboardBehavior='fillParent'
           backgroundStyle={{
-            margin: 20,
+            margin: 16,
             padding: 20,
             overflow: 'hidden',
             borderRadius: Border.radius['3xl'],
@@ -267,8 +267,9 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
           handleIndicatorStyle={{
             height: 6,
             width: 64,
+            marginTop: 24,
             borderRadius: Border.radius.full,
-            backgroundColor: colors.getColor('border.subtle'),
+            backgroundColor: colors.getColor('border.soft'),
           }}
           backdropComponent={backdrop}
           snapPoints={memoizedSnapPoints}

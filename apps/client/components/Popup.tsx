@@ -102,22 +102,22 @@ const PopupComponent = ({
         >
           {config.message}
         </Text>
+        <Overlay.SheetFooter>
+          {config.actions.map((action, index) => (
+            <Action.Root
+              key={index}
+              size='lg'
+              onPress={() => {
+                action.onPress();
+                close();
+              }}
+              variant={action.variant}
+            >
+              <Action.Label>{action.text}</Action.Label>
+            </Action.Root>
+          ))}
+        </Overlay.SheetFooter>
       </Overlay.SheetContent>
-      <Overlay.SheetFooter>
-        {config.actions.map((action, index) => (
-          <Action.Root
-            key={index}
-            size='lg'
-            onPress={() => {
-              action.onPress();
-              close();
-            }}
-            variant={action.variant}
-          >
-            <Action.Label>{action.text}</Action.Label>
-          </Action.Root>
-        ))}
-      </Overlay.SheetFooter>
     </Overlay.Sheet>
   );
 };
