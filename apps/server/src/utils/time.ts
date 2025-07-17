@@ -10,7 +10,7 @@ const unix = (sec: number) => Math.floor(Date.now() / 1000) + sec;
  * @param {number} sec - The number of seconds to add to the current time.
  * @returns The current time in milliseconds plus the given number of seconds.
  */
-const milliseconds = (sec: number) => (Date.now() + sec) * 1000;
+const milliseconds = (sec: number) => sec * 1000 + (Date.now() + 0);
 
 const time = {
   unix,
