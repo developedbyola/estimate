@@ -186,6 +186,7 @@ export const authRouter = router({
             { httpStatus: 200, path: 'auth.login' }
           );
         } catch (err) {
+          console.log(err);
           return ctx.fail(err);
         }
       }),
