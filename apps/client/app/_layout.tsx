@@ -76,7 +76,7 @@ const Stacks = () => {
       <Stack.Screen
         name='index'
         options={{
-          title: 'Onboard',
+          title: 'Home',
           headerShown: false,
         }}
       />

@@ -1,13 +1,15 @@
+import React from 'react';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
+import { Popup } from '@/components';
 import { Trpc } from '@/features/trpc';
-import { usePopupContext } from '@/components';
 
 export const useRegister = () => {
-  const popup = usePopupContext();
+  const popup = Popup.usePopup();
   const register = Trpc.client.auth.public.register.useMutation({
     onSuccess: () => {
       popup.open({
+        variant: 'success',
         title: 'Congratulations 🎉',
         onDismiss: () => router.back(),
         message:
@@ -19,6 +21,19 @@ export const useRegister = () => {
       Alert.alert('Registration failed', error.message, [{ text: 'Cancel' }]);
     },
   });
+
+  React.useEffect(() => {
+    if (register.status === 'idle') {
+      popup.open({
+        variant: 'success',
+        title: 'Congratulations 🎉',
+        onDismiss: () => router.back(),
+        message:
+          'Your account has been created successfully. Welcome to our community!',
+        actions: [{ text: 'OK', onPress: () => router.back() }],
+      });
+    }
+  }, [register.status]);
 
   return {
     status: register.status,

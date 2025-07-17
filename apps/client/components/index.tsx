@@ -20,4 +20,4 @@ export { default as Logo } from '@/components/Logo';
 export { default as Scroll } from '@/components/Scroll';
 export { default as Divider } from '@/components/Divider';
 export { default as Gradient } from '@/components/Gradient';
-export { default as Popup, usePopupContext } from '@/components/Popup';
+export { Popup } from '@/components/Popup';

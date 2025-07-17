@@ -1,8 +1,17 @@
 import React from 'react';
-import { Space } from '@/constants';
+import { Border, Space } from '@/constants';
 import { Keyboard } from 'react-native';
-import { Action, Heading, Overlay, Text, useOverlay } from '@/components';
 import { Ionicons } from '@expo/vector-icons';
+import {
+  Action,
+  Box,
+  Gradient,
+  Heading,
+  Overlay,
+  Text,
+  useOverlay,
+} from '@/components';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 type PopupAction = {
   text: string;
@@ -18,39 +27,66 @@ type Config = {
   variant?: 'success' | 'error' | 'warning' | 'info';
 };
 
-const Component = ({
+const PopupComponent = ({
   config,
   close,
 }: {
   config: Config;
   close: () => void;
 }) => {
+  const colors = useThemeColors();
   const iconName = {
     success: 'checkmark-circle-outline',
     error: 'alert-circle-outline',
     warning: 'alert-circle-outline',
     info: 'information-circle-outline',
   };
+
+  const bgColors = {
+    success: [
+      colors.getColor('primary.base'),
+      colors.getColor('primary.subtle'),
+    ],
+    error: [colors.getColor('error.base'), colors.getColor('error.subtle')],
+    warning: [
+      colors.getColor('warning.base'),
+      colors.getColor('warning.subtle'),
+    ],
+    info: [colors.getColor('info.base'), colors.getColor('info.subtle')],
+  };
+
   return (
     <Overlay.Sheet
       onDismiss={close}
-      snapPoints={['32%']}
+      snapPoints={['48%']}
     >
-      <Ionicons
-        size={24}
-        color='text.strong'
-        name={iconName[config.variant || 'success'] as any}
-      />
       <Overlay.SheetContent
         mt='2xl'
         style={{ gap: Space.base, alignItems: 'center' }}
       >
+        <Gradient
+          colors={bgColors[config.variant || 'success'] as any}
+          style={{
+            width: 56,
+            aspectRatio: 1,
+            marginInline: 'auto',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: Border.radius.full,
+          }}
+        >
+          <Ionicons
+            size={32}
+            color={colors.getColor('icon.on')}
+            name={iconName[config.variant || 'success'] as any}
+          />
+        </Gradient>
         <Heading
           size='2xl'
           leading='lg'
           align='center'
-          weight='medium'
-          style={{ maxWidth: 280, marginInline: 'auto' }}
+          weight='semibold'
+          style={{ marginTop: 12, maxWidth: 280, marginInline: 'auto' }}
         >
           {config.title}
         </Heading>
@@ -66,6 +102,7 @@ const Component = ({
         {config.actions.map((action, index) => (
           <Action.Root
             key={index}
+            size='lg'
             onPress={() => {
               action.onPress();
               close();
@@ -80,7 +117,7 @@ const Component = ({
   );
 };
 
-const usePopup = () => {
+const usePopupConfig = () => {
   const [config, setConfig] = React.useState<
     Omit<Config, 'actions' | 'onDismiss'> & { actions: PopupAction[] }
   >({
@@ -90,7 +127,7 @@ const usePopup = () => {
     actions: [{ text: 'Cancel', variant: 'primary', onPress: () => {} }],
   });
 
-  const overlay = useOverlay();
+  const overlay = useOverlay({ open: true });
 
   const open = (newConfig: Config) => {
     Keyboard.dismiss();
@@ -105,38 +142,34 @@ const usePopup = () => {
   return { open, close, overlay, config };
 };
 
-type Context = ReturnType<typeof usePopup>;
+type PopupContextType = ReturnType<typeof usePopupConfig>;
+const popupContext = React.createContext<PopupContextType | null>(null);
 
-const PopupContext = React.createContext<Context | null>(null);
-
-type ProviderProps = {
-  children: React.ReactNode;
-};
-
-const Provider = ({ children }: ProviderProps) => {
-  const context = usePopup();
+const PopupProvider = ({ children }: { children: React.ReactNode }) => {
+  const popup = usePopupConfig();
 
   return (
-    <PopupContext.Provider value={context}>
-      {children}
-      <Overlay.Provider value={context.overlay}>
-        <Component
-          config={context.config}
-          close={context.close}
+    <popupContext.Provider value={popup}>
+      <Overlay.Provider value={popup.overlay}>
+        <PopupComponent
+          config={popup.config}
+          close={popup.close}
         />
       </Overlay.Provider>
-    </PopupContext.Provider>
+      {children}
+    </popupContext.Provider>
   );
 };
 
-export const usePopupContext = () => {
-  const context = React.useContext(PopupContext);
+const usePopup = () => {
+  const context = React.useContext(popupContext);
   if (!context) {
-    throw new Error('usePopupContext must be used within a Popup.Provider');
+    throw new Error('usePopup must be used within a PopupProvider');
   }
   return context;
 };
 
-export default {
-  Provider,
+export const Popup = {
+  Provider: PopupProvider,
+  usePopup,
 };
