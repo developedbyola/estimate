@@ -33,8 +33,8 @@ export const authRouter = router({
           const user = await ctx.supabase
             .from('users')
             .insert({
-              email: email.toLowerCase(),
               password: hashedPassword,
+              email: email.trim().toLowerCase(),
             })
             .select('id, created_at, is_onboarded, email')
             .single();
