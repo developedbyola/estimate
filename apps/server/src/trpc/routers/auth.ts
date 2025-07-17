@@ -215,43 +215,33 @@ export const authRouter = router({
             });
           }
 
-          const session = await ctx.supabase
+          const sessions = await ctx.supabase
             .from('sessions')
             .select('*')
-            .eq('refresh_token', refreshToken)
-            .eq('user_id', userId)
-            .single();
+            .eq('user_id', userId);
 
-          if (session.error) {
-            if (session.error.code === 'PGRST116') {
-              return ctx.fail({
-                code: 'UNAUTHORIZED',
-                message: 'Session not found. Sign in again to regain access.',
-              });
-            }
+          if (sessions.error) {
             return ctx.fail({
               code: 'INTERNAL_SERVER_ERROR',
-              message: `We could not complete the request, ensure you are connected to an active internet network. ${session.error.message}`,
+              message: `We could not complete the request, ensure you are connected to an active internet network. ${sessions.error.message}`,
             });
           }
 
-          if (session.data.revoked) {
+          const session = await (async () => {
+            for (const s of sessions.data) {
+              if (s.revoked) continue;
+              if (s.expires_at && new Date(s.expires_at) < new Date()) continue;
+              if (await argon2.verify(s.refresh_token, input.refreshToken)) {
+                return s;
+              }
+            }
+            return null;
+          })();
+          if (!session) {
             return ctx.fail({
-              code: 'UNAUTHORIZED',
+              code: 'BAD_REQUEST',
               message:
-                'Your session was revoked. Sign in again to regain access.',
-            });
-          }
-
-          const isRefreshTokenValid = await argon2.verify(
-            session.data.refresh_token,
-            refreshToken
-          );
-
-          if (!isRefreshTokenValid) {
-            return ctx.fail({
-              code: 'UNAUTHORIZED',
-              message: 'Invalid refresh token. Sign in again to regain access.',
+                'Your session either revoked or expired. Sign in again to regain access.',
             });
           }
 
@@ -259,27 +249,24 @@ export const authRouter = router({
           const accessToken = await jwt.sign(
             env.ACCESS_TOKEN_SECRET,
             time.unix(env.ACCESS_TOKEN_EXPIRY),
-            {
-              userId: session.data.user_id,
-            }
+            { userId }
           );
 
           const newRefreshToken = await jwt.sign(
             env.REFRESH_TOKEN_SECRET,
             time.unix(env.REFRESH_TOKEN_EXPIRY),
-            {
-              userId: session.data.user_id,
-            }
+            { userId }
           );
+
+          const newRefreshTokenHash = await argon2.hash(newRefreshToken);
 
           const updatedSession = await ctx.supabase
             .from('sessions')
             .update({
-              refresh_token: await argon2.hash(newRefreshToken),
+              refresh_token: newRefreshTokenHash,
               last_active_at: new Date().toISOString(),
             })
-            .eq('refresh_token', refreshToken)
-            .eq('user_id', userId);
+            .eq('id', session.id);
 
           if (updatedSession.error) {
             return ctx.fail({
@@ -313,37 +300,38 @@ export const authRouter = router({
             userId: string;
           }>(env.REFRESH_TOKEN_SECRET, refreshToken);
 
-          const session = await ctx.supabase
+          const sessions = await ctx.supabase
             .from('sessions')
             .select('*')
-            .eq('refresh_token', refreshToken)
-            .eq('user_id', userId)
-            .single();
+            .eq('user_id', userId);
 
-          if (session.error) {
+          if (sessions.error) {
             return ctx.fail({
               code: 'INTERNAL_SERVER_ERROR',
-              message: session.error.message,
+              message: sessions.error.message,
             });
           }
 
-          const isRefreshTokenValid = await argon2.verify(
-            session.data.refresh_token,
-            refreshToken
-          );
+          const session = await (async () => {
+            for (const s of sessions.data) {
+              if (await argon2.verify(s.refresh_token, input.refreshToken)) {
+                return s;
+              }
+            }
+            return null;
+          })();
 
-          if (!isRefreshTokenValid) {
+          if (!session) {
             return ctx.fail({
               code: 'UNAUTHORIZED',
-              message: 'Invalid refresh token',
+              message: 'This session was either revoked or expired.',
             });
           }
 
           const deletedSession = await ctx.supabase
             .from('sessions')
             .delete()
-            .eq('refresh_token', refreshToken)
-            .eq('user_id', userId);
+            .eq('id', session.id);
 
           if (deletedSession.error) {
             return ctx.fail({
