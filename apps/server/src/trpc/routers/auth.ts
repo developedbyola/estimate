@@ -156,7 +156,9 @@ export const authRouter = router({
               ip_address: ip_address || 'unknown',
               refresh_token: await argon2.hash(refreshToken),
               user_agent: ctx.req.header('user-agent') || 'unknown',
-              expires_at: new Date(time.milliseconds(env.REFRESH_TOKEN_EXPIRY)),
+              expires_at: new Date(
+                time.milliseconds(env.REFRESH_TOKEN_EXPIRY)
+              ).toISOString(),
             })
             .select('id')
             .single();
@@ -261,6 +263,9 @@ export const authRouter = router({
             .update({
               refresh_token: newRefreshTokenHash,
               last_active_at: new Date().toISOString(),
+              expires_at: new Date(
+                time.milliseconds(env.REFRESH_TOKEN_EXPIRY)
+              ).toISOString(),
             })
             .eq('id', session.id);
 
