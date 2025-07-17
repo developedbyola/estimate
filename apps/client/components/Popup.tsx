@@ -61,7 +61,7 @@ const PopupComponent = ({
       snapPoints={['45%']}
     >
       <Overlay.SheetContent
-        mt='4xl'
+        mt='3xl'
         style={{
           flex: 1,
           gap: Space.base,

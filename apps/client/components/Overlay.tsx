@@ -266,7 +266,7 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
             height: 6,
             width: 64,
             borderRadius: Border.radius.full,
-            backgroundColor: colors.getColor('border.subtle'),
+            backgroundColor: colors.getColor('border.soft'),
           }}
           backdropComponent={backdrop}
           snapPoints={memoizedSnapPoints}
