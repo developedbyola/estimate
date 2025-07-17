@@ -1,11 +1,30 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 import { Users } from '@/features/users';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 const OnboardPage = () => {
+  const colors = useThemeColors();
+
   return (
     <React.Fragment>
-      <Stack.Screen />
+      <Stack.Screen
+        options={{
+          title: 'Onboard',
+          sheetCornerRadius: 32,
+          headerTitle: 'Onboard',
+          headerStyle: {
+            backgroundColor: colors.getColor('bg.base'),
+          },
+          headerTitleStyle: {
+            color: colors.getColor('text.strong'),
+          },
+          contentStyle: {
+            height: '100%',
+            backgroundColor: colors.getColor('bg.base'),
+          },
+        }}
+      />
       <Users.Onboard />
     </React.Fragment>
   );

@@ -66,6 +66,12 @@ const Stacks = () => {
             presentation: 'modal',
           }}
         />
+        <Stack.Screen
+          name='onboard'
+          options={{
+            presentation: 'formSheet',
+          }}
+        />
       </Stack.Protected>
       <Stack.Screen
         name='index'

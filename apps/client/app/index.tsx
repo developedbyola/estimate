@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { Border, Space } from '@/constants';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Action, Heading, Box, Text, Safe, Overlay, Blur } from '@/components';
+import { Users } from '@/features/users';
 // import { useDeleteAccessToken } from '@/hooks/useTokens';
 
 const images = [
@@ -92,8 +93,16 @@ const Footer = () => {
 };
 
 const Index = () => {
+  const router = useRouter();
   const colors = useThemeColors();
+  const { user } = Users.useUser();
   // useDeleteAccessToken();
+
+  React.useEffect(() => {
+    if (user?.isOnboarded === false) {
+      router.push('/onboard');
+    }
+  }, [user]);
 
   return (
     <Box
