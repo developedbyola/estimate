@@ -148,17 +148,17 @@ export const authRouter = router({
           );
 
           const ip_address = getClientIp(ctx.req as any);
+          const user_agent = ctx.req.header('user-agent');
+          const expires_at = time.milliseconds(env.REFRESH_TOKEN_EXPIRY);
 
           const session = await ctx.supabase
             .from('sessions')
             .insert({
               user_id: user.data.id,
+              user_agent: user_agent || 'unknown',
               ip_address: ip_address || 'unknown',
               refresh_token: await argon2.hash(refreshToken),
-              user_agent: ctx.req.header('user-agent') || 'unknown',
-              expires_at: new Date(
-                time.milliseconds(env.REFRESH_TOKEN_EXPIRY)
-              ).toISOString(),
+              expires_at: new Date(expires_at).toISOString(),
             })
             .select('id')
             .single();
@@ -256,6 +256,7 @@ export const authRouter = router({
             { userId }
           );
 
+          const expires_at = time.milliseconds(env.REFRESH_TOKEN_EXPIRY);
           const newRefreshTokenHash = await argon2.hash(newRefreshToken);
 
           const updatedSession = await ctx.supabase
@@ -263,9 +264,7 @@ export const authRouter = router({
             .update({
               refresh_token: newRefreshTokenHash,
               last_active_at: new Date().toISOString(),
-              expires_at: new Date(
-                time.milliseconds(env.REFRESH_TOKEN_EXPIRY)
-              ).toISOString(),
+              expires_at: new Date(expires_at).toISOString(),
             })
             .eq('id', session.id);
 
