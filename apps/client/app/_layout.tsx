@@ -100,10 +100,10 @@ const Protected = ({ children }: { children: React.ReactNode }) => {
   const { auth } = Auth.useAuth();
 
   React.useEffect(() => {
-    if (auth.isAuthenticated) {
+    if (!auth.isLoading && auth.isAuthenticated) {
       router.replace('/(tabs)');
     }
-  }, [auth.isAuthenticated]);
+  }, [auth.isAuthenticated, auth.isLoading]);
 
   return children;
 };
