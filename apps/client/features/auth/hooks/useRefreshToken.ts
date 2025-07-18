@@ -48,6 +48,7 @@ export const useRefreshToken = () => {
 
   const mutate = React.useCallback(async () => {
     if (!auth.refreshToken) return;
+    console.log('refreshing tokens...');
     await refresh.mutateAsync({ refreshToken: auth.refreshToken });
   }, [auth.refreshToken]);
 
