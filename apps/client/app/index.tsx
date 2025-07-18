@@ -34,7 +34,7 @@ const Index = () => {
 
   React.useEffect(() => {
     if (auth.refreshToken) {
-      router.replace('/onboard');
+      router.replace('/(tabs)');
     }
   }, [auth.refreshToken, router]);
 
