@@ -96,18 +96,6 @@ const Stacks = () => {
   );
 };
 
-const Protected = ({ children }: { children: React.ReactNode }) => {
-  const { auth } = Auth.useAuth();
-
-  React.useEffect(() => {
-    if (!auth.isLoading && auth.isAuthenticated) {
-      router.replace('/(tabs)');
-    }
-  }, [auth.isAuthenticated, auth.isLoading]);
-
-  return children;
-};
-
 const Layout = () => {
   return (
     <RootSiblingParent>
@@ -123,9 +111,7 @@ const Layout = () => {
                         <Farms.Provider>
                           <Estimates.Provider>
                             <Popup.Provider>
-                              <Protected>
-                                <Stacks />
-                              </Protected>
+                              <Stacks />
                             </Popup.Provider>
                           </Estimates.Provider>
                         </Farms.Provider>

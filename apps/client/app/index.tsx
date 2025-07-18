@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { Border, Space } from '@/constants';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Action, Heading, Box, Text, Safe, Overlay } from '@/components';
+import { Auth } from '@/features/auth';
 // import { useDeleteAccessToken } from '@/hooks/useTokens';
 
 const images = [
@@ -27,8 +28,11 @@ const images = [
 
 const Index = () => {
   const router = useRouter();
+  const { auth } = Auth.useAuth();
   const colors = useThemeColors();
   // useDeleteAccessToken();
+
+  React.useEffect(() => {}, []);
 
   return (
     <Box
