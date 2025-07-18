@@ -2,7 +2,7 @@ import { Categories } from '@/features/categories';
 import React from 'react';
 
 const AddCategoryPage = () => {
-  return <Categories.Add />;
+  return <Categories.Form />;
 };
 
 export default AddCategoryPage;

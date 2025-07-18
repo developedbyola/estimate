@@ -24,7 +24,7 @@ export const useLogin = () => {
         type: 'SET_USER',
         payload: { user: data?.user },
       });
-      router.replace('/(tabs)');
+      router.replace('/(protected)');
     },
     onError: (error, input) => {
       Alert.alert('Login failed', error.message, [

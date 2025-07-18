@@ -7,34 +7,33 @@
     "newArchEnabled": true,
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
-    "icon": "./assets/images/brand/app/icon.png",
+    "icon": "./assets/images/icons/ios-light.png",
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/favicon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/images/icons/ios-light.png"
       },
       "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/app/icon.png"
+      "favicon": "./assets/images/icons/ios-light.png"
     },
     "plugins": [
       "expo-router",
+      "expo-secure-store",
       [
         "expo-splash-screen",
         {
-          "resizeMode": "cover",
-          "backgroundColor": "#ffffff",
-          "image": "./assets/images/brand/splash-screen/light.png"
+          "backgroundColor": "#000000",
+          "image": "./assets/images/icons/ios-light.png"
         }
-      ],
-      "expo-secure-store"
+      ]
     ],
     "experiments": {
       "typedRoutes": true

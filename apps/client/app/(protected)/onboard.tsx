@@ -11,18 +11,7 @@ const OnboardPage = () => {
       <Stack.Screen
         options={{
           title: 'Onboard',
-          sheetCornerRadius: 32,
           headerTitle: 'Onboard',
-          headerStyle: {
-            backgroundColor: colors.getColor('bg.base'),
-          },
-          headerTitleStyle: {
-            color: colors.getColor('text.strong'),
-          },
-          contentStyle: {
-            height: '100%',
-            backgroundColor: colors.getColor('bg.base'),
-          },
         }}
       />
       <Auth.Onboard />

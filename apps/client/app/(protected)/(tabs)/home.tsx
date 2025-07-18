@@ -7,7 +7,7 @@ import { Action, Heading, Box, Text, Safe, Scroll } from '@/components';
 import { useRouter } from 'expo-router';
 import { Farms, useFarms } from '@/features/farms';
 
-const FarmsPage = () => {
+const HomePage = () => {
   const router = useRouter();
   const colors = useThemeColors();
   const { setFarms } = useFarms();
@@ -112,4 +112,4 @@ const FarmsPage = () => {
   );
 };
 
-export default FarmsPage;
+export default HomePage;

@@ -2,13 +2,12 @@ import React from 'react';
 import * as SecureStore from 'expo-secure-store';
 
 export type Auth = {
-  isLoading: boolean;
   refreshToken: string | null;
   accessToken: string | null;
   isAuthenticated: boolean;
 };
 
-type State = { auth: Auth };
+type State = { isLoading: boolean; auth: Auth };
 
 export type Action =
   | {
@@ -23,7 +22,8 @@ export type Action =
         auth: Pick<Auth, 'accessToken' | 'refreshToken'>;
       };
     }
-  | { type: 'LOGOUT'; payload?: never };
+  | { type: 'LOGOUT'; payload?: never }
+  | { type: 'ERROR'; payload?: never };
 
 export type AuthContext = State & {
   setAuth: React.ActionDispatch<[Action]>;
@@ -37,8 +37,8 @@ export const authReducer = (state: State, action: Action): State => {
       SecureStore.setItem('refresh_token', action.payload.auth.refreshToken!);
       return {
         ...state,
+        isLoading: false,
         auth: {
-          isLoading: false,
           isAuthenticated: true,
           accessToken: action.payload.auth.accessToken,
           refreshToken: action.payload.auth.refreshToken,
@@ -48,8 +48,8 @@ export const authReducer = (state: State, action: Action): State => {
       SecureStore.setItem('refresh_token', action.payload.auth.refreshToken!);
       return {
         ...state,
+        isLoading: false,
         auth: {
-          isLoading: false,
           isAuthenticated: true,
           accessToken: action.payload.auth.accessToken,
           refreshToken: action.payload.auth.refreshToken,
@@ -59,11 +59,19 @@ export const authReducer = (state: State, action: Action): State => {
       SecureStore.setItem('refresh_token', '');
       return {
         ...state,
+        isLoading: false,
         auth: {
-          isLoading: false,
-          isAuthenticated: false,
           accessToken: null,
           refreshToken: null,
+          isAuthenticated: false,
+        },
+      };
+    case 'ERROR':
+      return {
+        ...state,
+        isLoading: false,
+        auth: {
+          ...state.auth,
         },
       };
     default:
@@ -79,14 +87,16 @@ export const useAuth = () => {
   return context;
 };
 
+const refreshToken = SecureStore.getItem('refresh_token');
+
 export const Provider = ({
   children,
   initialState = {
+    isLoading: true,
     auth: {
-      isLoading: true,
       accessToken: null,
-      isAuthenticated: false,
-      refreshToken: SecureStore.getItem('refresh_token'),
+      refreshToken: refreshToken,
+      isAuthenticated: !!refreshToken,
     },
   },
 }: {

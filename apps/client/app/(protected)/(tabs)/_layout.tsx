@@ -57,7 +57,7 @@ const Layout = () => {
       />
 
       <Tabs.Screen
-        name='index'
+        name='home'
         options={{
           title: 'Farms',
           tabBarIcon: (props) => {

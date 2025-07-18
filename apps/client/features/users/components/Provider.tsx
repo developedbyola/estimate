@@ -1,5 +1,4 @@
 import React from 'react';
-import { useRouter } from 'expo-router';
 
 export type User = {
   id: string;
@@ -9,6 +8,7 @@ export type User = {
 };
 
 export type State = {
+  isLoading: boolean;
   user: User | null;
 };
 
@@ -18,12 +18,12 @@ export type Action =
       payload: { user: User };
     }
   | {
-      type: 'UNSET_USER';
-      payload: never;
-    }
-  | {
       type: 'UPDATE_USER';
       payload: { user: Partial<User> };
+    }
+  | {
+      type: 'ERROR';
+      payload?: never;
     };
 
 type UserContext = State & {
@@ -45,20 +45,23 @@ export const userReducer = (state: State, action: Action): State => {
     case 'SET_USER':
       return {
         ...state,
-        ...action.payload,
-      };
-    case 'UNSET_USER':
-      return {
-        ...state,
-        user: null,
+        isLoading: false,
+        user: action.payload.user,
       };
     case 'UPDATE_USER':
       return {
         ...state,
+        isLoading: false,
         user: {
           ...state.user,
           ...action.payload,
         } as User,
+      };
+    case 'ERROR':
+      return {
+        ...state,
+        isLoading: false,
+        user: state.user,
       };
     default:
       return state;
@@ -68,6 +71,7 @@ export const userReducer = (state: State, action: Action): State => {
 export const Provider = ({
   children,
   initialState = {
+    isLoading: true,
     user: null,
   },
 }: {
@@ -75,13 +79,6 @@ export const Provider = ({
   initialState?: State;
 }) => {
   const [state, dispatch] = React.useReducer(userReducer, initialState);
-  const router = useRouter();
-
-  React.useEffect(() => {
-    if (state.user?.isOnboarded === false) {
-      router.replace('/onboard');
-    }
-  }, [state.user?.isOnboarded]);
 
   return (
     <userContext.Provider value={{ ...state, setUser: dispatch }}>

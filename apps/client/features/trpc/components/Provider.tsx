@@ -1,5 +1,4 @@
 import React from 'react';
-import * as Device from 'expo-device';
 import { Auth } from '@/features/auth';
 import { httpBatchLink } from '@trpc/client';
 import { createTRPCReact } from '@trpc/react-query';
@@ -20,12 +19,6 @@ export const Provider = ({ children }: ProviderProps) => {
     links: [
       httpBatchLink({
         url: `${process.env.EXPO_PUBLIC_SERVER_API_URL}/api/trpc`,
-        headers: {
-          'x-app-version': '0.0.1',
-          'x-device-name': Device.deviceName || '',
-          'x-device-type': Device.osName || '',
-          'x-os-version': Device.osVersion || '',
-        },
         async fetch(url, options) {
           const token = auth.accessToken || '';
           return fetch(url, {
