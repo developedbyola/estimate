@@ -33,7 +33,7 @@ const Index = () => {
   // useDeleteAccessToken();
 
   if (auth.refreshToken) {
-    return <Redirect href='/onboard' />;
+    return <Redirect href='/(tabs)' />;
   }
 
   return (
