@@ -36,7 +36,7 @@ const Index = () => {
     if (auth.refreshToken) {
       router.replace('/onboard');
     }
-  }, [auth.refreshToken]);
+  }, [auth.refreshToken, router]);
 
   console.log({ auth });
 
