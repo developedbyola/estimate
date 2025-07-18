@@ -25,7 +25,8 @@ export const useRefreshToken = () => {
         Alert.alert('Session expired', err.message, [
           {
             text: 'Sign in',
-            onPress: async () => {
+            isPreferred: true,
+            onPress: () => {
               setAuth({ type: 'LOGOUT' });
               router.replace('/login');
             },
