@@ -1,5 +1,5 @@
 import React from 'react';
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { Popup } from '@/components';
 import { Auth } from '@/features/auth';
 import { Trpc } from '@/features/trpc';
