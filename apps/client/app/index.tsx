@@ -32,7 +32,13 @@ const Index = () => {
   const colors = useThemeColors();
   // useDeleteAccessToken();
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    if (!auth.isLoading && auth.isAuthenticated) {
+      router.replace('/(tabs)');
+    }
+  }, [auth.isLoading, auth.isAuthenticated]);
+
+  console.log({ auth });
 
   return (
     <Box
