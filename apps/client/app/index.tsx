@@ -1,7 +1,7 @@
 import React from 'react';
 import { MotiImage } from 'moti';
 import { Button } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { Border, Space } from '@/constants';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Action, Heading, Box, Text, Safe, Overlay } from '@/components';
@@ -32,13 +32,9 @@ const Index = () => {
   const colors = useThemeColors();
   // useDeleteAccessToken();
 
-  React.useEffect(() => {
-    if (auth.refreshToken) {
-      router.replace('/(tabs)');
-    }
-  }, [auth.refreshToken, router]);
-
-  console.log({ auth });
+  if (auth.refreshToken) {
+    return <Redirect href='/onboard' />;
+  }
 
   return (
     <Box
