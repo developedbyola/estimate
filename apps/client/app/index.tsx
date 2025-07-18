@@ -33,10 +33,10 @@ const Index = () => {
   // useDeleteAccessToken();
 
   React.useEffect(() => {
-    if (!auth.isLoading && auth.isAuthenticated) {
+    if (auth.refreshToken) {
       router.replace('/(tabs)');
     }
-  }, [auth.isLoading, auth.isAuthenticated]);
+  }, [auth.refreshToken]);
 
   return (
     <Box
