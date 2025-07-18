@@ -38,8 +38,6 @@ const Index = () => {
     }
   }, [auth.isLoading, auth.isAuthenticated]);
 
-  console.log({ auth });
-
   return (
     <Box
       bg='bg.base'

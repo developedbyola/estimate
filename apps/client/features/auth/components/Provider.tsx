@@ -83,7 +83,7 @@ export const Provider = ({
   children,
   initialState = {
     auth: {
-      isLoading: false,
+      isLoading: true,
       accessToken: null,
       isAuthenticated: false,
       refreshToken: SecureStore.getItem('refresh_token'),
