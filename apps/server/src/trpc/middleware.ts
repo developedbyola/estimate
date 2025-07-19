@@ -27,18 +27,24 @@ const isAuthed = t.middleware(async ({ ctx, next }) => {
   const authorization = ctx.req.header('Authorization');
   const accessToken = authorization?.split('Bearer ')[1];
 
-  let actor = null;
+  if (!accessToken) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'You need to be signed in to access this feature.',
+    });
+  }
+
   try {
-    if (accessToken) {
-      actor = await jwt.verify<{ userId: string; sessionId: string }>(
-        env.ACCESS_TOKEN_SECRET,
-        accessToken
-      );
-    }
+    const actor = await jwt.verify<{ userId: string }>(
+      env.ACCESS_TOKEN_SECRET,
+      accessToken
+    );
+
     if (!actor) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
-        message: 'You must be logged in to access this feature.',
+        message:
+          'Your sign-in authorization is invalid. Please refresh your sign-in.',
       });
     }
 
@@ -48,11 +54,12 @@ const isAuthed = t.middleware(async ({ ctx, next }) => {
         actor,
       },
     });
-  } catch (error) {
+  } catch (err) {
     throw new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
-      message:
-        'We encountered an unexpected error while processing your request.',
+      message: `An unexpected error occurred while verifying your sign-in authorization. ${
+        (err as any)?.message
+      }`,
     });
   }
 });

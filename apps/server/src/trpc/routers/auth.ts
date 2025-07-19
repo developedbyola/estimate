@@ -199,6 +199,7 @@ export const authRouter = router({
       }),
 
     refresh: publicProcedure
+      .use(rateLimiter({ points: 10, duration: 5 }))
       .input(
         z.object({
           refreshToken: z.string().min(1, 'Your refresh token is missing'),
@@ -208,14 +209,13 @@ export const authRouter = router({
         try {
           const refreshToken = input.refreshToken;
 
-          // Verify the refresh token
-          const { userId } = await jwt.verify<{
+          const actor = await jwt.verify<{
             userId: string;
           }>(env.REFRESH_TOKEN_SECRET, refreshToken);
 
-          if (!userId) {
+          if (!actor) {
             return ctx.fail({
-              code: 'UNAUTHORIZED',
+              code: 'SESSION_EXPIRED',
               message:
                 'Your session has expired. Sign in again to regain access.',
             });
@@ -224,7 +224,7 @@ export const authRouter = router({
           const sessions = await ctx.supabase
             .from('sessions')
             .select('*')
-            .eq('user_id', userId);
+            .eq('user_id', actor.userId);
 
           if (sessions.error) {
             return ctx.fail({
@@ -245,23 +245,22 @@ export const authRouter = router({
           })();
           if (!session) {
             return ctx.fail({
-              code: 'BAD_REQUEST',
+              code: 'SESSION_EXPIRED',
               message:
-                'Your session either revoked or expired. Sign in again to regain access.',
+                'Your session was either revoked or has expired. Sign in again to regain access.',
             });
           }
 
-          // Create a new access token
           const accessToken = await jwt.sign(
             env.ACCESS_TOKEN_SECRET,
             time.unix(env.ACCESS_TOKEN_EXPIRY),
-            { userId }
+            { userId: actor.userId }
           );
 
           const newRefreshToken = await jwt.sign(
             env.REFRESH_TOKEN_SECRET,
             time.unix(env.REFRESH_TOKEN_EXPIRY),
-            { userId }
+            { userId: actor.userId }
           );
 
           const expires_at = time.milliseconds(env.REFRESH_TOKEN_EXPIRY);
@@ -278,14 +277,14 @@ export const authRouter = router({
             .select('*, users(id, email, created_at, is_onboarded)')
             .single();
 
-          if (updatedSession.error) {
+          if (updatedSession.error || !updatedSession.data) {
             return ctx.fail({
               code: 'INTERNAL_SERVER_ERROR',
-              message: updatedSession.error.message,
+              message:
+                updatedSession.error?.message ||
+                'Failed to retrieve updated session data.',
             });
           }
-
-          console.log({ data: updatedSession.data });
 
           return ctx.ok(
             {
@@ -313,7 +312,9 @@ export const authRouter = router({
         } catch (err) {
           return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
-            message: (err as any)?.message,
+            message: `An unexpected error occurred while signing you in. ${
+              (err as any)?.message
+            }`,
           });
         }
       }),

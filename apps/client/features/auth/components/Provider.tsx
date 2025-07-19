@@ -47,7 +47,8 @@ export type Action =
       };
     }
   | { type: 'LOGOUT'; payload?: never }
-  | { type: 'ERROR'; payload?: never };
+  | { type: 'ERROR'; payload?: never }
+  | { type: 'UPDATE_USER'; payload: { user: User } };
 
 export type AuthContext = State & {
   setAuth: React.ActionDispatch<[Action]>;
@@ -89,6 +90,11 @@ export const authReducer = (state: State, action: Action): State => {
         accessToken: null,
         refreshToken: null,
         isAuthenticated: false,
+      };
+    case 'UPDATE_USER':
+      return {
+        ...state,
+        user: action.payload.user,
       };
     case 'ERROR':
       return {
