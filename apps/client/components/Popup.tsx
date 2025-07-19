@@ -24,7 +24,7 @@ type Config = {
   message: string;
   actions: PopupAction[];
   onDismiss?: () => void;
-  variant?: 'success' | 'error' | 'warning' | 'info';
+  variant?: 'success' | 'destructive' | 'warning' | 'info';
 };
 
 const PopupComponent = ({
@@ -37,7 +37,7 @@ const PopupComponent = ({
   const colors = useThemeColors();
   const iconName = {
     success: 'checkmark-circle-outline',
-    error: 'alert-circle-outline',
+    destructive: 'alert-circle-outline',
     warning: 'alert-circle-outline',
     info: 'information-circle-outline',
   };
@@ -47,7 +47,10 @@ const PopupComponent = ({
       colors.getColor('success.base'),
       colors.getColor('success.subtle'),
     ],
-    error: [colors.getColor('error.base'), colors.getColor('error.subtle')],
+    destructive: [
+      colors.getColor('error.base'),
+      colors.getColor('error.subtle'),
+    ],
     warning: [
       colors.getColor('warning.base'),
       colors.getColor('warning.subtle'),

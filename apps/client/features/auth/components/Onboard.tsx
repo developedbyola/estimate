@@ -1,16 +1,72 @@
 import React from 'react';
+import { Trpc } from '@/features/trpc';
+import { Auth } from '@/features/auth';
+import { useRouter } from 'expo-router';
 import { onboardSchema } from '../schemas';
+import { Profiles } from '@/features/profiles';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Border, Space, Typography } from '@/constants';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { Action, Box, Field, Heading, Safe, Text } from '@/components';
+import { Action, Box, Field, Heading, Safe, Text, Popup } from '@/components';
 
 export const Onboard = () => {
+  const router = useRouter();
+  const popup = Popup.usePopup();
+  const { setAuth } = Auth.useAuth();
+  const { setProfile } = Profiles.useProfile();
   const form = useForm({
     mode: 'all',
     resolver: zodResolver(onboardSchema),
     defaultValues: { firstName: '', lastName: '', username: '' },
+  });
+
+  const onboard = Trpc.client.users.me.update.useMutation({
+    onSuccess: async (data: any) => {
+      setAuth({
+        type: 'UPDATE_USER',
+        payload: { user: data?.user },
+      });
+      router.replace('/(protected)');
+    },
+    onError: (error, input) => {
+      popup.open({
+        variant: 'destructive',
+        title: 'Failed to update profile',
+        message: error.message,
+        actions: [
+          {
+            text: 'Retry',
+            onPress: async () => await onboard.mutateAsync(input),
+          },
+        ],
+      });
+    },
+  });
+
+  const update = Trpc.client.profiles.me.update.useMutation({
+    onSuccess: async (data: any) => {
+      setProfile({
+        type: 'UPDATE_PROFILE',
+        payload: { profile: data?.profile },
+      });
+      await onboard.mutateAsync({
+        isOnboarded: true,
+      });
+    },
+    onError: (error, input) => {
+      popup.open({
+        variant: 'destructive',
+        title: 'Failed to update profile',
+        message: error.message,
+        actions: [
+          {
+            text: 'Retry',
+            onPress: async () => await update.mutateAsync(input),
+          },
+        ],
+      });
+    },
   });
 
   return (

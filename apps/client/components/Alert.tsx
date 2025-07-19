@@ -1,13 +1,16 @@
 import React from 'react';
 import Text from './Text';
-import { Button } from 'react-native';
+import { Button, useColorScheme } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { Border } from '@/constants';
+import Action from './Action';
+import { StatusBar } from 'expo-status-bar';
 
 type Alert = {
   message: string;
   variant: 'success' | 'destructive' | 'warning' | 'info';
-  action: { label: string; onPress?: () => void };
+  action?: { label: string; onPress?: () => void };
 };
 
 const useAlertConfig = () => {
@@ -45,8 +48,11 @@ const AlertContext = React.createContext<AlertContext | null>(null);
 
 const AlertProvider = ({ children }: { children: React.ReactNode }) => {
   const alertConfig = useAlertConfig();
+  const colors = useThemeColors();
+
   return (
     <AlertContext.Provider value={alertConfig}>
+      {children}
       {alertConfig.visible && (
         <AlertComponent
           visible={alertConfig.visible}
@@ -54,7 +60,6 @@ const AlertProvider = ({ children }: { children: React.ReactNode }) => {
           close={alertConfig.close}
         />
       )}
-      {children}
     </AlertContext.Provider>
   );
 };
@@ -68,6 +73,7 @@ const AlertComponent = ({
   alert: Alert;
   close: () => void;
 }) => {
+  const theme = useColorScheme();
   const colors = useThemeColors();
 
   const backgroundColorMap = {
@@ -78,36 +84,58 @@ const AlertComponent = ({
   };
 
   return (
-    <AnimatePresence>
-      {visible && (
-        <MotiView
-          from={{ opacity: 0, translateY: -10 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          exit={{ opacity: 0, translateY: -10 }}
-          style={{
-            gap: 12,
-            paddingBlock: 12,
-            paddingInline: 12,
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: backgroundColorMap[alert.variant],
-          }}
-        >
-          <Text
-            size='base'
-            leading='sm'
-            weight='medium'
-            color='text.base'
+    <React.Fragment>
+      <StatusBar style={theme === 'dark' ? 'dark' : 'light'} />
+      <AnimatePresence>
+        {visible && (
+          <MotiView
+            key='alert'
+            from={{ opacity: 0, translateY: -10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: -10 }}
+            style={{
+              top: 0,
+              gap: 16,
+              left: 0,
+              right: 0,
+              paddingTop: 48,
+              paddingInline: 16,
+              paddingBottom: 16,
+              alignItems: 'center',
+              position: 'absolute',
+              flexDirection: 'row',
+              borderBottomLeftRadius: Border.radius['3xl'],
+              borderBottomRightRadius: Border.radius['3xl'],
+              backgroundColor: backgroundColorMap[alert.variant],
+            }}
           >
-            {alert.message}
-          </Text>
-          <Button
-            onPress={close}
-            title={alert.action.label}
-          />
-        </MotiView>
-      )}
-    </AnimatePresence>
+            <Text
+              size='base'
+              leading='sm'
+              weight='medium'
+              color='text.base'
+              style={{ flex: 1 }}
+            >
+              {alert.message}
+            </Text>
+            {alert.action && (
+              <Action.Root
+                size='xs'
+                onPress={close}
+                style={{
+                  borderRadius: 12,
+                  backgroundColor: colors.getColor('bg.base'),
+                }}
+              >
+                <Action.Label style={{ color: colors.getColor('text.strong') }}>
+                  {alert.action.label}
+                </Action.Label>
+              </Action.Root>
+            )}
+          </MotiView>
+        )}
+      </AnimatePresence>
+    </React.Fragment>
   );
 };
 

@@ -43,8 +43,11 @@ export const usersRouter = router({
           },
           { httpStatus: 200, path: 'users.profile' }
         );
-      } catch (err) {
-        return ctx.fail(err);
+      } catch (err: any) {
+        return ctx.fail({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: `We encountered an issue while fetching your profile. ${err?.message}`,
+        });
       }
     }),
     update: protectedProcedure
@@ -61,23 +64,30 @@ export const usersRouter = router({
               is_onboarded: input.isOnboarded,
             })
             .eq('id', ctx.actor.userId)
-            .select('id, created_at')
+            .select('id, created_at, is_onboarded, email')
             .single();
 
           if (user.error) {
-            console.error('User update error:', user.error);
             return ctx.fail({
+              code: 'INTERNAL_SERVER_ERROR',
               message:
                 'We encountered an issue while updating your profile. Please try again later.',
-              code: 'INTERNAL_SERVER_ERROR',
             });
           }
 
           return ctx.ok({
-            success: true,
+            user: {
+              id: user.data.id,
+              email: user.data.email,
+              createdAt: user.data.created_at,
+              isOnboarded: user.data.is_onboarded,
+            },
           });
-        } catch (err) {
-          return ctx.fail(err);
+        } catch (err: any) {
+          return ctx.fail({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `We encountered an issue while updating your profile. ${err?.message}`,
+          });
         }
       }),
     changePassword: protectedProcedure
@@ -97,9 +107,9 @@ export const usersRouter = router({
 
           if (!user.data) {
             return ctx.fail({
+              code: 'NOT_FOUND',
               message:
                 'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
-              code: 'NOT_FOUND',
             });
           }
 
@@ -110,9 +120,9 @@ export const usersRouter = router({
 
           if (!isSamePassword) {
             return ctx.fail({
+              code: 'UNAUTHORIZED',
               message:
                 'The password you entered is incorrect. Please try again.',
-              code: 'UNAUTHORIZED',
             });
           }
 
@@ -129,19 +139,21 @@ export const usersRouter = router({
             .single();
 
           if (updatedUser.error) {
-            console.error('Password update error:', updatedUser.error);
             return ctx.fail({
+              code: 'INTERNAL_SERVER_ERROR',
               message:
                 'We encountered an issue while updating your password. Please try again later.',
-              code: 'INTERNAL_SERVER_ERROR',
             });
           }
 
           return ctx.ok({
             success: true,
           });
-        } catch (err) {
-          return ctx.fail(err);
+        } catch (err: any) {
+          return ctx.fail({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `We encountered an issue while updating your password. ${err?.message}`,
+          });
         }
       }),
 
@@ -165,9 +177,9 @@ export const usersRouter = router({
 
           if (!user.data) {
             return ctx.fail({
+              code: 'NOT_FOUND',
               message:
                 'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
-              code: 'NOT_FOUND',
             });
           }
 
@@ -178,9 +190,9 @@ export const usersRouter = router({
 
           if (!isSamePassword) {
             return ctx.fail({
+              code: 'UNAUTHORIZED',
               message:
                 'The password you entered is incorrect. Please try again.',
-              code: 'UNAUTHORIZED',
             });
           }
 
@@ -194,9 +206,9 @@ export const usersRouter = router({
 
           if (existingUser.data) {
             return ctx.fail({
+              code: 'CONFLICT',
               message:
                 'This email address is already associated with another account. Please use a different email address.',
-              code: 'CONFLICT',
             });
           }
 
@@ -211,19 +223,21 @@ export const usersRouter = router({
             .single();
 
           if (updateError) {
-            console.error('Email update error:', updateError);
             return ctx.fail({
+              code: 'INTERNAL_SERVER_ERROR',
               message:
                 'We encountered an issue while updating your email address. Please try again later.',
-              code: 'INTERNAL_SERVER_ERROR',
             });
           }
 
           return ctx.ok({
             success: true,
           });
-        } catch (err) {
-          return ctx.fail(err);
+        } catch (err: any) {
+          return ctx.fail({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `We encountered an issue while updating your email address. ${err?.message}`,
+          });
         }
       }),
   },
@@ -244,9 +258,9 @@ export const usersRouter = router({
 
           if (!user.data) {
             return ctx.fail({
+              code: 'NOT_FOUND',
               message:
                 'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
-              code: 'NOT_FOUND',
             });
           }
 
@@ -258,7 +272,12 @@ export const usersRouter = router({
               isOnboarded: user.data.is_onboarded,
             },
           });
-        } catch (err) {}
+        } catch (err: any) {
+          return ctx.fail({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `We encountered an issue while fetching the user account. ${err?.message}`,
+          });
+        }
       }),
   },
   admin: {},

@@ -1,8 +1,10 @@
 import React from 'react';
+import { Alert } from '@/components';
 import { Trpc } from '@/features/trpc';
 import { useAuth } from '../components/Provider';
 
 export const useRefreshToken = () => {
+  const alert = Alert.useAlert();
   const { refreshToken, isLoading, setAuth } = useAuth();
 
   const refresh = Trpc.client.auth.public.refresh.useMutation({
@@ -17,11 +19,21 @@ export const useRefreshToken = () => {
         },
       });
     },
-    onError: (err) => {
+    onError: (err, input) => {
       if (err.data?.code === 'UNAUTHORIZED') {
         setAuth({ type: 'LOGOUT' });
         return;
       }
+      alert.open({
+        variant: 'destructive',
+        message: 'Failed to refresh token',
+        action: {
+          label: 'Retry',
+          onPress: () => {
+            refresh.mutateAsync(input);
+          },
+        },
+      });
       setAuth({ type: 'ERROR' });
     },
   });
