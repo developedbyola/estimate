@@ -115,12 +115,7 @@ export const profilesRouter = router({
             },
           });
         } catch (err) {
-          console.error('Profile update error:', err);
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message:
-              'An unexpected error occurred while updating your profile.',
-          });
+          return ctx.fail(err);
         }
       }),
   },
@@ -158,11 +153,7 @@ export const profilesRouter = router({
             },
           });
         } catch (err) {
-          return ctx.fail({
-            message:
-              'An unexpected error occurred while fetching the profile. Please try again later.',
-            code: 'INTERNAL_SERVER_ERROR',
-          });
+          return ctx.fail(err);
         }
       }),
   },

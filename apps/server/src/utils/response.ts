@@ -1,36 +1,58 @@
-import { TRPCError } from '@trpc/server';
+import { TRPCError, type TRPC_ERROR_CODE_KEY } from '@trpc/server';
 
 type SuccessResponse<T extends object> = T & {
   meta?: {
-    timestamp?: string;
+    timestamp: string;
     [key: string]: unknown;
   };
 };
 
-type ErrorResponse = {
-  error: TRPCError;
+type ErrorParams = {
+  code: TRPC_ERROR_CODE_KEY;
+  message: string;
+  [key: string]: unknown;
 };
 
-export function createResponse() {
-  return {
-    success<T extends object>(
-      data: T,
-      meta?: Record<string, unknown>
-    ): SuccessResponse<T> {
-      return {
-        ...data,
-        meta: {
-          timestamp: new Date().toISOString(),
-          ...meta,
-        },
-      };
+export const response = {
+  zod: {
+    getFirstMessage: (error: Error): string | null => {
+      try {
+        const parsed = JSON.parse(error.message);
+        return Array.isArray(parsed) && parsed[0]?.message
+          ? parsed[0].message
+          : null;
+      } catch (e) {
+        return null;
+      }
     },
-    error(err: unknown): ErrorResponse {
+  },
+  success: <T extends object>(
+    data: T,
+    meta?: Record<string, unknown>
+  ): SuccessResponse<T> => {
+    return {
+      ...data,
+      meta: {
+        timestamp: new Date().toISOString(),
+        ...meta,
+      },
+    };
+  },
+  error: (err: ErrorParams | TRPCError | Error | unknown): never => {
+    if (err instanceof TRPCError) {
+      throw err;
+    }
+
+    if (err instanceof Error) {
       throw new TRPCError({
-        message: (err as any)?.message || 'Something went wrong',
-        code: (err as any)?.code || 'INTERNAL_SERVER_ERROR',
-        cause: (err as any)?.cause,
+        message: err.message,
+        code: 'INTERNAL_SERVER_ERROR',
       });
-    },
-  };
-}
+    }
+
+    throw new TRPCError({
+      message: (err as any)?.message || 'An unexpected error occurred',
+      code: (err as any)?.code || 'INTERNAL_SERVER_ERROR',
+    });
+  },
+};

@@ -43,11 +43,8 @@ export const usersRouter = router({
           },
           { httpStatus: 200, path: 'users.profile' }
         );
-      } catch (err: any) {
-        return ctx.fail({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: `We encountered an issue while fetching your profile. ${err?.message}`,
-        });
+      } catch (err) {
+        return ctx.fail(err);
       }
     }),
     update: protectedProcedure
@@ -83,11 +80,8 @@ export const usersRouter = router({
               isOnboarded: user.data.is_onboarded,
             },
           });
-        } catch (err: any) {
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `We encountered an issue while updating your profile. ${err?.message}`,
-          });
+        } catch (err) {
+          return ctx.fail(err);
         }
       }),
     changePassword: protectedProcedure
@@ -149,11 +143,8 @@ export const usersRouter = router({
           return ctx.ok({
             success: true,
           });
-        } catch (err: any) {
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `We encountered an issue while updating your password. ${err?.message}`,
-          });
+        } catch (err) {
+          return ctx.fail(err);
         }
       }),
 
@@ -233,52 +224,47 @@ export const usersRouter = router({
           return ctx.ok({
             success: true,
           });
-        } catch (err: any) {
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `We encountered an issue while updating your email address. ${err?.message}`,
-          });
+        } catch (err) {
+          return ctx.fail(err);
         }
       }),
-  },
-  public: {
-    getById: publicProcedure
-      .input(
-        z.object({
-          userId: z.string().min(1, 'User ID is required'),
-        })
-      )
-      .query(async ({ input, ctx }) => {
-        try {
-          const user = await ctx.supabase
-            .from('users')
-            .select('id, email, is_onboarded, created_at')
-            .eq('id', input.userId)
-            .single();
 
-          if (!user.data) {
-            return ctx.fail({
-              code: 'NOT_FOUND',
-              message:
-                'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
+    public: {
+      getById: publicProcedure
+        .input(
+          z.object({
+            userId: z.string().min(1, 'User ID is required'),
+          })
+        )
+        .query(async ({ input, ctx }) => {
+          try {
+            const user = await ctx.supabase
+              .from('users')
+              .select('id, email, is_onboarded, created_at')
+              .eq('id', input.userId)
+              .single();
+
+            if (!user.data) {
+              return ctx.fail({
+                code: 'NOT_FOUND',
+                message:
+                  'The requested user account could not be found. The ID provided may be incorrect or the account may have been deleted.',
+              });
+            }
+
+            return ctx.ok({
+              user: {
+                id: user.data.id,
+                email: user.data.email,
+                createdAt: user.data.created_at,
+                isOnboarded: user.data.is_onboarded,
+              },
             });
+          } catch (err) {
+            return ctx.fail(err);
           }
-
-          return ctx.ok({
-            user: {
-              id: user.data.id,
-              email: user.data.email,
-              createdAt: user.data.created_at,
-              isOnboarded: user.data.is_onboarded,
-            },
-          });
-        } catch (err: any) {
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `We encountered an issue while fetching the user account. ${err?.message}`,
-          });
-        }
-      }),
+        }),
+    },
+    admin: {},
   },
-  admin: {},
 });

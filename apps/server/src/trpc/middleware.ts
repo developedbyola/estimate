@@ -1,9 +1,9 @@
-import { ZodError } from 'zod';
-import { initTRPC, TRPCError } from '@trpc/server';
-import type { Context } from '@/trpc/context';
-import { getFirstValidationMessage } from '@/utils/validationMessage';
 import jwt from '@/utils/jwt';
+import { ZodError } from 'zod';
 import { env } from '@/configs/env';
+import { response } from '@/utils/response';
+import type { Context } from '@/trpc/context';
+import { initTRPC, TRPCError } from '@trpc/server';
 
 const t = initTRPC.context<Context>().create({
   errorFormatter: (opts) => {
@@ -12,7 +12,7 @@ const t = initTRPC.context<Context>().create({
       ...shape,
       message:
         error.cause instanceof ZodError
-          ? getFirstValidationMessage(error)
+          ? response.zod.getFirstMessage(error)
           : error.message,
       data: {
         ...shape.data,

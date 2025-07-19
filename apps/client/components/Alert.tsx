@@ -110,8 +110,8 @@ const AlertComponent = ({
             }}
           >
             <Text
-              size='base'
-              leading='sm'
+              size='sm'
+              leading='xs'
               weight='medium'
               color='text.base'
               style={{ flex: 1 }}
@@ -123,11 +123,14 @@ const AlertComponent = ({
                 size='xs'
                 onPress={close}
                 style={{
-                  borderRadius: 12,
+                  borderRadius: 8,
                   backgroundColor: colors.getColor('bg.base'),
                 }}
               >
-                <Action.Label style={{ color: colors.getColor('text.strong') }}>
+                <Action.Label
+                  size='xs'
+                  style={{ color: colors.getColor('text.strong') }}
+                >
                   {alert.action.label}
                 </Action.Label>
               </Action.Root>

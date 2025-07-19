@@ -16,7 +16,7 @@ export const signToken = async <T extends object>(
   try {
     const token = await sign({ ...payload, exp: exp }, secret);
     return token;
-  } catch (err: any) {
+  } catch (err) {
     throw err;
   }
 };
@@ -34,7 +34,7 @@ export const verifyToken = async <T extends object>(
   try {
     const decoded = await verify(token, secret);
     return decoded as Payload<T>;
-  } catch (err: any) {
+  } catch (err) {
     throw err;
   }
 };

@@ -310,10 +310,7 @@ export const authRouter = router({
             { httpStatus: 200, path: 'auth.refresh' }
           );
         } catch (err) {
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'An unexpected error occurred while signing you in',
-          });
+          return ctx.fail(err);
         }
       }),
 
@@ -375,12 +372,7 @@ export const authRouter = router({
             { httpStatus: 200, path: 'auth.logout' }
           );
         } catch (err) {
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `We encountered an issue while logging you out. ${
-              (err as any).message
-            }`,
-          });
+          return ctx.fail(err);
         }
       }),
   },
