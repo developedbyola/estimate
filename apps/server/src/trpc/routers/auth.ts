@@ -215,7 +215,7 @@ export const authRouter = router({
 
           if (!actor) {
             return ctx.fail({
-              code: 'SESSION_EXPIRED',
+              code: 'UNAUTHORIZED',
               message:
                 'Your session has expired. Sign in again to regain access.',
             });
@@ -245,7 +245,7 @@ export const authRouter = router({
           })();
           if (!session) {
             return ctx.fail({
-              code: 'SESSION_EXPIRED',
+              code: 'UNAUTHORIZED',
               message:
                 'Your session was either revoked or has expired. Sign in again to regain access.',
             });
