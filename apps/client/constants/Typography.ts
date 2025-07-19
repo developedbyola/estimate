@@ -33,8 +33,8 @@ export default {
     xs: 16, // ~16px
     sm: 20, // ~20px
     base: 24, // ~24px
-    lg: 28, // ~28px
-    xl: 32, // ~32px
+    lg: 30, // ~28px
+    xl: 36, // ~32px
     '2xl': 40,
     '3xl': 48,
   },

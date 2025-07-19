@@ -25,3 +25,9 @@ export const loginSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
 });
+
+export const onboardSchema = z.object({
+  lastName: z.string().min(1, 'What is your last name?'),
+  firstName: z.string().min(1, 'What is your first name?'),
+  username: z.string().min(1, 'Choose a unique username?'),
+});

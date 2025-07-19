@@ -160,7 +160,7 @@ export const authRouter = router({
               refresh_token: await argon2.hash(refreshToken),
               expires_at: new Date(expires_at).toISOString(),
             })
-            .select('id')
+            .select('*')
             .single();
 
           if (session.error) {
@@ -170,18 +170,26 @@ export const authRouter = router({
             });
           }
 
-          const userData = {
-            id: user.data.id,
-            email: user.data.email,
-            createdAt: user.data.created_at,
-            isOnboarded: user.data.is_onboarded,
-          };
-
           return ctx.ok(
             {
               accessToken,
               refreshToken,
-              user: userData,
+              user: {
+                id: user.data.id,
+                email: user.data.email,
+                createdAt: user.data.created_at,
+                isOnboarded: user.data.is_onboarded,
+              },
+              session: {
+                id: session.data.id,
+                userId: session.data.user_id,
+                userAgent: session.data.user_agent,
+                ipAddress: session.data.ip_address,
+                createdAt: session.data.created_at,
+                lastActiveAt: session.data.last_active_at,
+                expiresAt: session.data.expires_at,
+                revoked: session.data.revoked,
+              },
             },
             { httpStatus: 200, path: 'auth.login' }
           );
@@ -266,7 +274,9 @@ export const authRouter = router({
               last_active_at: new Date().toISOString(),
               expires_at: new Date(expires_at).toISOString(),
             })
-            .eq('id', session.id);
+            .eq('id', session.id)
+            .select('*, users (id, email, created_at, is_onboarded)')
+            .single();
 
           if (updatedSession.error) {
             return ctx.fail({
@@ -276,7 +286,26 @@ export const authRouter = router({
           }
 
           return ctx.ok(
-            { accessToken, refreshToken: newRefreshToken },
+            {
+              accessToken,
+              refreshToken: newRefreshToken,
+              session: {
+                id: updatedSession.data.id,
+                userId: updatedSession.data.user_id,
+                userAgent: updatedSession.data.user_agent,
+                ipAddress: updatedSession.data.ip_address,
+                createdAt: updatedSession.data.created_at,
+                lastActiveAt: updatedSession.data.last_active_at,
+                expiresAt: updatedSession.data.expires_at,
+                revoked: updatedSession.data.revoked,
+              },
+              user: {
+                id: updatedSession.data.user.id,
+                email: updatedSession.data.user.email,
+                createdAt: updatedSession.data.user.created_at,
+                isOnboarded: updatedSession.data.user.is_onboarded,
+              },
+            },
             { httpStatus: 200, path: 'auth.refresh' }
           );
         } catch (err) {
