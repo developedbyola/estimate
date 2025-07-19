@@ -15,7 +15,7 @@
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "backgroundColor": "#000000",
-        "foregroundImage": "./assets/images/icons/ios-light.png"
+        "foregroundImage": "./assets/images/icons/adaptive-icon.png"
       },
       "edgeToEdgeEnabled": true
     },

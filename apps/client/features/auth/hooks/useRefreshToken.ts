@@ -7,6 +7,7 @@ export const useRefreshToken = () => {
 
   const refresh = Trpc.client.auth.public.refresh.useMutation({
     onSuccess: async (data: any) => {
+      console.log(data);
       setAuth({
         type: 'SET_TOKENS',
         payload: {

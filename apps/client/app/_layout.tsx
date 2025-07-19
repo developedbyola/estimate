@@ -13,7 +13,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stacks = () => {
-  const { user, session, isLoading, isAuthenticated } = Auth.useAuth();
+  const { isLoading, isAuthenticated } = Auth.useAuth();
 
   const onLayout = React.useCallback(async () => {
     if (!isLoading) {
@@ -24,8 +24,6 @@ const Stacks = () => {
   if (isLoading) {
     return null;
   }
-
-  console.log({ user, session });
 
   return (
     <Box
@@ -53,7 +51,7 @@ const Stacks = () => {
             }}
           />
         </Stack.Protected>
-        <Stack.Protected guard={!isAuthenticated}>
+        <Stack.Protected guard={isAuthenticated}>
           <Stack.Screen
             name='(protected)'
             options={{ title: 'App', headerShown: false }}

@@ -1,10 +1,8 @@
 import { Alert } from 'react-native';
 import { Trpc } from '@/features/trpc';
-import { useRouter } from 'expo-router';
 import { useAuth } from '../components/Provider';
 
 export const useLogin = () => {
-  const router = useRouter();
   const { setAuth } = useAuth();
 
   const login = Trpc.client.auth.public.login.useMutation({
@@ -18,8 +16,6 @@ export const useLogin = () => {
           refreshToken: data?.refreshToken,
         },
       });
-
-      router.replace('/(protected)');
     },
     onError: (error, input) => {
       Alert.alert('Login failed', error.message, [

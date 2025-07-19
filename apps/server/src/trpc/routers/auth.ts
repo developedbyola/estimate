@@ -275,7 +275,7 @@ export const authRouter = router({
               expires_at: new Date(expires_at).toISOString(),
             })
             .eq('id', session.id)
-            .select('*, users (id, email, created_at, is_onboarded)')
+            .select('*, users(id, email, created_at, is_onboarded)')
             .single();
 
           if (updatedSession.error) {
@@ -284,6 +284,8 @@ export const authRouter = router({
               message: updatedSession.error.message,
             });
           }
+
+          console.log({ data: updatedSession.data });
 
           return ctx.ok(
             {
@@ -300,10 +302,10 @@ export const authRouter = router({
                 revoked: updatedSession.data.revoked,
               },
               user: {
-                id: updatedSession.data.user.id,
-                email: updatedSession.data.user.email,
-                createdAt: updatedSession.data.user.created_at,
-                isOnboarded: updatedSession.data.user.is_onboarded,
+                id: updatedSession.data.users.id,
+                email: updatedSession.data.users.email,
+                createdAt: updatedSession.data.users.created_at,
+                isOnboarded: updatedSession.data.users.is_onboarded,
               },
             },
             { httpStatus: 200, path: 'auth.refresh' }

@@ -12,7 +12,7 @@ type ProviderProps = {
 };
 
 export const Provider = ({ children }: ProviderProps) => {
-  const { auth } = Auth.useAuth();
+  const { accessToken } = Auth.useAuth();
   const queryClient = new QueryClient();
 
   const trpcClient = trpc.createClient({
@@ -20,7 +20,7 @@ export const Provider = ({ children }: ProviderProps) => {
       httpBatchLink({
         url: `${process.env.EXPO_PUBLIC_SERVER_API_URL}/api/trpc`,
         async fetch(url, options) {
-          const token = auth.accessToken || '';
+          const token = accessToken || '';
           return fetch(url, {
             ...options,
             headers: {

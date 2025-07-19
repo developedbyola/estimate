@@ -93,6 +93,7 @@ export const authReducer = (state: State, action: Action): State => {
     case 'ERROR':
       return {
         ...state,
+        isAuthenticated: false,
         isLoading: false,
       };
     default:
@@ -117,8 +118,8 @@ export const Provider = ({
     user: null,
     session: null,
     accessToken: null,
-    refreshToken: null,
-    isAuthenticated: false,
+    refreshToken: refreshToken,
+    isAuthenticated: !!refreshToken,
   },
 }: {
   children: React.ReactNode;
