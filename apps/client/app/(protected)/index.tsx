@@ -1,9 +1,9 @@
 import React from 'react';
 import { Redirect } from 'expo-router';
-import { Users } from '@/features/users';
+import { Auth } from '@/features/auth';
 
 const IndexPage = () => {
-  const { user } = Users.useUser();
+  const { user } = Auth.useAuth();
 
   if (user?.isOnboarded === false) {
     return <Redirect href='/onboard' />;

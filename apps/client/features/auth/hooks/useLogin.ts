@@ -1,29 +1,24 @@
 import { Alert } from 'react-native';
 import { Trpc } from '@/features/trpc';
 import { useRouter } from 'expo-router';
-import { Users } from '@/features/users';
 import { useAuth } from '../components/Provider';
 
 export const useLogin = () => {
   const router = useRouter();
   const { setAuth } = useAuth();
-  const { setUser } = Users.useUser();
 
   const login = Trpc.client.auth.public.login.useMutation({
     onSuccess: async (data: any) => {
       setAuth({
         type: 'LOGIN',
         payload: {
-          auth: {
-            accessToken: data?.accessToken,
-            refreshToken: data?.refreshToken,
-          },
+          user: data?.user,
+          session: data?.session,
+          accessToken: data?.accessToken,
+          refreshToken: data?.refreshToken,
         },
       });
-      setUser({
-        type: 'SET_USER',
-        payload: { user: data?.user },
-      });
+
       router.replace('/(protected)');
     },
     onError: (error, input) => {

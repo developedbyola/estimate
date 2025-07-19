@@ -1,25 +1,49 @@
 import React from 'react';
 import * as SecureStore from 'expo-secure-store';
 
-export type Auth = {
-  refreshToken: string | null;
-  accessToken: string | null;
-  isAuthenticated: boolean;
+type Session = {
+  id: string;
+  userId: string;
+  userAgent: string;
+  ipAddress: string;
+  createdAt: string;
+  expiresAt: string;
+  lastActiveAt: string;
 };
 
-type State = { isLoading: boolean; auth: Auth };
+type User = {
+  id: string;
+  email: string;
+  createdAt: string;
+  isOnboarded: boolean;
+};
+
+type State = {
+  isLoading: boolean;
+  user: User | null;
+  isAuthenticated: boolean;
+  accessToken: string | null;
+  refreshToken: string | null;
+  session: Session | null;
+};
 
 export type Action =
   | {
       type: 'LOGIN';
       payload: {
-        auth: Pick<Auth, 'accessToken' | 'refreshToken'>;
+        user: User;
+        session: Session;
+        accessToken: string;
+        refreshToken: string;
       };
     }
   | {
       type: 'SET_TOKENS';
       payload: {
-        auth: Pick<Auth, 'accessToken' | 'refreshToken'>;
+        user: User;
+        session: Session;
+        accessToken: string;
+        refreshToken: string;
       };
     }
   | { type: 'LOGOUT'; payload?: never }
@@ -34,45 +58,42 @@ export const authContext = React.createContext<AuthContext | null>(null);
 export const authReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'LOGIN':
-      SecureStore.setItem('refresh_token', action.payload.auth.refreshToken!);
+      SecureStore.setItem('refresh_token', action.payload.refreshToken!);
       return {
         ...state,
         isLoading: false,
-        auth: {
-          isAuthenticated: true,
-          accessToken: action.payload.auth.accessToken,
-          refreshToken: action.payload.auth.refreshToken,
-        },
+        user: action.payload.user,
+        session: action.payload.session,
+        accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken,
+        isAuthenticated: true,
       };
     case 'SET_TOKENS':
-      SecureStore.setItem('refresh_token', action.payload.auth.refreshToken!);
+      SecureStore.setItem('refresh_token', action.payload.refreshToken!);
       return {
         ...state,
         isLoading: false,
-        auth: {
-          isAuthenticated: true,
-          accessToken: action.payload.auth.accessToken,
-          refreshToken: action.payload.auth.refreshToken,
-        },
+        user: action.payload.user,
+        session: action.payload.session,
+        accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken,
+        isAuthenticated: true,
       };
     case 'LOGOUT':
       SecureStore.setItem('refresh_token', '');
       return {
         ...state,
         isLoading: false,
-        auth: {
-          accessToken: null,
-          refreshToken: null,
-          isAuthenticated: false,
-        },
+        user: null,
+        session: null,
+        accessToken: null,
+        refreshToken: null,
+        isAuthenticated: false,
       };
     case 'ERROR':
       return {
         ...state,
         isLoading: false,
-        auth: {
-          ...state.auth,
-        },
       };
     default:
       return state;
@@ -93,11 +114,11 @@ export const Provider = ({
   children,
   initialState = {
     isLoading: true,
-    auth: {
-      accessToken: null,
-      refreshToken: refreshToken,
-      isAuthenticated: !!refreshToken,
-    },
+    user: null,
+    session: null,
+    accessToken: null,
+    refreshToken: null,
+    isAuthenticated: false,
   },
 }: {
   children: React.ReactNode;

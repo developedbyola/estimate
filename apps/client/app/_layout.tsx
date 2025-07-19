@@ -2,7 +2,6 @@ import React from 'react';
 import { Stack } from 'expo-router';
 import { Auth } from '@/features/auth';
 import { Trpc } from '@/features/trpc';
-import { Users } from '@/features/users';
 import { Farms } from '@/features/farms';
 import { Box, Popup } from '@/components';
 import { Currency } from '@/features/currency';
@@ -14,18 +13,19 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stacks = () => {
-  const { isLoading: userIsLoading } = Users.useUser();
-  const { auth, isLoading: authIsLoading } = Auth.useAuth();
+  const { user, session, isLoading, isAuthenticated } = Auth.useAuth();
 
   const onLayout = React.useCallback(async () => {
-    if (!authIsLoading && !userIsLoading) {
+    if (!isLoading) {
       await SplashScreen.hideAsync();
     }
-  }, [authIsLoading, userIsLoading]);
+  }, [isLoading]);
 
-  if (authIsLoading || userIsLoading) {
+  if (isLoading) {
     return null;
   }
+
+  console.log({ user, session });
 
   return (
     <Box
@@ -33,7 +33,7 @@ const Stacks = () => {
       onLayout={onLayout}
     >
       <Stack>
-        <Stack.Protected guard={!auth.isAuthenticated}>
+        <Stack.Protected guard={!isAuthenticated}>
           <Stack.Screen
             name='index'
             options={{
@@ -53,7 +53,7 @@ const Stacks = () => {
             }}
           />
         </Stack.Protected>
-        <Stack.Protected guard={auth.isAuthenticated}>
+        <Stack.Protected guard={!isAuthenticated}>
           <Stack.Screen
             name='(protected)'
             options={{ title: 'App', headerShown: false }}
@@ -74,21 +74,17 @@ const RootLayout = () => {
             <Auth.Provider>
               <Trpc.Provider>
                 <Auth.RefreshToken>
-                  <Users.Provider>
-                    <Users.Get>
-                      <Currency.Provider>
-                        <Categories.Provider>
-                          <Farms.Provider>
-                            <Estimates.Provider>
-                              <Popup.Provider>
-                                <Stacks />
-                              </Popup.Provider>
-                            </Estimates.Provider>
-                          </Farms.Provider>
-                        </Categories.Provider>
-                      </Currency.Provider>
-                    </Users.Get>
-                  </Users.Provider>
+                  <Currency.Provider>
+                    <Categories.Provider>
+                      <Farms.Provider>
+                        <Estimates.Provider>
+                          <Popup.Provider>
+                            <Stacks />
+                          </Popup.Provider>
+                        </Estimates.Provider>
+                      </Farms.Provider>
+                    </Categories.Provider>
+                  </Currency.Provider>
                 </Auth.RefreshToken>
               </Trpc.Provider>
             </Auth.Provider>
