@@ -28,47 +28,12 @@ export const sessionsRouter = router({
                 userAgent: session.user_agent,
                 ipAddress: session.ip_address,
                 createdAt: session.created_at,
+                expiresAt: session.expires_at,
+                refreshToken: session.refresh_token,
                 lastActiveAt: session.last_active_at,
-                isCurrent: session.id === ctx.actor.sessionId,
               })) || [],
           },
           { httpStatus: 200, path: 'auth.sessions' }
-        );
-      } catch (err) {
-        return ctx.fail(err);
-      }
-    }),
-
-    current: protectedProcedure.mutation(async ({ ctx }) => {
-      try {
-        const session = await ctx.supabase
-          .from('sessions')
-          .select('*')
-          .eq('user_id', ctx.actor.userId)
-          .eq('id', ctx.actor.sessionId)
-          .single();
-
-        if (session.error) {
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `We encountered an unexpected error while fetching your current session. ${session.error.message}`,
-          });
-        }
-
-        return ctx.ok(
-          {
-            session: {
-              isCurrent: true,
-              id: session.data.id,
-              revoked: session.data.revoked,
-              userId: session.data.user_id,
-              userAgent: session.data.user_agent,
-              ipAddress: session.data.ip_address,
-              createdAt: session.data.created_at,
-              lastActiveAt: session.data.last_active_at,
-            },
-          },
-          { httpStatus: 200, path: 'auth.currentSession' }
         );
       } catch (err) {
         return ctx.fail(err);

@@ -21,3 +21,4 @@ export { default as Scroll } from '@/components/Scroll';
 export { default as Divider } from '@/components/Divider';
 export { default as Gradient } from '@/components/Gradient';
 export { Popup } from '@/components/Popup';
+export { Alert } from '@/components/Alert';

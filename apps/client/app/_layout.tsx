@@ -3,8 +3,8 @@ import { Stack } from 'expo-router';
 import { Auth } from '@/features/auth';
 import { Trpc } from '@/features/trpc';
 import { Farms } from '@/features/farms';
-import { Box, Popup } from '@/components';
 import { Currency } from '@/features/currency';
+import { Box, Popup, Alert } from '@/components';
 import { Estimates } from '@/features/estimates';
 import { Categories } from '@/features/categories';
 import * as SplashScreen from 'expo-splash-screen';
@@ -76,9 +76,11 @@ const RootLayout = () => {
                     <Categories.Provider>
                       <Farms.Provider>
                         <Estimates.Provider>
-                          <Popup.Provider>
-                            <Stacks />
-                          </Popup.Provider>
+                          <Alert.Provider>
+                            <Popup.Provider>
+                              <Stacks />
+                            </Popup.Provider>
+                          </Alert.Provider>
                         </Estimates.Provider>
                       </Farms.Provider>
                     </Categories.Provider>
