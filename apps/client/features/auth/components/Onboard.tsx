@@ -50,9 +50,6 @@ export const Onboard = () => {
         type: 'UPDATE_PROFILE',
         payload: { profile: data?.profile },
       });
-      await onboard.mutateAsync({
-        isOnboarded: true,
-      });
     },
     onError: (error, input) => {
       popup.open({
@@ -157,7 +154,15 @@ export const Onboard = () => {
           <Action.Root
             size='xl'
             disabled={!form.formState.isValid}
+            loading={update.isPending || onboard.isPending}
+            onPress={async () => {
+              const res = await update.mutateAsync(form.getValues());
+              if (res) {
+                await onboard.mutateAsync({ isOnboarded: true });
+              }
+            }}
           >
+            <Action.Loader />
             <Action.Label style={{ fontSize: Typography.size.lg }}>
               Personalize
             </Action.Label>

@@ -20,13 +20,14 @@ export const useRefreshToken = () => {
       });
     },
     onError: (err, input) => {
+      console.log(err.data?.code);
       if (err.data?.code === 'UNAUTHORIZED') {
         setAuth({ type: 'LOGOUT' });
         return;
       }
       alert.open({
         variant: 'destructive',
-        message: 'Failed to refresh token',
+        message: `${err.message}`,
         action: {
           label: 'Retry',
           onPress: () => {

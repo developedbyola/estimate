@@ -312,9 +312,7 @@ export const authRouter = router({
         } catch (err) {
           return ctx.fail({
             code: 'INTERNAL_SERVER_ERROR',
-            message: `An unexpected error occurred while signing you in. ${
-              (err as any)?.message
-            }`,
+            message: 'An unexpected error occurred while signing you in',
           });
         }
       }),
