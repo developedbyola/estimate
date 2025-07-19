@@ -1,10 +1,10 @@
 import React from 'react';
-import { Alert } from '@/components';
+import { Banner } from '@/components';
 import { Trpc } from '@/features/trpc';
 import { useAuth } from '../components/Provider';
 
 export const useRefreshToken = () => {
-  const alert = Alert.useAlert();
+  const banner = Banner.useBanner();
   const { refreshToken, isLoading, setAuth } = useAuth();
 
   const refresh = Trpc.client.auth.public.refresh.useMutation({
@@ -20,12 +20,11 @@ export const useRefreshToken = () => {
       });
     },
     onError: (err, input) => {
-      console.log(err.data?.code);
       if (err.data?.code === 'UNAUTHORIZED') {
         setAuth({ type: 'LOGOUT' });
         return;
       }
-      alert.open({
+      banner.open({
         variant: 'destructive',
         message: `${err.message}`,
         action: {

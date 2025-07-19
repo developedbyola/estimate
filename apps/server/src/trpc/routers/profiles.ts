@@ -40,11 +40,15 @@ export const profilesRouter = router({
             .string()
             .min(1, 'First name is required')
             .max(100)
+            .trim()
+            .toLowerCase()
             .optional(),
           lastName: z
             .string()
             .min(1, 'Last name is required')
             .max(100)
+            .trim()
+            .toLowerCase()
             .optional(),
           username: z
             .string()
@@ -54,6 +58,8 @@ export const profilesRouter = router({
               /^[a-zA-Z0-9_]+$/,
               'Username can only contain letters, numbers, and underscores'
             )
+            .trim()
+            .toLowerCase()
             .optional(),
         })
       )
@@ -108,9 +114,9 @@ export const profilesRouter = router({
             profile: {
               id: profile.id,
               userId: profile.user_id,
-              firstName: profile.first_name,
-              lastName: profile.last_name,
               username: profile.username,
+              lastName: profile.last_name,
+              firstName: profile.first_name,
               createdAt: profile.created_at,
             },
           });

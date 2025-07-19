@@ -5,7 +5,7 @@ import { Trpc } from '@/features/trpc';
 import { Farms } from '@/features/farms';
 import { Profiles } from '@/features/profiles';
 import { Currency } from '@/features/currency';
-import { Box, Popup, Alert } from '@/components';
+import { Box, Popup, Banner } from '@/components';
 import { Estimates } from '@/features/estimates';
 import { Categories } from '@/features/categories';
 import * as SplashScreen from 'expo-splash-screen';
@@ -70,7 +70,7 @@ const RootLayout = () => {
       <RootSiblingParent>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <BottomSheetModalProvider>
-            <Alert.Provider>
+            <Banner.Provider>
               <Popup.Provider>
                 <Auth.Provider>
                   <Trpc.Provider>
@@ -90,7 +90,7 @@ const RootLayout = () => {
                   </Trpc.Provider>
                 </Auth.Provider>
               </Popup.Provider>
-            </Alert.Provider>
+            </Banner.Provider>
           </BottomSheetModalProvider>
         </GestureHandlerRootView>
       </RootSiblingParent>

@@ -23,8 +23,12 @@ export const authRouter = router({
       .use(rateLimiter({ points: 10, duration: 5 }))
       .input(
         z.object({
-          email: z.string().email('Please enter a valid email address'),
           password: passwordSchema,
+          email: z
+            .string()
+            .trim()
+            .toLowerCase()
+            .email('Please enter a valid email address'),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -36,7 +40,7 @@ export const authRouter = router({
             .from('users')
             .insert({
               password: hashedPassword,
-              email: email.trim().toLowerCase(),
+              email: email,
             })
             .select('id, created_at, is_onboarded, email')
             .single();
@@ -77,7 +81,11 @@ export const authRouter = router({
       .input(
         z.object({
           password: passwordSchema,
-          email: z.string().email('Please enter a valid email address'),
+          email: z
+            .string()
+            .trim()
+            .toLowerCase()
+            .email('Please enter a valid email address'),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -87,7 +95,7 @@ export const authRouter = router({
           const user = await ctx.supabase
             .from('users')
             .select('id, created_at, is_onboarded, email, password')
-            .eq('email', email.trim().toLowerCase())
+            .eq('email', email)
             .single();
 
           if (user.error) {

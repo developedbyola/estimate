@@ -39,6 +39,7 @@ export const response = {
     };
   },
   error: (err: ErrorParams | TRPCError | Error | unknown): never => {
+    console.log(err);
     if (err instanceof TRPCError) {
       throw err;
     }

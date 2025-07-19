@@ -7,15 +7,15 @@ import { Border } from '@/constants';
 import Action from './Action';
 import { StatusBar } from 'expo-status-bar';
 
-type Alert = {
+type Banner = {
   message: string;
   variant: 'success' | 'destructive' | 'warning' | 'info';
   action?: { label: string; onPress?: () => void };
 };
 
-const useAlertConfig = () => {
+const useBannerConfig = () => {
   const [visible, setVisible] = React.useState(false);
-  const [alert, setAlert] = React.useState<Alert>({
+  const [Banner, setBanner] = React.useState<Banner>({
     message: '',
     variant: 'success',
     action: {
@@ -26,51 +26,51 @@ const useAlertConfig = () => {
 
   const close = () => {
     setVisible(false);
-    alert.action?.onPress?.();
+    Banner.action?.onPress?.();
   };
 
-  const open = (newAlert: Alert) => {
-    setAlert(newAlert);
+  const open = (newBanner: Banner) => {
+    setBanner(newBanner);
     setVisible(true);
   };
 
   return {
     open,
-    alert,
+    Banner,
     close,
     visible,
   };
 };
 
-type AlertContext = ReturnType<typeof useAlertConfig>;
+type BannerContext = ReturnType<typeof useBannerConfig>;
 
-const AlertContext = React.createContext<AlertContext | null>(null);
+const BannerContext = React.createContext<BannerContext | null>(null);
 
-const AlertProvider = ({ children }: { children: React.ReactNode }) => {
-  const alertConfig = useAlertConfig();
+const BannerProvider = ({ children }: { children: React.ReactNode }) => {
+  const BannerConfig = useBannerConfig();
   const colors = useThemeColors();
 
   return (
-    <AlertContext.Provider value={alertConfig}>
+    <BannerContext.Provider value={BannerConfig}>
       {children}
-      {alertConfig.visible && (
-        <AlertComponent
-          visible={alertConfig.visible}
-          alert={alertConfig.alert}
-          close={alertConfig.close}
+      {BannerConfig.visible && (
+        <BannerComponent
+          visible={BannerConfig.visible}
+          Banner={BannerConfig.Banner}
+          close={BannerConfig.close}
         />
       )}
-    </AlertContext.Provider>
+    </BannerContext.Provider>
   );
 };
 
-const AlertComponent = ({
+const BannerComponent = ({
   visible,
-  alert,
+  Banner,
   close,
 }: {
   visible: boolean;
-  alert: Alert;
+  Banner: Banner;
   close: () => void;
 }) => {
   const theme = useColorScheme();
@@ -89,7 +89,7 @@ const AlertComponent = ({
       <AnimatePresence>
         {visible && (
           <MotiView
-            key='alert'
+            key='Banner'
             from={{ opacity: 0, translateY: -10 }}
             animate={{ opacity: 1, translateY: 0 }}
             exit={{ opacity: 0, translateY: -10 }}
@@ -106,7 +106,7 @@ const AlertComponent = ({
               flexDirection: 'row',
               borderBottomLeftRadius: Border.radius['3xl'],
               borderBottomRightRadius: Border.radius['3xl'],
-              backgroundColor: backgroundColorMap[alert.variant],
+              backgroundColor: backgroundColorMap[Banner.variant],
             }}
           >
             <Text
@@ -116,9 +116,9 @@ const AlertComponent = ({
               color='text.base'
               style={{ flex: 1 }}
             >
-              {alert.message}
+              {Banner.message}
             </Text>
-            {alert.action && (
+            {Banner.action && (
               <Action.Root
                 size='xs'
                 onPress={close}
@@ -131,7 +131,7 @@ const AlertComponent = ({
                   size='xs'
                   style={{ color: colors.getColor('text.strong') }}
                 >
-                  {alert.action.label}
+                  {Banner.action.label}
                 </Action.Label>
               </Action.Root>
             )}
@@ -142,15 +142,15 @@ const AlertComponent = ({
   );
 };
 
-const useAlert = () => {
-  const context = React.useContext(AlertContext);
+const useBanner = () => {
+  const context = React.useContext(BannerContext);
   if (!context) {
-    throw new Error('useAlert must be used within an Alert.Provider');
+    throw new Error('useBanner must be used within an Banner.Provider');
   }
   return context;
 };
 
-export const Alert = {
-  useAlert,
-  Provider: AlertProvider,
+export const Banner = {
+  useBanner,
+  Provider: BannerProvider,
 };
