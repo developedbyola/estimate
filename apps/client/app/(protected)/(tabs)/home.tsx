@@ -1,10 +1,9 @@
 import React from 'react';
-import { Image } from 'expo-image';
 import { Border, Space } from '@/constants';
 import { useCurrency } from '@/features/currency';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { Action, Heading, Box, Text, Safe, Scroll } from '@/components';
 import { useRouter } from 'expo-router';
+import { Action, Heading, Box, Text, Safe, Scroll } from '@/components';
 import { Farms, useFarms } from '@/features/farms';
 
 const HomePage = () => {
@@ -15,99 +14,116 @@ const HomePage = () => {
 
   return (
     <Safe
-      bg='bg.subtle'
+      bg='primary.base'
       style={{ flex: 1 }}
     >
-      <Scroll style={{ flex: 1 }}>
+      <Box
+        mt='xl'
+        px='xl'
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
         <Box
-          mt='xl'
-          px='xl'
           style={{
+            flex: 1,
+            gap: Space['sm'],
             flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
           }}
         >
-          <Image
-            source={require('@/assets/images/avatars/default.png')}
+          <Action.Root
+            hitSlop={40}
             style={{
-              width: 36,
-              aspectRatio: '1/1',
-              borderRadius: Border.radius.xl,
+              width: 32,
+              height: 32,
+              paddingInline: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-          />
-
-          <Box style={{ gap: Space['2xs'], flexDirection: 'row' }}>
-            <Action.Root
-              hitSlop={40}
-              variant='ghost'
-              style={{
-                width: 32,
-                height: 32,
-                paddingInline: 0,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              onPress={() => {
-                setFarms({ type: 'SET_FARM', payload: { farm: null } });
-                router.push('/add-farm');
-              }}
-            >
-              <Action.Icon
-                size={22}
-                name='create-outline'
-                color={colors.getColor('primary.base')}
-              />
-            </Action.Root>
-            <Action.Root
-              variant='ghost'
-              hitSlop={20}
-              style={{
-                width: 32,
-                height: 32,
-                paddingInline: 0,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Action.Icon
-                size={22}
-                name='search-outline'
-                color={colors.getColor('primary.base')}
-              />
-            </Action.Root>
-          </Box>
+            onPress={() => {
+              setFarms({ type: 'SET_FARM', payload: { farm: null } });
+              router.push('/add-farm');
+            }}
+          >
+            <Action.Icon
+              size={24}
+              name='create-outline'
+              style={{ color: colors.getColor('icon.base') }}
+            />
+          </Action.Root>
+          <Action.Root
+            hitSlop={24}
+            style={{
+              width: 32,
+              height: 32,
+              paddingInline: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Action.Icon
+              size={22}
+              name='search-outline'
+              style={{ color: colors.getColor('icon.base') }}
+            />
+          </Action.Root>
         </Box>
+      </Box>
 
+      <Box
+        px='xl'
+        mt='6xl'
+        mb='4xl'
+      >
+        <Text
+          size='base'
+          leading='xs'
+          align='center'
+          color='text.base'
+        >
+          Total Estimates
+        </Text>
         <Box
-          px='xl'
-          mt='6xl'
-          mb='4xl'
+          mt='lg'
+          style={{
+            gap: 2,
+            flexDirection: 'row',
+            alignItems: 'baseline',
+            justifyContent: 'center',
+          }}
         >
           <Text
-            size='sm'
-            leading='xs'
-            align='center'
-            color='text.inactive'
+            size='xl'
+            color='text.base'
+            style={{ lineHeight: 18 }}
           >
-            Total Estimates
+            {currency.symbol}
           </Text>
-          <Box py='2xs' />
           <Heading
             size='3xl'
-            align='center'
+            color='text.base'
+            style={{ lineHeight: 32 }}
           >
-            {currency.symbol}00.00
+            00.00
           </Heading>
         </Box>
+      </Box>
 
-        <Box
-          px='xl'
-          mt='xl'
-        >
-          <Farms.List />
-        </Box>
-      </Scroll>
+      <Box
+        px='xl'
+        pt='xl'
+        bg='bg.base'
+        style={{
+          flex: 1,
+          borderTopLeftRadius: 40,
+          borderTopRightRadius: 40,
+        }}
+      >
+        <Farms.List />
+      </Box>
     </Safe>
   );
 };

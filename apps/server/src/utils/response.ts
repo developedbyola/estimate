@@ -1,12 +1,5 @@
 import { TRPCError, type TRPC_ERROR_CODE_KEY } from '@trpc/server';
 
-type SuccessResponse<T extends object> = T & {
-  meta?: {
-    timestamp: string;
-    [key: string]: unknown;
-  };
-};
-
 type ErrorParams = {
   code: TRPC_ERROR_CODE_KEY;
   message: string;
@@ -26,10 +19,7 @@ export const response = {
       }
     },
   },
-  success: <T extends object>(
-    data: T,
-    meta?: Record<string, unknown>
-  ): SuccessResponse<T> => {
+  success: <T extends object>(data: T, meta?: Record<string, unknown>) => {
     return {
       ...data,
       meta: {

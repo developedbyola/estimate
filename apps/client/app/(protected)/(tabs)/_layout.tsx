@@ -18,15 +18,13 @@ const Layout = () => {
         tabBarInactiveTintColor: colors.getColor('text.inactive'),
         tabBarStyle: {
           height: 80,
-          borderTopWidth: 1,
           backgroundColor: colors.getColor('bg.base'),
-          borderColor: colors.getColor('border.soft'),
         },
         tabBarLabel: (props) => {
           return (
             <Text
               size='2xs'
-              leading='sm'
+              leading='xs'
               weight='medium'
               align='center'
               style={{
@@ -47,8 +45,8 @@ const Layout = () => {
           tabBarIcon: (props) => {
             return (
               <Ionicons
-                name='sparkles'
-                size={24}
+                name='bookmark'
+                size={21}
                 color={props.color}
               />
             );
@@ -63,8 +61,8 @@ const Layout = () => {
           tabBarIcon: (props) => {
             return (
               <Ionicons
-                name='leaf'
-                size={28}
+                name='location'
+                size={21}
                 color={props.color}
               />
             );
@@ -80,7 +78,7 @@ const Layout = () => {
             return (
               <Ionicons
                 name='cog'
-                size={28}
+                size={21}
                 color={props.color}
               />
             );

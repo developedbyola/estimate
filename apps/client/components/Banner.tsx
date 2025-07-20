@@ -1,11 +1,11 @@
 import React from 'react';
 import Text from './Text';
-import { Button, useColorScheme } from 'react-native';
+import Action from './Action';
+import { Border } from '@/constants';
+import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { Border } from '@/constants';
-import Action from './Action';
-import { StatusBar } from 'expo-status-bar';
 
 type Banner = {
   message: string;
@@ -93,6 +93,11 @@ const BannerComponent = ({
             from={{ opacity: 0, translateY: -10 }}
             animate={{ opacity: 1, translateY: 0 }}
             exit={{ opacity: 0, translateY: -10 }}
+            transition={{
+              delay: 50,
+              type: 'spring',
+              duration: 300,
+            }}
             style={{
               top: 0,
               gap: 16,

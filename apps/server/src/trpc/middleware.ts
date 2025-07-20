@@ -18,7 +18,7 @@ const t = initTRPC.context<Context>().create({
         ...shape.data,
         code: shape.data.code,
         path: shape.data.path,
-      },
+      } satisfies typeof shape.data,
     };
   },
 });

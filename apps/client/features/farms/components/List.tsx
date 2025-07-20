@@ -5,7 +5,7 @@ import { excerpt } from '@/utils/excerpt';
 import { Border, Space } from '@/constants';
 import { Farm, useFarms } from './Provider';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
 import { useGetFarms } from '../hooks/useGetFarms';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import Icons from '@/features/categories/constants/Icons';
@@ -20,11 +20,9 @@ const Empty = () => {
 
   return (
     <Box>
-      <Ionicons
-        size={56}
+      <Image
+        source={require('@/assets/images/folder.png')}
         style={{ marginInline: 'auto' }}
-        name='notifications-off-circle-outline'
-        color={colors.getColor('icon.inactive')}
       />
       <Heading
         size='2xl'

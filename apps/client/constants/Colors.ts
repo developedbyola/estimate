@@ -81,7 +81,7 @@ type ThemeColors = {
 const Colors = {
   light: {
     primary: {
-      base: '#3b82f6', // blue-500
+      base: '#007aff', // blue-500
       dark: '#2563eb', // blue-600
       subtle: '#93c5fd', // blue-300
       darker: '#1d4ed8', // blue-700
