@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { useGetCategories } from '../hooks/useGetCategories';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { ActivityIndicator, Box, Gradient, Heading, Text } from '@/components';
+import { ActivityIndicator, Box, Heading, Text } from '@/components';
 
 const DefaultEmpty = () => {
   const router = useRouter();
@@ -136,16 +136,15 @@ const Item = ({ category, index }: { category: any; index: number }) => {
 };
 
 type ListProps = {
-  EmptyComponent?: React.ReactNode;
+  Empty?: React.ReactNode;
 };
 
-export const List = ({ EmptyComponent }: ListProps) => {
+export const List = ({ Empty }: ListProps) => {
   const _ = useGetCategories();
   const { loading, categories } = useCategories();
 
   if (loading) return <Loader />;
-  if (categories.length === 0)
-    return EmptyComponent ? EmptyComponent : <DefaultEmpty />;
+  if (categories.length === 0) return Empty ? Empty : <DefaultEmpty />;
 
   return (
     <Box>
