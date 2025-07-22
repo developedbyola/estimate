@@ -1,13 +1,8 @@
 import React from 'react';
-
-export type Category = {
-  id: string;
-  name: string;
-  icon: string;
-  createdAt: string;
-};
+import { Category } from '../types';
 
 type State = {
+  loading: boolean;
   categories: Category[];
 };
 
@@ -41,7 +36,11 @@ export const useCategories = () => {
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'SET_CATEGORIES':
-      return { ...state, categories: action.payload.categories };
+      return {
+        ...state,
+        categories: action.payload.categories,
+        loading: false,
+      };
     case 'ADD_CATEGORY':
       return {
         ...state,
@@ -68,15 +67,15 @@ type CategoryProviderProps = {
 
 export const Provider = ({
   children,
-  initialState = { categories: [] },
+  initialState = { categories: [], loading: true },
 }: CategoryProviderProps) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
   return (
     <categoryContext.Provider
       value={{
+        ...state,
         setCategories: dispatch,
-        categories: state.categories,
       }}
     >
       {children}

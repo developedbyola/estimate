@@ -141,10 +141,10 @@ const Item = ({ category, index }: { category: any; index: number }) => {
 };
 
 export const List = () => {
-  const { status } = useGetCategories();
-  const { categories } = useCategories();
+  const _ = useGetCategories();
+  const { loading, categories } = useCategories();
 
-  if (status === 'pending') return <Loader />;
+  if (loading) return <Loader />;
   if (categories.length === 0) return <Empty />;
 
   return (
