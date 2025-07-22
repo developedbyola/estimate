@@ -7,74 +7,34 @@ import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { useGetCategories } from '../hooks/useGetCategories';
-import { Button, TouchableWithoutFeedback } from 'react-native';
+import { Pressable, TouchableWithoutFeedback } from 'react-native';
 import { ActivityIndicator, Box, Gradient, Heading, Text } from '@/components';
 
-const Empty = () => {
+const DefaultEmpty = () => {
   const router = useRouter();
   const colors = useThemeColors();
 
   return (
-    <Gradient
-      colors={[
-        colors.getColor('primary.darker'),
-        colors.getColor('primary.subtle'),
-      ]}
+    <Box
       px='xl'
-      py='xl'
-      style={{
-        gap: Space.base,
-        alignItems: 'flex-start',
-        borderRadius: Border.radius['2xl'],
-      }}
+      style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
     >
-      <Box
-        bg='primary.base'
-        style={{
-          width: 48,
-          aspectRatio: '1/1',
-          alignItems: 'center',
-          borderRadius: '50%',
-          justifyContent: 'center',
-        }}
-      >
-        <Ionicons
-          size={24}
-          name='albums-outline'
-          color={colors.getColor('icon.strong')}
-        />
-      </Box>
-      <Box style={{ paddingInline: Space.base }}>
-        <Heading
-          size='2xl'
-          leading='lg'
-          weight='medium'
-          style={{ marginTop: Space['xl'] }}
-        >
-          New
-        </Heading>
-
-        <Text
-          size='lg'
-          leading='base'
-          color='text.strong'
-          style={{ marginTop: Space.sm }}
-        >
-          No categories found. Click the button below to add a new category.
-        </Text>
-      </Box>
-
-      <Button
-        title='Add category'
-        color={colors.getColor('text.strong')}
-        onPress={() => router.push('/add-category')}
-      />
-    </Gradient>
+      <Ionicons />
+      <Heading></Heading>
+      <Pressable></Pressable>
+    </Box>
   );
 };
 
 const Loader = () => {
-  return <ActivityIndicator />;
+  return (
+    <Box
+      px='xl'
+      style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+    >
+      <ActivityIndicator />
+    </Box>
+  );
 };
 
 const Item = ({ category, index }: { category: any; index: number }) => {
@@ -140,12 +100,17 @@ const Item = ({ category, index }: { category: any; index: number }) => {
   );
 };
 
-export const List = () => {
+type ListProps = {
+  EmptyComponent?: React.ReactNode;
+};
+
+export const List = ({ EmptyComponent }: ListProps) => {
   const _ = useGetCategories();
   const { loading, categories } = useCategories();
 
   if (loading) return <Loader />;
-  if (categories.length === 0) return <Empty />;
+  if (categories.length === 0)
+    return EmptyComponent ? EmptyComponent : <DefaultEmpty />;
 
   return (
     <Box>
