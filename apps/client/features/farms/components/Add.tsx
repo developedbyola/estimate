@@ -6,6 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateFarm } from '../hooks/useCreateFarm';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Action, Box, Heading, Safe, Scroll, Text } from '@/components';
+import { Farm } from './Provider';
+
+type AddProps = {
+  farm: Farm;
+};
 
 export const Add = () => {
   const { mutate, status } = useCreateFarm();
