@@ -3,6 +3,7 @@ import { Form } from './Form';
 import { Space } from '@/constants';
 import type { Farm } from '../types';
 import { farmSchema } from '../schemas';
+import { useLocalSearchParams } from 'expo-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateFarm } from '../hooks/useCreateFarm';
 import { useUpdateFarm } from '../hooks/useUpdateFarm';
@@ -14,6 +15,7 @@ type AddProps = {
 };
 
 export const Add = ({ farm }: AddProps) => {
+  const { farmId } = useLocalSearchParams<{ farmId: string }>();
   const { mutate: update, status: updateStatus } = useUpdateFarm();
   const { mutate: create, status: createStatus } = useCreateFarm();
   const form = useForm({
@@ -79,7 +81,7 @@ export const Add = ({ farm }: AddProps) => {
           disabled={!form.formState.isValid || isPending}
           onPress={form.handleSubmit(async (value) => {
             if (farm) {
-              await update({ farmId: farm.id, ...value });
+              await update({ farmId, ...value });
               return;
             }
             await create(value);
