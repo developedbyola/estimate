@@ -1,7 +1,6 @@
 import React from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { useCategories } from '@/features/categories';
-import { useThemeColors } from '@/hooks/useThemeColors';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Accordion, Box, Field, Heading, Text } from '@/components';
 
@@ -176,42 +175,45 @@ const Size = () => {
   );
 };
 
-const options = [
+const accordions = [
   {
     name: 'Name',
     value: 'name',
-    content: Name,
+    Component: Name,
   },
   {
     name: 'Size unit',
     value: 'size_unit',
-    content: SizeUnit,
+    Component: SizeUnit,
   },
   {
     name: 'Size',
     value: 'size',
-    content: Size,
+    Component: Size,
   },
   {
     name: 'Location',
     value: 'location',
-    content: Location,
+    Component: Location,
   },
   {
     name: 'Category',
     value: 'category',
-    content: Category,
+    Component: Category,
   },
 ];
 
 export const Form = () => {
   return (
-    <Accordion.Root style={{ gap: 4 }}>
-      {options.map((option, index) => {
+    <Accordion.Root
+      style={{ gap: 4 }}
+      defaultValue={accordions[0].value}
+    >
+      {accordions.map((accordion, index) => {
         return (
           <Accordion.Item
             key={index}
-            value={option.value}
+            value={accordion.value}
           >
             <Accordion.ItemHeader>
               <Heading
@@ -220,12 +222,12 @@ export const Form = () => {
                 weight='normal'
                 style={{ flex: 1 }}
               >
-                {option.name}
+                {accordion.name}
               </Heading>
               <Accordion.ItemIcon />
             </Accordion.ItemHeader>
             <Accordion.ItemContent>
-              <option.content />
+              <accordion.Component />
             </Accordion.ItemContent>
           </Accordion.Item>
         );
