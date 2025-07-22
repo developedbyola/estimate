@@ -19,7 +19,7 @@ const Loader = () => {
   );
 };
 
-const Empty = () => {
+const DefaultEmpty = () => {
   const router = useRouter();
   const colors = useThemeColors();
 
@@ -150,12 +150,16 @@ const Item = (props: ItemProps) => {
   );
 };
 
-export const List = () => {
+type ListProps = {
+  Empty?: React.ReactNode;
+};
+
+export const List = ({ Empty }: ListProps) => {
   const _ = useGetFarms();
   const { farms, loading } = useFarms();
 
   if (loading) return <Loader />;
-  if (farms.length === 0) return <Empty />;
+  if (farms.length === 0) return Empty ? Empty : <DefaultEmpty />;
 
   return (
     <Box
