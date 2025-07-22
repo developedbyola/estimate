@@ -43,12 +43,9 @@ export const Add = () => {
           >
             Set a new farm record for your estimates
           </Heading>
-          <Text
-            color='text.soft'
-            style={{ maxWidth: 320 }}
-          >
-            Add a new farm record to keep track of your farm's details and store
-            and manage all your farm estimates in one place.
+          <Text color='text.soft'>
+            Create a new farm profile to easily manage and organize all your
+            farm's information and estimates in a single, convenient location.
           </Text>
         </Box>
         <Box
