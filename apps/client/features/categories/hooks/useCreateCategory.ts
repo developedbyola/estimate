@@ -1,32 +1,49 @@
-import { Alert } from 'react-native';
-import { useCategories } from '../components/Provider';
+import { Popup } from '@/components';
 import { Trpc } from '@/features/trpc';
+import { useCategories } from '../components/Provider';
 
 type Props = {
   onSuccess?: (data: any) => void;
 };
 
 export const useCreateCategory = ({ onSuccess }: Props) => {
+  const popup = Popup.usePopup();
   const { setCategories } = useCategories();
 
-  const create = Trpc.client.categories.create.useMutation({
-    onSuccess: (data: any) => {
+  const create = Trpc.client.categories.me.create.useMutation({
+    onSuccess: (data) => {
       setCategories({
         type: 'ADD_CATEGORY',
         payload: { category: data.category },
       });
-      onSuccess?.(data);
+      popup.open({
+        variant: 'success',
+        title: 'Category created successfully',
+        message: 'You can now add farms to this category',
+        actions: [
+          {
+            text: 'OK',
+            onPress: () => {
+              onSuccess?.(data);
+            },
+          },
+        ],
+      });
     },
     onError: (err, input) => {
-      Alert.alert('Failed to create category', err.message, [
-        { text: 'Cancel' },
-        {
-          text: 'Retry',
-          onPress: async () => {
-            await create.mutateAsync(input);
+      popup.open({
+        variant: 'destructive',
+        title: 'Failed to create category',
+        message: err.message,
+        actions: [
+          {
+            text: 'Retry',
+            onPress: async () => {
+              await create.mutateAsync(input);
+            },
           },
-        },
-      ]);
+        ],
+      });
     },
   });
 
