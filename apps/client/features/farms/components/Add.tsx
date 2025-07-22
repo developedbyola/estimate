@@ -31,24 +31,26 @@ export const Add = () => {
         <Box
           px='xl'
           mt='4xl'
-          style={{ gap: Space.xl }}
+          style={{ gap: Space.lg }}
         >
           <Heading
             size='3xl'
             leading='lg'
-            style={{ maxWidth: 240 }}
+            style={{ maxWidth: 280 }}
           >
-            Set a new farm record to keep your estimates
+            Set a new farm record for your estimates
           </Heading>
-          <Text color='text.soft'>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eligendi,
-            laudantium veritatis necessitatibus odio exercitationem quas
-            recusandae iste asperiores esse placeat ipsam molestias.
+          <Text
+            color='text.soft'
+            style={{ maxWidth: 320 }}
+          >
+            Add a new farm record to keep track of your farm's details and store
+            and manage all your farm estimates in one place.
           </Text>
         </Box>
         <Box
           px='xl'
-          mt='3xl'
+          mt='4xl'
           style={{ flex: 1 }}
         >
           <FormProvider {...form}>
