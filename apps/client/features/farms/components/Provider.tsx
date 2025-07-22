@@ -1,9 +1,9 @@
 import React from 'react';
-import { Category } from '@/features/categories';
+import type { Farm } from '../types';
 
 type State = {
-  loading: boolean;
   farms: Farm[];
+  loading: boolean;
 };
 
 type Action =

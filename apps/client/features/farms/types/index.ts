@@ -1,4 +1,6 @@
-export type FarmType = {
+import type { Category } from '@/features/categories';
+
+export type Farm = {
   id: string;
   size: string;
   name: string;

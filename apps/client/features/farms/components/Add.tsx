@@ -1,18 +1,18 @@
 import React from 'react';
 import { Form } from './Form';
 import { Space } from '@/constants';
+import type { Farm } from '../types';
 import { farmSchema } from '../schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateFarm } from '../hooks/useCreateFarm';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Action, Box, Heading, Safe, Scroll, Text } from '@/components';
-import { Farm } from './Provider';
 
 type AddProps = {
-  farm: Farm;
+  farm?: Farm;
 };
 
-export const Add = () => {
+export const Add = ({ farm }: AddProps) => {
   const { mutate, status } = useCreateFarm();
   const form = useForm({
     mode: 'all',
