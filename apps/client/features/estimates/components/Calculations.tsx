@@ -63,9 +63,9 @@ const Calculations = () => {
             control={control as any}
             name={`calculations.${index}.description`}
           >
-            <Field.Control>
+            <Field.Content>
               <Field.TextInput placeholder='Item name' />
-            </Field.Control>
+            </Field.Content>
           </Field.Root>
           <Field.Root
             style={{
@@ -77,13 +77,13 @@ const Calculations = () => {
             control={control as any}
             name={`calculations.${index}.unitPrice`}
           >
-            <Field.Control>
+            <Field.Content>
               <Field.TextInput
                 keyboardType='numeric'
                 placeholder='Amount'
                 style={{ textAlign: 'right' }}
               />
-            </Field.Control>
+            </Field.Content>
           </Field.Root>
           <Field.Root
             style={{
@@ -94,13 +94,13 @@ const Calculations = () => {
             control={control as any}
             name={`calculations.${index}.quantity`}
           >
-            <Field.Control>
+            <Field.Content>
               <Field.TextInput
                 placeholder='Units'
                 keyboardType='number-pad'
                 style={{ textAlign: 'right' }}
               />
-            </Field.Control>
+            </Field.Content>
           </Field.Root>
         </Box>
         <Box my='sm'>

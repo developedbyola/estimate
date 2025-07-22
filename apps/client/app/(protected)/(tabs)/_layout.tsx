@@ -39,6 +39,22 @@ const Layout = () => {
       }}
     >
       <Tabs.Screen
+        name='index'
+        options={{
+          title: 'Home',
+          tabBarIcon: (props) => {
+            return (
+              <Ionicons
+                name='location'
+                size={21}
+                color={props.color}
+              />
+            );
+          },
+        }}
+      />
+
+      <Tabs.Screen
         name='categories'
         options={{
           title: 'Categories',
@@ -55,29 +71,13 @@ const Layout = () => {
       />
 
       <Tabs.Screen
-        name='home'
+        name='estimates'
         options={{
-          title: 'Farms',
+          title: 'Estimates',
           tabBarIcon: (props) => {
             return (
               <Ionicons
-                name='location'
-                size={21}
-                color={props.color}
-              />
-            );
-          },
-        }}
-      />
-
-      <Tabs.Screen
-        name='settings'
-        options={{
-          title: 'Settings',
-          tabBarIcon: (props) => {
-            return (
-              <Ionicons
-                name='cog'
+                name='reader'
                 size={21}
                 color={props.color}
               />

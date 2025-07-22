@@ -9,7 +9,7 @@ const IndexPage = () => {
     return <Redirect href='/onboard' />;
   }
 
-  return <Redirect href='/(protected)/(tabs)/home' />;
+  return <Redirect href='/(protected)/(tabs)' />;
 };
 
 export default IndexPage;

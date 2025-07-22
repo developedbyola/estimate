@@ -4,7 +4,6 @@ import { Keyboard } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Action,
-  Box,
   Gradient,
   Heading,
   Overlay,
@@ -15,7 +14,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 
 type PopupAction = {
   text: string;
-  onPress: () => void;
+  onPress?: () => void;
   variant?: 'primary' | 'destructive';
 };
 
@@ -112,7 +111,7 @@ const PopupComponent = ({
             key={index}
             size='lg'
             onPress={() => {
-              action.onPress();
+              action.onPress?.();
               close();
             }}
             variant={action.variant}

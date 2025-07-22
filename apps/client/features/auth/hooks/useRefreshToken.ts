@@ -1,21 +1,20 @@
 import React from 'react';
-import { Banner } from '@/components';
 import { Trpc } from '@/features/trpc';
+import { Alert } from 'react-native';
 import { useAuth } from '../components/Provider';
 
 export const useRefreshToken = () => {
-  const banner = Banner.useBanner();
   const { refreshToken, isLoading, setAuth } = useAuth();
 
   const refresh = Trpc.client.auth.public.refresh.useMutation({
-    onSuccess: async (data: any) => {
+    onSuccess: async (data) => {
       setAuth({
         type: 'SET_TOKENS',
         payload: {
-          user: data?.user,
-          session: data?.session,
-          accessToken: data?.accessToken,
-          refreshToken: data?.refreshToken,
+          user: data.user,
+          session: data.session,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
         },
       });
     },
@@ -24,16 +23,14 @@ export const useRefreshToken = () => {
         setAuth({ type: 'LOGOUT' });
         return;
       }
-      banner.open({
-        variant: 'destructive',
-        message: `${err.message}`,
-        action: {
-          label: 'Retry',
+      Alert.alert('Error', `${err.message}`, [
+        {
+          text: 'Retry',
           onPress: () => {
             refresh.mutateAsync(input);
           },
         },
-      });
+      ]);
       setAuth({ type: 'ERROR' });
     },
   });
@@ -57,4 +54,6 @@ export const useRefreshToken = () => {
 
     return () => clearInterval(interval);
   }, [isLoading, mutate]);
+
+  return { mutate, status: refresh.status };
 };

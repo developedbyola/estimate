@@ -1,19 +1,10 @@
 import React from 'react';
-import { Space } from '@/constants';
 import { loginSchema } from '../schemas';
-import {
-  Action,
-  Box,
-  Field,
-  Heading,
-  Password,
-  Safe,
-  Text,
-} from '@/components';
 import { Keyboard } from 'react-native';
 import { useLogin } from '../hooks/useLogin';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
+import { Action, Box, Field, Safe, Text } from '@/components';
 import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 
 export const Login = () => {
@@ -50,37 +41,40 @@ export const Login = () => {
           <Box
             px={'xl'}
             mt='4xl'
-            style={{ flex: 1, gap: 20 }}
+            style={{ flex: 1, gap: 8 }}
           >
             <Field.Root
               name='email'
               control={form.control as any}
             >
-              <Field.Label>Email</Field.Label>
-              <Field.Control>
-                <Field.TextInput
-                  keyboardType='email-address'
-                  textContentType='emailAddress'
-                  placeholder='Enter your email'
-                />
-              </Field.Control>
+              <Field.Container>
+                <Field.Label>Email</Field.Label>
+                <Field.Row>
+                  <Field.TextInput
+                    keyboardType='email-address'
+                    textContentType='emailAddress'
+                    placeholder='Enter your email'
+                  />
+                </Field.Row>
+              </Field.Container>
               <Field.Feedback />
             </Field.Root>
 
             <Field.Root
+              isTextHidden
               name='password'
               control={form.control as any}
             >
-              <Field.Label>Password</Field.Label>
-              <Field.Control>
-                <Password.Root>
-                  <Password.TextInput
+              <Field.Container>
+                <Field.Label>Password</Field.Label>
+                <Field.Row>
+                  <Field.TextInput
                     textContentType='password'
                     placeholder='Enter your password'
                   />
-                  <Password.Indicator />
-                </Password.Root>
-              </Field.Control>
+                  <Field.ToggleTextHidden />
+                </Field.Row>
+              </Field.Container>
               <Field.Feedback />
             </Field.Root>
           </Box>

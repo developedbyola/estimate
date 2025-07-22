@@ -1,19 +1,33 @@
 import React from 'react';
 import Text from './Text';
 import BaseTextInput from './TextInput';
+import { AsChild, Box } from '@/components';
+import { Border, Space } from '@/constants';
+import { Ionicons } from '@expo/vector-icons';
 import { useController } from 'react-hook-form';
-import { AsChild, Box, Heading } from '@/components';
-import { Border, Space, Typography } from '@/constants';
+import { TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
-type Context = ReturnType<typeof useController>;
+type Context = ReturnType<typeof useController> & {
+  isTextHidden: boolean;
+  toggleTextHidden: () => void;
+};
 export const fieldContext = React.createContext<Context | null>(null);
 
-const useField = (
-  value?: Parameters<typeof useController>[0]
-): Parameters<typeof useController>[0] => {
-  const newValue = value ?? { ...(value || {}), name: '' };
-  return newValue;
+type UseFieldParams = Parameters<typeof useController>[0] & {
+  isTextHidden?: boolean;
+};
+
+const useField = (params?: UseFieldParams) => {
+  const [isTextHidden, setIsTextHidden] = React.useState(
+    params?.isTextHidden ?? false
+  );
+  const value = params ?? { ...(params || {}), name: '' };
+  return {
+    ...value,
+    isTextHidden,
+    toggleTextHidden: () => setIsTextHidden((prev) => !prev),
+  };
 };
 
 export const useFieldContext = () => {
@@ -28,18 +42,21 @@ export const useFieldContext = () => {
 
 type ProviderRef = React.ComponentRef<typeof AsChild>;
 type ProviderProps = React.ComponentProps<typeof AsChild> & {
-  value?: Parameters<typeof useController>[0];
+  value?: UseFieldParams;
 };
 
 export const Provider = React.forwardRef<ProviderRef, ProviderProps>(
   (props, ref) => {
     const { value, asChild = true, ...restProps } = props;
 
-    const field = useField(value);
-    const context = useController(field);
+    const { isTextHidden, toggleTextHidden, ...controllerProps } =
+      useField(value);
+    const context = useController(controllerProps);
 
     return (
-      <fieldContext.Provider value={context}>
+      <fieldContext.Provider
+        value={{ ...context, isTextHidden, toggleTextHidden }}
+      >
         <AsChild
           ref={ref}
           asChild={asChild}
@@ -57,18 +74,66 @@ type RootProps = Omit<
 > &
   React.ComponentProps<typeof Provider>['value'];
 const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
-  const { style, name, control, ...restProps } = props;
+  const { style, name, control, isTextHidden, ...restProps } = props;
 
-  const field = useField({ name, control });
+  const field = useField({ name, control, isTextHidden });
 
   return (
     <Provider value={field}>
       <Box
         ref={ref}
-        style={[{ gap: Space['2xs'] }, style]}
+        style={[{}, style]}
         {...restProps}
       />
     </Provider>
+  );
+});
+
+type ContainerRef = React.ComponentRef<typeof Box>;
+type ContainerProps = React.ComponentProps<typeof Box>;
+const Container = React.forwardRef<ContainerRef, ContainerProps>(
+  (props, ref) => {
+    const { style, bg = 'bg.subtle', ...restProps } = props;
+    return (
+      <Box
+        bg={bg}
+        ref={ref}
+        style={[
+          {
+            height: 52,
+            paddingBlock: 8,
+            gap: Space['2xs'],
+            paddingInline: 12,
+            overflow: 'hidden',
+            borderRadius: Border.radius['lg'],
+          },
+          style,
+        ]}
+        {...restProps}
+      />
+    );
+  }
+);
+
+type RowRef = React.ComponentRef<typeof Box>;
+type RowProps = React.ComponentProps<typeof Box>;
+const Row = React.forwardRef<RowRef, RowProps>((props, ref) => {
+  const { style, ...restProps } = props;
+
+  return (
+    <Box
+      ref={ref}
+      style={[
+        {
+          flex: 1,
+          flexDirection: 'row',
+          position: 'relative',
+          alignItems: 'center',
+        },
+        style,
+      ]}
+      {...restProps}
+    />
   );
 });
 
@@ -76,7 +141,7 @@ type TextInputRef = React.ComponentRef<typeof BaseTextInput>;
 type TextInputProps = React.ComponentProps<typeof BaseTextInput>;
 const TextInput = React.forwardRef<TextInputRef, TextInputProps>(
   (props, ref) => {
-    const { field } = useFieldContext();
+    const { field, isTextHidden } = useFieldContext();
     const {
       style,
       onBlur = field.onBlur,
@@ -91,35 +156,43 @@ const TextInput = React.forwardRef<TextInputRef, TextInputProps>(
         value={value}
         onBlur={onBlur}
         onChangeText={onChangeText}
-        style={[{ backgroundColor: 'transparent' }, style]}
+        secureTextEntry={isTextHidden}
+        style={[
+          { paddingInline: 0, fontSize: 16, backgroundColor: 'transparent' },
+          style,
+        ]}
         {...restProps}
       />
     );
   }
 );
 
-type ControlRef = React.ComponentRef<typeof Box>;
-type ControlProps = React.ComponentProps<typeof Box>;
-const Control = React.forwardRef<ControlRef, ControlProps>((props, ref) => {
-  const { style, ...restProps } = props;
+type ToggleTextHiddenRef = React.ComponentRef<typeof TouchableOpacity>;
+type ToggleTextHiddenProps = React.ComponentProps<typeof TouchableOpacity>;
+const ToggleTextHidden = React.forwardRef<
+  ToggleTextHiddenRef,
+  ToggleTextHiddenProps
+>((props, ref) => {
   const colors = useThemeColors();
+  const { style, hitSlop = 20, ...restProps } = props;
+  const { toggleTextHidden, isTextHidden } = useFieldContext();
+
+  const iconName = isTextHidden ? 'lock-closed' : 'lock-open';
 
   return (
-    <Box
+    <TouchableOpacity
       ref={ref}
-      style={[
-        {
-          height: 44,
-          flexDirection: 'row',
-          alignItems: 'center',
-          position: 'relative',
-          borderRadius: Border.radius['lg'],
-          backgroundColor: colors.getColor('bg.subtle'),
-        },
-        style,
-      ]}
+      onPress={toggleTextHidden}
+      hitSlop={hitSlop}
+      style={[style]}
       {...restProps}
-    />
+    >
+      <Ionicons
+        size={20}
+        name={iconName}
+        color={colors.getColor('icon.inactive')}
+      />
+    </TouchableOpacity>
   );
 });
 
@@ -179,9 +252,10 @@ const Label = React.forwardRef<LabelRef, LabelProps>((props, ref) => {
       ref={ref}
       style={[
         {
-          fontSize: 17,
-          fontWeight: '600',
-          color: colors.getColor('text.subtle'),
+          fontSize: 14,
+          lineHeight: 16,
+          letterSpacing: -0.05,
+          color: colors.getColor('text.strong'),
         },
         style,
       ]}
@@ -222,12 +296,14 @@ const Feedback = React.forwardRef<FeedbackRef, FeedbackProps>((props, ref) => {
 
 const Field = {
   Root,
-  Control,
+  Hint,
   Float,
   Label,
-  TextInput,
+  Container,
+  Row,
+  ToggleTextHidden,
   Feedback,
-  Hint,
+  TextInput,
 };
 
 export default Field;

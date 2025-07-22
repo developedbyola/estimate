@@ -15,6 +15,20 @@ const ProtectedLayout = () => {
         }}
       />
       <Stack.Screen
+        name='(settings)'
+        options={{
+          title: 'Settings',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name='(farms)'
+        options={{
+          title: 'Farms',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name='farm'
         options={{
           presentation: 'modal',

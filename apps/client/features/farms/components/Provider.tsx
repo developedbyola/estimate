@@ -14,6 +14,7 @@ export type Farm = {
 };
 
 type State = {
+  loading: boolean;
   farms: Farm[];
 };
 
@@ -37,6 +38,10 @@ type Action =
   | {
       type: 'UPDATE_FARM';
       payload: { farm: Omit<Farm, 'estimates'> };
+    }
+  | {
+      type: 'ERROR';
+      payload?: never;
     };
 
 type farmContextType = State & {
@@ -58,6 +63,7 @@ const farmsReducer = (state: State, action: Action): State => {
     case 'SET_FARMS':
       return {
         ...state,
+        loading: false,
         farms: action.payload.farms,
       };
 
@@ -75,6 +81,13 @@ const farmsReducer = (state: State, action: Action): State => {
             : farm
         ),
       };
+
+    case 'ERROR':
+      return {
+        ...state,
+        loading: false,
+      };
+
     default:
       return state;
   }
@@ -87,15 +100,15 @@ type FarmsProviderProps = {
 
 export const Provider = ({
   children,
-  initialState = { farms: [] },
+  initialState = { farms: [], loading: true },
 }: FarmsProviderProps) => {
   const [state, dispatch] = React.useReducer(farmsReducer, initialState);
 
   return (
     <farmsContext.Provider
       value={{
+        ...state,
         setFarms: dispatch,
-        farms: state.farms,
       }}
     >
       {children}

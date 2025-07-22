@@ -17,10 +17,12 @@ export const useGetMyProfile = () => {
       banner.open({
         variant: 'destructive',
         message: error.message,
-        action: {
-          label: 'Retry',
-          onPress: async () => await profile.refetch(),
-        },
+        actions: [
+          {
+            label: 'Retry',
+            onPress: async () => await profile.refetch(),
+          },
+        ],
       });
     },
   });

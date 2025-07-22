@@ -5,45 +5,83 @@ import { excerpt } from '@/utils/excerpt';
 import { Border, Space } from '@/constants';
 import { Farm, useFarms } from './Provider';
 import { Ionicons } from '@expo/vector-icons';
-import { Image, TouchableOpacity } from 'react-native';
 import { useGetFarms } from '../hooks/useGetFarms';
+import { TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import Icons from '@/features/categories/constants/Icons';
-import { Box, Heading, Text, ActivityIndicator } from '@/components';
+import { Box, Heading, Text, ActivityIndicator, Action } from '@/components';
 
 const Loader = () => {
-  return <ActivityIndicator />;
+  return (
+    <Box style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <ActivityIndicator />
+    </Box>
+  );
 };
 
 const Empty = () => {
+  const router = useRouter();
   const colors = useThemeColors();
 
   return (
-    <Box>
-      <Image
-        source={require('@/assets/images/folder.png')}
-        style={{ marginInline: 'auto' }}
-      />
+    <Box style={{ flex: 1, justifyContent: 'center' }}>
+      <Box
+        bg='bg.subtle'
+        style={{
+          height: 64,
+          aspectRatio: 1,
+          alignItems: 'center',
+          marginInline: 'auto',
+          justifyContent: 'center',
+          borderRadius: Border.radius['full'],
+        }}
+      >
+        <Ionicons
+          size={32}
+          name='albums'
+          color={colors.getColor('icon.strong')}
+        />
+      </Box>
       <Heading
         size='2xl'
         leading='base'
         align='center'
-        weight='medium'
         color='text.strong'
-        style={{ marginTop: Space['2xl'], marginInline: 'auto', maxWidth: 240 }}
+        style={{
+          marginTop: Space['2xl'],
+        }}
       >
-        Let's get growing!
+        It's Quite Here
       </Heading>
       <Text
         size='lg'
         leading='base'
         align='center'
-        color='text.subtle'
-        style={{ marginTop: Space.base, marginInline: 'auto', maxWidth: 280 }}
+        color='text.soft'
+        style={{
+          maxWidth: 280,
+          marginInline: 'auto',
+          marginTop: Space.base,
+        }}
       >
-        Looks like no farms have been added — Create new farm and start tracking
-        your farm's production
+        Create a farm record to start calculating your estimates
       </Text>
+      <Action.Root
+        size='lg'
+        onPress={() => {
+          router.push('/(protected)/(farms)/add');
+        }}
+        variant='primary'
+        style={{
+          width: 144,
+          marginInline: 'auto',
+          marginTop: Space['2xl'],
+          backgroundColor: colors.getColor('bg.strong'),
+          borderRadius: Border.radius.full,
+        }}
+      >
+        <Action.Label style={{ fontSize: 20 }}>Create Farm</Action.Label>
+      </Action.Root>
     </Box>
   );
 };
@@ -75,7 +113,7 @@ const Item = (props: ItemProps) => {
         activeOpacity={0.6}
         onPress={() => {
           setFarms({ type: 'SET_FARM', payload: { farm } });
-          router.push('/farm');
+          router.push('/(protected)/(farms)/add');
         }}
         style={{
           flex: 1,
@@ -113,10 +151,10 @@ const Item = (props: ItemProps) => {
 };
 
 export const List = () => {
-  const { farms } = useFarms();
-  const { status } = useGetFarms();
+  const _ = useGetFarms();
+  const { farms, loading } = useFarms();
 
-  if (status === 'pending') return <Loader />;
+  if (loading) return <Loader />;
   if (farms.length === 0) return <Empty />;
 
   return (

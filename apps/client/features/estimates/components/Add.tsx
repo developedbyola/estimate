@@ -36,9 +36,9 @@ const Title = ({
             control={control as any}
             style={{ marginBottom: Space.lg }}
           >
-            <Field.Control>
+            <Field.Content>
               <Field.TextInput placeholder='Estimate title' />
-            </Field.Control>
+            </Field.Content>
             <Field.Feedback />
           </Field.Root>
           <Overlay.SheetTrigger>

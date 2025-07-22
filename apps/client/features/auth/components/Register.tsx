@@ -6,15 +6,7 @@ import { useRegister } from '../hooks/useRegister';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
-import {
-  Action,
-  Box,
-  Field,
-  Heading,
-  Password,
-  Safe,
-  Text,
-} from '@/components';
+import { Action, Box, Field, Safe, Text } from '@/components';
 
 export const Register = () => {
   const form = useForm({
@@ -52,36 +44,39 @@ export const Register = () => {
           <Box
             px='xl'
             mt='4xl'
-            style={{ gap: 20, flex: 1 }}
+            style={{ gap: 8, flex: 1 }}
           >
             <Field.Root
               name='email'
               control={form.control as any}
             >
-              <Field.Label>Email</Field.Label>
-              <Field.Control>
-                <Field.TextInput
-                  keyboardType='email-address'
-                  textContentType='emailAddress'
-                  placeholder='e.g sam@icloud.com'
-                />
-              </Field.Control>
+              <Field.Container>
+                <Field.Label>Email</Field.Label>
+                <Field.Row>
+                  <Field.TextInput
+                    keyboardType='email-address'
+                    textContentType='emailAddress'
+                    placeholder='e.g sam@icloud.com'
+                  />
+                </Field.Row>
+              </Field.Container>
               <Field.Feedback />
             </Field.Root>
             <Field.Root
+              isTextHidden
               name='password'
               control={form.control as any}
             >
-              <Field.Label>Password</Field.Label>
-              <Field.Control>
-                <Password.Root>
-                  <Password.TextInput
+              <Field.Container>
+                <Field.Label>Password</Field.Label>
+                <Field.Row>
+                  <Field.TextInput
                     textContentType='password'
                     placeholder='Create a strong password'
                   />
-                  <Password.Indicator />
-                </Password.Root>
-              </Field.Control>
+                  <Field.ToggleTextHidden />
+                </Field.Row>
+              </Field.Container>
               <Field.Feedback />
             </Field.Root>
           </Box>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Text from './Text';
 import Action from './Action';
-import { Border } from '@/constants';
+import { Border, Space } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
@@ -10,7 +10,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 type Banner = {
   message: string;
   variant: 'success' | 'destructive' | 'warning' | 'info';
-  action?: { label: string; onPress?: () => void };
+  actions?: { label: string; onPress?: () => void }[];
 };
 
 const useBannerConfig = () => {
@@ -18,15 +18,12 @@ const useBannerConfig = () => {
   const [Banner, setBanner] = React.useState<Banner>({
     message: '',
     variant: 'success',
-    action: {
-      label: '',
-      onPress: undefined,
-    },
+    actions: [],
   });
 
   const close = () => {
     setVisible(false);
-    Banner.action?.onPress?.();
+    Banner.actions?.[0]?.onPress?.();
   };
 
   const open = (newBanner: Banner) => {
@@ -48,7 +45,6 @@ const BannerContext = React.createContext<BannerContext | null>(null);
 
 const BannerProvider = ({ children }: { children: React.ReactNode }) => {
   const BannerConfig = useBannerConfig();
-  const colors = useThemeColors();
 
   return (
     <BannerContext.Provider value={BannerConfig}>
@@ -103,11 +99,13 @@ const BannerComponent = ({
               gap: 16,
               left: 0,
               right: 0,
+              zIndex: 9999,
+              elevation: 9999,
               paddingTop: 48,
               paddingInline: 16,
               paddingBottom: 16,
-              alignItems: 'center',
               position: 'absolute',
+              alignItems: 'center',
               flexDirection: 'row',
               borderBottomLeftRadius: Border.radius['3xl'],
               borderBottomRightRadius: Border.radius['3xl'],
@@ -115,31 +113,37 @@ const BannerComponent = ({
             }}
           >
             <Text
-              size='sm'
-              leading='xs'
               weight='medium'
               color='text.base'
-              style={{ flex: 1 }}
+              style={{ flex: 1, fontSize: 14, lineHeight: 18 }}
             >
               {Banner.message}
             </Text>
-            {Banner.action && (
-              <Action.Root
-                size='xs'
-                onPress={close}
-                style={{
-                  borderRadius: 8,
-                  backgroundColor: colors.getColor('bg.base'),
-                }}
-              >
-                <Action.Label
-                  size='xs'
-                  style={{ color: colors.getColor('text.strong') }}
+            <MotiView style={{ gap: Space.sm }}>
+              {Banner.actions?.map((action, index) => (
+                <Action.Root
+                  size='2xs'
+                  key={index}
+                  hitSlop={20}
+                  onPress={() => {
+                    action.onPress?.();
+                    close();
+                  }}
+                  style={{
+                    paddingInline: Space.lg,
+                    borderRadius: Border.radius['full'],
+                    backgroundColor: colors.getColor('bg.base'),
+                  }}
                 >
-                  {Banner.action.label}
-                </Action.Label>
-              </Action.Root>
-            )}
+                  <Action.Label
+                    size='xs'
+                    style={{ color: colors.getColor('text.strong') }}
+                  >
+                    {action.label}
+                  </Action.Label>
+                </Action.Root>
+              ))}
+            </MotiView>
           </MotiView>
         )}
       </AnimatePresence>

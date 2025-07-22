@@ -24,7 +24,7 @@ const Name = () => {
             name='name'
             control={control as any}
           >
-            <Field.Control>
+            <Field.Content>
               <BottomSheetTextInput
                 value={field.value}
                 onBlur={field.onBlur}
@@ -39,7 +39,7 @@ const Name = () => {
                   color: colors.getColor('text.strong'),
                 }}
               />
-            </Field.Control>
+            </Field.Content>
             <Field.Feedback />
           </Field.Root>
         );

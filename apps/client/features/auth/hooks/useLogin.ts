@@ -6,14 +6,14 @@ export const useLogin = () => {
   const { setAuth } = useAuth();
 
   const login = Trpc.client.auth.public.login.useMutation({
-    onSuccess: async (data: any) => {
+    onSuccess: async (data) => {
       setAuth({
         type: 'LOGIN',
         payload: {
-          user: data?.user,
-          session: data?.session,
-          accessToken: data?.accessToken,
-          refreshToken: data?.refreshToken,
+          user: data.user,
+          session: data.session,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
         },
       });
     },
