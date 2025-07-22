@@ -33,7 +33,7 @@ export const Add = ({ farm }: AddProps) => {
   const isPending = createStatus === 'pending' || updateStatus === 'pending';
   const title = farm ? 'Update ' : 'Set a new farm record for your estimates';
   const subTitle = farm
-    ? ''
+    ? 'Update your farm details to keep your information accurate and up-to-date for better estimate management.'
     : "Create a new farm profile to easily manage and organize all your farm's information and estimates in a single, convenient location.";
 
   const btnLabel = farm ? 'Update farm' : 'Create farm';
