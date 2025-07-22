@@ -6,12 +6,11 @@ import { useCategories } from './Provider';
 import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { TouchableWithoutFeedback } from 'react-native';
 import { useGetCategories } from '../hooks/useGetCategories';
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { ActivityIndicator, Box, Heading, Text } from '@/components';
+import { ActivityIndicator, Box, Heading } from '@/components';
 
 const DefaultEmpty = () => {
-  const router = useRouter();
   const colors = useThemeColors();
 
   return (
@@ -37,26 +36,6 @@ const DefaultEmpty = () => {
       >
         No categories
       </Heading>
-      <TouchableOpacity
-        style={{
-          paddingInline: Space['2xl'],
-          paddingVertical: Space['xl'],
-          backgroundColor: colors.getColor('bg.strong'),
-          borderRadius: Border.radius['full'],
-        }}
-        onPress={() => {
-          // router.push('/(categories)/add');
-        }}
-      >
-        <Text
-          size='xl'
-          leading='sm'
-          weight='medium'
-          color='text.base'
-        >
-          Add category
-        </Text>
-      </TouchableOpacity>
     </Box>
   );
 };
