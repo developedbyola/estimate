@@ -1,7 +1,7 @@
 import React from 'react';
 
-const AddPage = () => {
-  return <div>AddPage</div>;
+const CreateCategoryPage = () => {
+  return <React.Fragment></React.Fragment>;
 };
 
-export default AddPage;
+export default CreateCategoryPage;
