@@ -13,12 +13,21 @@ export const useUpdateFarm = () => {
       popup.open({
         title: 'Farm data updated',
         message: '',
-        actions: [],
+        actions: [
+          {
+            text: 'Understood',
+          },
+        ],
       });
     },
     onError: (err, input) => {
       Alert.alert('Unable to update farm', err.message, [
-        { text: 'Retry', onPress: async () => await update.mutateAsync(input) },
+        {
+          text: 'Retry',
+          onPress: async () => {
+            await update.mutateAsync(input);
+          },
+        },
       ]);
     },
   });

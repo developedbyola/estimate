@@ -1,7 +1,8 @@
 import React from 'react';
-import { Border, Space } from '@/constants';
 import { Keyboard } from 'react-native';
+import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
+import { useThemeColors } from '@/hooks/useThemeColors';
 import {
   Action,
   Gradient,
@@ -10,7 +11,6 @@ import {
   Text,
   useOverlay,
 } from '@/components';
-import { useThemeColors } from '@/hooks/useThemeColors';
 
 type PopupAction = {
   text: string;
@@ -21,9 +21,39 @@ type PopupAction = {
 type Config = {
   title: string;
   message: string;
-  onDismiss?: () => void;
   actions?: PopupAction[];
   variant?: 'success' | 'destructive' | 'warning' | 'info';
+};
+
+const usePopupConfig = () => {
+  const [config, setConfig] = React.useState<Config>({
+    title: '',
+    message: '',
+    actions: [],
+    variant: 'success',
+  });
+
+  const overlay = useOverlay({ open: true });
+
+  const open = (newConfig: Config) => {
+    Keyboard.dismiss();
+    setConfig(newConfig);
+    overlay.bottomSheet.open();
+  };
+
+  const close = () => {
+    overlay.bottomSheet.close();
+  };
+
+  return { open, close, overlay, config };
+};
+
+const usePopup = () => {
+  const context = React.useContext(popupContext);
+  if (!context) {
+    throw new Error('usePopup must be used within a PopupProvider');
+  }
+  return context;
 };
 
 const PopupComponent = ({
@@ -124,31 +154,6 @@ const PopupComponent = ({
   );
 };
 
-const usePopupConfig = () => {
-  const [config, setConfig] = React.useState<
-    Omit<Config, 'actions' | 'onDismiss'> & { actions?: PopupAction[] }
-  >({
-    title: '',
-    message: '',
-    variant: 'success',
-    actions: [],
-  });
-
-  const overlay = useOverlay({ open: true });
-
-  const open = (newConfig: Config) => {
-    Keyboard.dismiss();
-    setConfig(newConfig);
-    overlay.bottomSheet.open();
-  };
-
-  const close = () => {
-    overlay.bottomSheet.close();
-  };
-
-  return { open, close, overlay, config };
-};
-
 type PopupContextType = ReturnType<typeof usePopupConfig>;
 const popupContext = React.createContext<PopupContextType | null>(null);
 
@@ -166,14 +171,6 @@ const PopupProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
     </popupContext.Provider>
   );
-};
-
-const usePopup = () => {
-  const context = React.useContext(popupContext);
-  if (!context) {
-    throw new Error('usePopup must be used within a PopupProvider');
-  }
-  return context;
 };
 
 export const Popup = {
