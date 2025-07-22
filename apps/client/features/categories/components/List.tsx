@@ -7,7 +7,7 @@ import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { useGetCategories } from '../hooks/useGetCategories';
-import { Pressable, TouchableWithoutFeedback } from 'react-native';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { ActivityIndicator, Box, Gradient, Heading, Text } from '@/components';
 
 const DefaultEmpty = () => {
@@ -17,11 +17,46 @@ const DefaultEmpty = () => {
   return (
     <Box
       px='xl'
-      style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
+      style={{
+        gap: Space.xl,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+      }}
     >
-      <Ionicons />
-      <Heading></Heading>
-      <Pressable></Pressable>
+      <Ionicons
+        size={48}
+        name='remove-circle'
+        color={colors.getColor('icon.inactive')}
+      />
+      <Heading
+        size='xl'
+        leading='sm'
+        weight='medium'
+        color='text.soft'
+      >
+        No categories
+      </Heading>
+      <TouchableOpacity
+        style={{
+          paddingInline: Space['2xl'],
+          paddingVertical: Space['xl'],
+          backgroundColor: colors.getColor('bg.strong'),
+          borderRadius: Border.radius['full'],
+        }}
+        onPress={() => {
+          // router.push('/(categories)/add');
+        }}
+      >
+        <Text
+          size='xl'
+          leading='sm'
+          weight='medium'
+          color='text.base'
+        >
+          Add category
+        </Text>
+      </TouchableOpacity>
     </Box>
   );
 };
