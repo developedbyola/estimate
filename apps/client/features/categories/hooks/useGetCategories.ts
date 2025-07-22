@@ -1,37 +1,32 @@
-import React from 'react';
 import { Alert } from 'react-native';
 import { Trpc } from '@/features/trpc';
 import { useCategories } from '../components/Provider';
 
 export const useGetCategories = () => {
   const { setCategories } = useCategories();
-  const list = Trpc.client.categories.list.useQuery();
+  const query = Trpc.client.categories.me.list.useQuery();
 
-  React.useEffect(() => {
-    if (list.status === 'error') {
-      Alert.alert('Unable to fetch categories', list.error.message, [
+  const list = Trpc.useQuery(query, {
+    onError: (err) => {
+      Alert.alert('Failed to fetch categories', err.message, [
         { text: 'Cancel' },
         {
           text: 'Retry',
-          isPreferred: true,
           onPress: async () => {
-            await list.refetch();
+            await query.refetch();
           },
         },
       ]);
-    }
-    if (list.status === 'success') {
-      const data = list.data as any;
-      if (!data) return;
-
+    },
+    onSuccess: (data) => {
       setCategories({
         type: 'SET_CATEGORIES',
         payload: {
-          categories: data?.categories || [],
+          categories: data.categories,
         },
       });
-    }
-  }, [list.status]);
+    },
+  });
 
-  return { status: list.status };
+  return { status: list.status, data: list.data };
 };
