@@ -1,22 +1,24 @@
 import { Alert } from 'react-native';
+import { Popup } from '@/components';
 import { Trpc } from '@/features/trpc';
 import { useFarms } from '../components/Provider';
 
-export const useUpdateFarm = ({
-  onSuccess,
-}: {
-  onSuccess?: (data: any) => any;
-}) => {
+export const useUpdateFarm = () => {
+  const popup = Popup.usePopup();
   const { setFarms } = useFarms();
 
-  const update = Trpc.client.farms.update.useMutation({
-    onSuccess: (data: any) => {
-      setFarms({ type: 'ADD_FARM', payload: { farm: data?.farm || {} } });
-      onSuccess?.(data);
+  const update = Trpc.client.farms.me.update.useMutation({
+    onSuccess: (data) => {
+      setFarms({ type: 'ADD_FARM', payload: { farm: data.farm } });
+      popup.open({
+        title: 'Farm data updated',
+        message: '',
+        actions: [],
+      });
     },
-    onError: (err) => {
-      Alert.alert('Error', err.message || 'Failed to update farm', [
-        { text: 'OK' },
+    onError: (err, input) => {
+      Alert.alert('Unable to update farm', err.message, [
+        { text: 'Retry', onPress: async () => await update.mutateAsync(input) },
       ]);
     },
   });

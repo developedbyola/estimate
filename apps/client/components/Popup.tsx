@@ -21,8 +21,8 @@ type PopupAction = {
 type Config = {
   title: string;
   message: string;
-  actions: PopupAction[];
   onDismiss?: () => void;
+  actions?: PopupAction[];
   variant?: 'success' | 'destructive' | 'warning' | 'info';
 };
 
@@ -106,7 +106,7 @@ const PopupComponent = ({
         </Text>
       </Overlay.SheetContent>
       <Overlay.SheetFooter>
-        {config.actions.map((action, index) => (
+        {config.actions?.map((action, index) => (
           <Action.Root
             key={index}
             size='lg'
@@ -126,12 +126,12 @@ const PopupComponent = ({
 
 const usePopupConfig = () => {
   const [config, setConfig] = React.useState<
-    Omit<Config, 'actions' | 'onDismiss'> & { actions: PopupAction[] }
+    Omit<Config, 'actions' | 'onDismiss'> & { actions?: PopupAction[] }
   >({
     title: '',
     message: '',
     variant: 'success',
-    actions: [{ text: 'Cancel', variant: 'primary', onPress: () => {} }],
+    actions: [],
   });
 
   const overlay = useOverlay({ open: true });

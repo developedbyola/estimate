@@ -1,10 +1,11 @@
 import React from 'react';
 import { Form } from './Form';
+import { Space } from '@/constants';
 import { farmSchema } from '../schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateFarm } from '../hooks/useCreateFarm';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Action, Box, Heading, Safe, Scroll } from '@/components';
+import { Action, Box, Heading, Safe, Scroll, Text } from '@/components';
 
 export const Add = () => {
   const { mutate, status } = useCreateFarm();
@@ -30,18 +31,24 @@ export const Add = () => {
         <Box
           px='xl'
           mt='4xl'
+          style={{ gap: Space.xl }}
         >
           <Heading
             size='3xl'
             leading='lg'
             style={{ maxWidth: 240 }}
           >
-            Create a new farm record
+            Set a new farm record to keep your estimates
           </Heading>
+          <Text color='text.soft'>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eligendi,
+            laudantium veritatis necessitatibus odio exercitationem quas
+            recusandae iste asperiores esse placeat ipsam molestias.
+          </Text>
         </Box>
         <Box
-          mt='2xl'
           px='xl'
+          mt='3xl'
           style={{ flex: 1 }}
         >
           <FormProvider {...form}>
