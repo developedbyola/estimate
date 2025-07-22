@@ -1,22 +1,26 @@
-import { Alert } from 'react-native';
+import { Banner } from '@/components';
 import { Trpc } from '@/features/trpc';
 import { useCategories } from '../components/Provider';
 
 export const useGetCategories = () => {
+  const banner = Banner.useBanner();
   const { setCategories } = useCategories();
   const query = Trpc.client.categories.me.list.useQuery();
 
   const list = Trpc.useQuery(query, {
     onError: (err) => {
-      Alert.alert('Failed to fetch categories', err.message, [
-        { text: 'Cancel' },
-        {
-          text: 'Retry',
-          onPress: async () => {
-            await query.refetch();
+      banner.open({
+        variant: 'destructive',
+        message: err.message,
+        actions: [
+          {
+            label: 'Retry',
+            onPress: async () => {
+              await list.refetch();
+            },
           },
-        },
-      ]);
+        ],
+      });
     },
     onSuccess: (data) => {
       setCategories({
