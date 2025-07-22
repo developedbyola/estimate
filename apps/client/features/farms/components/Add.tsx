@@ -17,11 +17,11 @@ export const Add = ({ farm }: AddProps) => {
   const form = useForm({
     mode: 'all',
     defaultValues: {
-      name: '',
-      size: '',
-      state: '',
-      city: '',
-      address: '',
+      name: farm?.name || '',
+      size: farm?.size || '',
+      state: farm?.state || '',
+      city: farm?.city || '',
+      address: farm?.address || '',
       categoryId: '',
       sizeUnit: 'acres',
     },
