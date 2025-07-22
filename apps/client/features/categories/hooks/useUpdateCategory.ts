@@ -1,13 +1,8 @@
-import { Alert } from 'react-native';
+import { Popup } from '@/components';
 import { Trpc } from '@/features/trpc';
 import { useCategories } from '../components/Provider';
-import { Popup } from '@/components';
 
-type Props = {
-  onSuccess?: (data: any) => void;
-};
-
-export const useUpdateCategory = ({ onSuccess }: Props) => {
+export const useUpdateCategory = () => {
   const popup = Popup.usePopup();
   const { setCategories } = useCategories();
 
@@ -24,9 +19,6 @@ export const useUpdateCategory = ({ onSuccess }: Props) => {
         actions: [
           {
             text: 'OK',
-            onPress: () => {
-              onSuccess?.(data);
-            },
           },
         ],
       });

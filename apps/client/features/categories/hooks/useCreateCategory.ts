@@ -2,11 +2,7 @@ import { Popup } from '@/components';
 import { Trpc } from '@/features/trpc';
 import { useCategories } from '../components/Provider';
 
-type Props = {
-  onSuccess?: (data: any) => void;
-};
-
-export const useCreateCategory = ({ onSuccess }: Props) => {
+export const useCreateCategory = () => {
   const popup = Popup.usePopup();
   const { setCategories } = useCategories();
 
@@ -23,9 +19,6 @@ export const useCreateCategory = ({ onSuccess }: Props) => {
         actions: [
           {
             text: 'OK',
-            onPress: () => {
-              onSuccess?.(data);
-            },
           },
         ],
       });
