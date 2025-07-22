@@ -36,6 +36,8 @@ export const Add = ({ farm }: AddProps) => {
     ? "Create a new farm profile to easily manage and organize all your farm's information and estimates in a single, convenient location."
     : '';
 
+  const btnLabel = farm ? 'Update farm' : 'Create farm';
+
   return (
     <Safe style={{ flex: 1 }}>
       <Scroll
@@ -56,6 +58,7 @@ export const Add = ({ farm }: AddProps) => {
           </Heading>
           <Text color='text.soft'>{subTitle}</Text>
         </Box>
+
         <Box
           px='xl'
           mt='4xl'
@@ -81,8 +84,11 @@ export const Add = ({ farm }: AddProps) => {
           })}
         >
           <Action.Loader />
-          <Action.Label size='lg'>
-            {isPending ? 'Creating...' : 'Create farm'}
+          <Action.Label
+            size='lg'
+            weight='medium'
+          >
+            {btnLabel}
           </Action.Label>
         </Action.Root>
       </Box>
