@@ -5,6 +5,7 @@ import type { Farm } from '../types';
 import { farmSchema } from '../schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateFarm } from '../hooks/useCreateFarm';
+import { useUpdateFarm } from '../hooks/useUpdateFarm';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Action, Box, Heading, Safe, Scroll, Text } from '@/components';
 
@@ -13,7 +14,8 @@ type AddProps = {
 };
 
 export const Add = ({ farm }: AddProps) => {
-  const { mutate, status } = useCreateFarm();
+  const { mutate: update, status: updateStatus } = useUpdateFarm();
+  const { mutate: create, status: createStatus } = useCreateFarm();
   const form = useForm({
     mode: 'all',
     defaultValues: {
@@ -22,13 +24,17 @@ export const Add = ({ farm }: AddProps) => {
       state: farm?.state || '',
       city: farm?.city || '',
       address: farm?.address || '',
-      categoryId: '',
-      sizeUnit: 'acres',
+      categoryId: farm?.categoryId || '',
+      sizeUnit: farm?.sizeUnit || 'acres',
     },
     resolver: zodResolver(farmSchema),
   });
 
-  const isPending = status === 'pending';
+  const isPending = createStatus === 'pending' || updateStatus === 'pending';
+  const title = farm ? 'Set a new farm record for your estimates' : '';
+  const subTitle = farm
+    ? "Create a new farm profile to easily manage and organize all your farm's information and estimates in a single, convenient location."
+    : '';
 
   return (
     <Safe style={{ flex: 1 }}>
@@ -46,12 +52,9 @@ export const Add = ({ farm }: AddProps) => {
             leading='lg'
             style={{ maxWidth: 280 }}
           >
-            Set a new farm record for your estimates
+            {title}
           </Heading>
-          <Text color='text.soft'>
-            Create a new farm profile to easily manage and organize all your
-            farm's information and estimates in a single, convenient location.
-          </Text>
+          <Text color='text.soft'>{subTitle}</Text>
         </Box>
         <Box
           px='xl'
@@ -70,7 +73,11 @@ export const Add = ({ farm }: AddProps) => {
           loading={isPending}
           disabled={!form.formState.isValid || isPending}
           onPress={form.handleSubmit(async (value) => {
-            await mutate(value);
+            if (farm) {
+              await update({ farmId: farm.id, ...value });
+              return;
+            }
+            await create(value);
           })}
         >
           <Action.Loader />
