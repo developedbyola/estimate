@@ -32,7 +32,7 @@ export const Add = ({ category }: AddProps) => {
     : 'Add category to manage farms';
   const subTitle = categoryId
     ? 'Update category details to keep your information accurate and up-to-date for better estimate management.'
-    : "Create a new category to easily manage and organize all your farm's information and estimates in a single, convenient location.";
+    : "Create a new category to easily manage and organize your farm's data and estimates.";
 
   const isPending = createStatus === 'pending' || updateStatus === 'pending';
   const btnLabel = categoryId ? 'Update' : 'Save';

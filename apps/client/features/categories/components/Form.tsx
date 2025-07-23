@@ -35,7 +35,7 @@ const Icon = () => {
       control={control}
       render={({ field }) => {
         return (
-          <Box style={{ minHeight: 400 }}>
+          <Box>
             <TouchableOpacity
               onPress={() => setIsOpen(true)}
               style={{
@@ -60,6 +60,7 @@ const Icon = () => {
               categoryPosition='top'
               onClose={() => setIsOpen(false)}
               onEmojiSelected={(value) => {
+                console.log(value.emoji);
                 field.onChange(value.emoji);
               }}
             />
@@ -67,7 +68,7 @@ const Icon = () => {
               size='sm'
               leading='sm'
               align='center'
-              style={{ marginTop: 12 }}
+              style={{ marginTop: 8 }}
             >
               Click on the button above to choose an emoji
             </Text>
@@ -78,48 +79,11 @@ const Icon = () => {
   );
 };
 
-const options = [
-  {
-    name: 'Name',
-    value: 'name',
-    Component: Name,
-  },
-  {
-    Component: Icon,
-    name: 'Icon',
-    value: 'icon',
-  },
-];
-
 export const Form = () => {
   return (
-    <Accordion.Root
-      defaultValue={options[0].value}
-      style={{ gap: 4 }}
-    >
-      {options.map((option, index) => {
-        return (
-          <Accordion.Item
-            key={index}
-            value={option.value}
-          >
-            <Accordion.ItemHeader>
-              <Heading
-                size='lg'
-                leading='sm'
-                weight='normal'
-                style={{ flex: 1 }}
-              >
-                {option.name}
-              </Heading>
-              <Accordion.ItemIcon />
-            </Accordion.ItemHeader>
-            <Accordion.ItemContent>
-              <option.Component />
-            </Accordion.ItemContent>
-          </Accordion.Item>
-        );
-      })}
-    </Accordion.Root>
+    <Box style={{ gap: 36 }}>
+      <Icon />
+      <Name />
+    </Box>
   );
 };
