@@ -82,7 +82,7 @@ const Item = ({ category }: { category: Category }) => {
             borderRadius: 24,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: colors.getColor('bg.base'),
+            backgroundColor: colors.getColor('bg.soft'),
           }}
         >
           <Heading style={{ fontSize: 24, lineHeight: 32 }}>
@@ -111,10 +111,6 @@ export const List = ({ Empty }: ListProps) => {
       style={{
         flex: 1,
         gap: Space.sm,
-        borderRadius: 24,
-        paddingInline: 24,
-        paddingVertical: 12,
-        backgroundColor: colors.getColor('bg.base'),
       }}
     >
       {categories.map((category) => {

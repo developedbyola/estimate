@@ -49,9 +49,21 @@ const CategoriesPage = () => {
       <Box
         px='xl'
         py='3xl'
-        style={{ flex: 1 }}
+        style={{
+          flex: 1,
+        }}
       >
-        <Categories.List />
+        <Box
+          bg='bg.base'
+          style={{
+            flex: 1,
+            borderRadius: 24,
+            paddingInline: 24,
+            paddingVertical: 12,
+          }}
+        >
+          <Categories.List />
+        </Box>
       </Box>
     </Safe>
   );
