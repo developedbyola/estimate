@@ -36,14 +36,14 @@ const Category = () => {
     return (
       <Box
         style={{
-          gap: Space['lg'],
+          gap: Space['xl'],
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
         <Ionicons
           size={32}
-          name='bookmark'
+          name='bookmarks'
           color={colors.getColor('icon.inactive')}
         />
         <Text
