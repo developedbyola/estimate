@@ -35,11 +35,13 @@ const Icon = () => {
       control={control}
       render={({ field }) => {
         return (
-          <EmojiSelector
-            onEmojiSelected={(value) => {
-              console.log(value);
-            }}
-          />
+          <Box style={{ minHeight: 400 }}>
+            <EmojiSelector
+              onEmojiSelected={(value) => {
+                console.log(value);
+              }}
+            />
+          </Box>
         );
       }}
     />
