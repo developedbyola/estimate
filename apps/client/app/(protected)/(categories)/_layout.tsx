@@ -16,6 +16,7 @@ const CategoriesLayout = () => {
           title: 'Set up category',
           headerLeft: () => (
             <TouchableOpacity
+              onPress={() => router.back()}
               style={{
                 height: 32,
                 aspectRatio: 1,
@@ -28,8 +29,7 @@ const CategoriesLayout = () => {
               <Ionicons
                 size={20}
                 name='chevron-back'
-                onPress={() => router.back()}
-                color={colors.getColor('icon.inactive')}
+                color={colors.getColor('icon.strong')}
               />
             </TouchableOpacity>
           ),
