@@ -35,6 +35,7 @@ const Icon = () => {
           <Box style={{ minHeight: 400 }}>
             <EmojiPicker
               open={isOpen}
+              categoryPosition='top'
               onClose={() => setIsOpen(false)}
               onEmojiSelected={(value) => {
                 field.onChange(value);
