@@ -42,7 +42,7 @@ export const Add = ({ category }: AddProps) => {
       bg='bg.base'
       style={{ flex: 1 }}
     >
-      <Scroll style={{ flex: 1 }}>
+      <Box style={{ flex: 1 }}>
         <Box
           px='xl'
           mt='4xl'
@@ -71,7 +71,7 @@ export const Add = ({ category }: AddProps) => {
             <Form />
           </FormProvider>
         </Box>
-      </Scroll>
+      </Box>
       <Box
         px='xl'
         mt='4xl'
