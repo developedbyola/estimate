@@ -68,8 +68,8 @@ const Item = ({
       }}
     >
       <MotiView
-        from={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        from={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 300 }}
         style={{
           gap: 12,
