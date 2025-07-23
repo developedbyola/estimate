@@ -1,7 +1,7 @@
 import React from 'react';
 import EmojiPicker from 'rn-emoji-keyboard';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Box, Text, Field, Heading, RadioGroup, Accordion } from '@/components';
+import { Box, Field, Heading, Accordion } from '@/components';
 
 const Name = () => {
   const { control } = useFormContext<{ name: string }>();
@@ -23,6 +23,7 @@ const Name = () => {
 };
 
 const Icon = () => {
+  const [isOpen, setIsOpen] = React.useState(true);
   const { control } = useFormContext<{ icon: string }>();
 
   return (
@@ -33,8 +34,8 @@ const Icon = () => {
         return (
           <Box style={{ minHeight: 400 }}>
             <EmojiPicker
-              open={true}
-              onClose={() => {}}
+              open={isOpen}
+              onClose={() => setIsOpen(false)}
               onEmojiSelected={(value) => {
                 field.onChange(value);
               }}
