@@ -12,9 +12,12 @@ import {
 } from '@/components';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { Space } from '@/constants';
+import { Border, Space } from '@/constants';
+import { TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
 const Category = () => {
+  const router = useRouter();
   const colors = useThemeColors();
   const { loading, categories } = useCategories();
   const { control } = useFormContext<{
@@ -50,7 +53,15 @@ const Category = () => {
         >
           No categories found
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingInline: Space['xl'],
+            paddingBlock: Space['base'],
+            borderRadius: Border.radius['xl'],
+            backgroundColor: colors.getColor('bg.strong'),
+          }}
+          onPress={() => router.push('/categories/create')}
+        >
           <Text
             size='lg'
             leading='sm'
