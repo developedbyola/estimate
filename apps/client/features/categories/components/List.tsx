@@ -73,7 +73,7 @@ const Item = ({ category }: { category: Category }) => {
             backgroundColor: colors.getColor('bg.base'),
           }}
         >
-          <Heading style={{ fontSize: 24, lineHeight: 32 }}>
+          <Heading style={{ fontSize: 32, lineHeight: 32 }}>
             {category.icon}
           </Heading>
         </MotiView>
