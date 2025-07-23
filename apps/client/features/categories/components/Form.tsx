@@ -146,7 +146,7 @@ export const Form = () => {
               >
                 {option.name}
               </Heading>
-              <Accordion.ItemIcon />
+              {/* <Accordion.ItemIcon /> */}
             </Accordion.ItemHeader>
             <Accordion.ItemContent>
               <option.Component />

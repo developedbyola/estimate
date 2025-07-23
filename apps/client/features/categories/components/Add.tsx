@@ -35,7 +35,7 @@ export const Add = ({ category }: AddProps) => {
   const isPending = createStatus === 'pending' || updateStatus === 'pending';
 
   return (
-    <Safe>
+    <Safe style={{ flex: 1 }}>
       <Scroll style={{ flex: 1 }}>
         <Box style={{ gap: Space['xl'] }}>
           <Heading
