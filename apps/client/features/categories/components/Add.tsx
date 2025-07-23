@@ -28,7 +28,7 @@ export const Add = () => {
   });
 
   const title = category
-    ? 'Update this category data'
+    ? 'Update data for ' + category.name
     : 'Add category to manage farms';
   const subTitle = category
     ? 'Update category details to keep your information accurate and up-to-date for better estimate management.'
@@ -81,7 +81,9 @@ export const Add = () => {
         <Action.Root
           size='xl'
           loading={isPending}
-          disabled={isPending || !form.formState.isValid}
+          disabled={
+            isPending || !form.formState.isValid || !form.formState.isDirty
+          }
           onPress={form.handleSubmit(async (values) => {
             if (category) {
               await updateCategory({
