@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
-const AddFarmPage = () => {
+const CreateFarmPage = () => {
   const colors = useThemeColors();
   const router = useRouter();
 
@@ -44,4 +44,4 @@ const AddFarmPage = () => {
   );
 };
 
-export default AddFarmPage;
+export default CreateFarmPage;

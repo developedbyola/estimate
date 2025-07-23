@@ -3,13 +3,14 @@ import { MotiView } from 'moti';
 import { useRouter } from 'expo-router';
 import { excerpt } from '@/utils/excerpt';
 import { Border, Space } from '@/constants';
-import { Farm, useFarms } from './Provider';
+import { useFarms } from './Provider';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useGetFarms } from '../hooks/useGetFarms';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import Icons from '@/features/categories/constants/Icons';
 import { Box, Heading, Text, ActivityIndicator, Action } from '@/components';
+import { Farm } from '../types';
 
 const Loader = () => {
   return (
@@ -69,7 +70,7 @@ const DefaultEmpty = () => {
       <Action.Root
         size='lg'
         onPress={() => {
-          router.push('/(protected)/(farms)/add');
+          router.push('/farms/create');
         }}
         variant='primary'
         style={{
@@ -113,7 +114,7 @@ const Item = (props: ItemProps) => {
         activeOpacity={0.6}
         onPress={() => {
           setFarms({ type: 'SET_FARM', payload: { farm } });
-          router.push('/(protected)/(farms)/add');
+          router.push('/farms/create');
         }}
         style={{
           flex: 1,
