@@ -62,18 +62,20 @@ const Item = ({ category }: { category: Category }) => {
         // router.push('/add-category');
       }}
     >
-      <MotiView style={{ gap: 8, alignItems: 'center', flexDirection: 'row' }}>
+      <MotiView style={{ gap: 12, alignItems: 'center', flexDirection: 'row' }}>
         <MotiView
           style={{
-            height: 80,
+            height: 48,
             aspectRatio: 1,
-            borderRadius: 40,
+            borderRadius: 16,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: colors.getColor('bg.subtle'),
+            backgroundColor: colors.getColor('bg.base'),
           }}
         >
-          <Heading>{category.icon}</Heading>
+          <Heading style={{ fontSize: 24, lineHeight: 32 }}>
+            {category.icon}
+          </Heading>
         </MotiView>
         <Heading>{category.name}</Heading>
       </MotiView>
