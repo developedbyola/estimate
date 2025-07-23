@@ -72,7 +72,7 @@ const Item = ({
         transition={{ type: 'timing', duration: 300 }}
         style={{
           gap: 12,
-          paddingBlock: 4,
+          paddingBlock: 6,
           alignItems: 'center',
           flexDirection: 'row',
           justifyContent: 'space-between',
