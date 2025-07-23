@@ -1,23 +1,23 @@
 import React from 'react';
 import { Form } from './Form';
-import { Category } from '../types';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Space } from '@/constants';
+import { useCategories } from './Provider';
 import { categorySchema } from '../schemas';
 import { useLocalSearchParams } from 'expo-router';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Scroll, Safe, Box, Action, Heading, Text } from '@/components';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Safe, Box, Action, Heading, Text } from '@/components';
 import { useCreateCategory } from '../hooks/useCreateCategory';
 import { useUpdateCategory } from '../hooks/useUpdateCategory';
-import { Space } from '@/constants';
 
-type AddProps = {
-  category?: Category;
-};
+export const Add = () => {
+  const { categories } = useCategories();
+  const { id } = useLocalSearchParams<{ id?: string }>();
 
-export const Add = ({ category }: AddProps) => {
+  const category = categories.find((c) => c.id === id);
+
   const { mutate: createCategory, status: createStatus } = useCreateCategory();
   const { mutate: updateCategory, status: updateStatus } = useUpdateCategory();
-  const { categoryId } = useLocalSearchParams<{ categoryId?: string }>();
   const form = useForm({
     mode: 'all',
     resolver: zodResolver(categorySchema),
@@ -27,15 +27,15 @@ export const Add = ({ category }: AddProps) => {
     },
   });
 
-  const title = categoryId
+  const title = category
     ? 'Update this category data'
     : 'Add category to manage farms';
-  const subTitle = categoryId
+  const subTitle = category
     ? 'Update category details to keep your information accurate and up-to-date for better estimate management.'
     : "Create a new category to easily manage and organize your farm's data and estimates.";
 
   const isPending = createStatus === 'pending' || updateStatus === 'pending';
-  const btnLabel = categoryId ? 'Update' : 'Save';
+  const btnLabel = category ? 'Update' : 'Save';
 
   return (
     <Safe
@@ -83,9 +83,9 @@ export const Add = ({ category }: AddProps) => {
           loading={isPending}
           disabled={isPending || !form.formState.isValid}
           onPress={form.handleSubmit(async (values) => {
-            if (categoryId) {
+            if (category) {
               await updateCategory({
-                categoryId,
+                categoryId: category.id,
                 ...values,
               });
               return;
