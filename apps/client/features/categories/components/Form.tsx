@@ -3,6 +3,7 @@ import EmojiPicker from 'rn-emoji-keyboard';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Box, Field, Heading, Accordion, Text } from '@/components';
 import { TouchableOpacity } from 'react-native';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 const Name = () => {
   const { control } = useFormContext<{ name: string }>();
@@ -24,6 +25,7 @@ const Name = () => {
 };
 
 const Icon = () => {
+  const colors = useThemeColors();
   const [isOpen, setIsOpen] = React.useState(false);
   const { control } = useFormContext<{ icon: string }>();
 
@@ -42,8 +44,8 @@ const Icon = () => {
                 borderRadius: 24,
                 marginInline: 'auto',
                 alignItems: 'center',
-                backgroundColor: '#eee',
                 justifyContent: 'center',
+                backgroundColor: colors.getColor('bg.subtle'),
               }}
             >
               <Text
