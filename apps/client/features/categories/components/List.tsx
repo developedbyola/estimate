@@ -51,7 +51,13 @@ const Loader = () => {
   );
 };
 
-const Item = ({ category }: { category: Category }) => {
+const Item = ({
+  category,
+  isLastItem,
+}: {
+  category: Category;
+  isLastItem: boolean;
+}) => {
   const router = useRouter();
   const colors = useThemeColors();
 
@@ -82,7 +88,9 @@ const Item = ({ category }: { category: Category }) => {
             borderRadius: 24,
             alignItems: 'center',
             justifyContent: 'center',
+            borderBottomWidth: isLastItem ? 0 : 1,
             backgroundColor: colors.getColor('bg.soft'),
+            borderBottomColor: colors.getColor('border.base'),
           }}
         >
           <Heading style={{ fontSize: 24, lineHeight: 32 }}>
@@ -113,11 +121,12 @@ export const List = ({ Empty }: ListProps) => {
         gap: Space.sm,
       }}
     >
-      {categories.map((category) => {
+      {categories.map((category, index) => {
         return (
           <Item
             key={category.id}
             category={category}
+            isLastItem={index === categories.length - 1}
           />
         );
       })}
