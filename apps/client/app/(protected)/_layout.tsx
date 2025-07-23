@@ -33,6 +33,9 @@ const ProtectedLayout = () => {
         options={{
           title: 'Categories',
           headerShown: false,
+          sheetCornerRadius: 40,
+          presentation: 'formSheet',
+          contentStyle: { height: '100%' },
         }}
       />
       <Stack.Screen

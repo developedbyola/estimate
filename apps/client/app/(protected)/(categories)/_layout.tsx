@@ -9,6 +9,7 @@ const CategoriesLayout = () => {
         name='create'
         options={{
           title: 'Set up category',
+
           headerLeft: () => (
             <Button
               title='Back'
