@@ -55,9 +55,9 @@ const Category = () => {
         </Text>
         <TouchableOpacity
           style={{
-            paddingInline: Space['xl'],
-            paddingBlock: Space['base'],
-            borderRadius: Border.radius['xl'],
+            paddingBlock: Space['xl'],
+            paddingInline: Space['2xl'],
+            borderRadius: Border.radius['full'],
             backgroundColor: colors.getColor('bg.strong'),
           }}
           onPress={() => router.push('/categories/create')}
@@ -65,7 +65,7 @@ const Category = () => {
           <Text
             size='lg'
             leading='sm'
-            color='text.strong'
+            color='text.base'
           >
             Create category
           </Text>
