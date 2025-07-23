@@ -65,7 +65,7 @@ const Item = ({
       onPress={() => {
         router.push({
           params: { id: category.id },
-          pathname: '/(protected)/categories/[id]',
+          pathname: '/categories/[id]',
         });
       }}
     >
