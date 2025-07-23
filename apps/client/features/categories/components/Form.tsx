@@ -1,5 +1,5 @@
 import React from 'react';
-import EmojiPicker from 'emoji-picker-react';
+import EmojiSelector from 'react-native-emoji-selector';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Box, Text, Field, Heading, RadioGroup, Accordion } from '@/components';
 
@@ -32,7 +32,11 @@ const Icon = () => {
       render={({ field }) => {
         return (
           <Box style={{ minHeight: 400 }}>
-            <EmojiPicker skinTonesDisabled />
+            <EmojiSelector
+              onEmojiSelected={(value) => {
+                console.log(value);
+              }}
+            />
           </Box>
         );
       }}

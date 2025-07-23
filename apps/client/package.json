@@ -27,7 +27,6 @@
     "@trpc/react-query": "^11.4.2",
     "@trpc/server": "^11.4.2",
     "boring-avatars": "^1.11.2",
-    "emoji-picker-react": "^4.13.2",
     "expo": "~53.0.9",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",
