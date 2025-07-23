@@ -35,9 +35,16 @@ export const Add = ({ category }: AddProps) => {
   const isPending = createStatus === 'pending' || updateStatus === 'pending';
 
   return (
-    <Safe style={{ flex: 1 }}>
+    <Safe
+      bg='bg.base'
+      style={{ flex: 1 }}
+    >
       <Scroll style={{ flex: 1 }}>
-        <Box style={{ gap: Space['xl'] }}>
+        <Box
+          px='xl'
+          mt='4xl'
+          style={{ gap: Space['lg'] }}
+        >
           <Heading
             size='3xl'
             leading='lg'
@@ -48,7 +55,10 @@ export const Add = ({ category }: AddProps) => {
           <Text color='text.soft'>{subTitle}</Text>
         </Box>
 
-        <Box px='xl'>
+        <Box
+          px='xl'
+          mt='4xl'
+        >
           <FormProvider {...form}>
             <Form />
           </FormProvider>
