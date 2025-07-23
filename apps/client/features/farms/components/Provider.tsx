@@ -69,6 +69,11 @@ const farmsReducer = (state: State, action: Action): State => {
             : farm
         ),
       };
+    case 'REMOVE_FARM':
+      return {
+        ...state,
+        farms: state.farms.filter((farm) => farm.id !== action.payload.farmId),
+      };
 
     case 'ERROR':
       return {

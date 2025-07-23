@@ -3,11 +3,10 @@ import { useRouter } from 'expo-router';
 import { Farms } from '@/features/farms';
 import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
+import { Pressable, TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import {
   Box,
-  Safe,
   Text,
   Action,
   Scroll,
@@ -45,7 +44,6 @@ export const View = () => {
         >
           <Text
             size='6xl'
-            weight='bold'
             style={{ lineHeight: 56 }}
           >
             {farm.category.icon}
@@ -56,46 +54,84 @@ export const View = () => {
           size='2xl'
           align='center'
           leading='base'
-          style={{ maxWidth: 320, marginTop: Space['lg'] }}
+          style={{
+            maxWidth: 280,
+            marginInline: 'auto',
+            marginTop: Space['xl'],
+          }}
         >
           {farm.name}
         </Heading>
+
         <Text
           align='center'
           leading='base'
           style={{ textTransform: 'capitalize', marginTop: Space['xs'] }}
         >{`${farm.size} ${farm.sizeUnit}`}</Text>
+
         <Box
-          mt='xl'
           style={{
+            gap: 8,
             width: '100%',
             flexDirection: 'row',
             alignItems: 'center',
-            marginTop: Space['2xl'],
-            justifyContent: 'space-between',
+            marginTop: Space['3xl'],
           }}
         >
-          <Action.Root
-            size='2xs'
-            hitSlop={24}
-            style={{ paddingInline: Space['lg'] }}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() =>
+              router.push({
+                pathname: '/farms/update',
+                params: { farmId: farm.id },
+              })
+            }
+            style={{
+              gap: 2,
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingInline: Space['xl'],
+              paddingVertical: Space['base'],
+              borderRadius: Border.radius['lg'],
+              backgroundColor: colors.getColor('bg.strong'),
+            }}
           >
-            <Action.Label
+            <Text
               size='sm'
+              align='center'
+              color='text.base'
               weight='semibold'
-              style={{ textTransform: 'uppercase' }}
             >
-              update
-            </Action.Label>
-          </Action.Root>
+              Update
+            </Text>
+          </TouchableOpacity>
 
-          <Farms.Delete>
-            <Ionicons
-              size={26}
-              name='close-circle'
-              color={colors.getColor('icon.inactive')}
-            />
-          </Farms.Delete>
+          <Pressable
+            style={{
+              gap: 2,
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingInline: Space['xl'],
+              paddingVertical: Space['base'],
+              borderRadius: Border.radius['lg'],
+              backgroundColor: colors.getColor('bg.soft'),
+            }}
+          >
+            <Farms.Delete>
+              <Text
+                size='sm'
+                align='center'
+                color='text.strong'
+                weight='semibold'
+              >
+                Delete
+              </Text>
+            </Farms.Delete>
+          </Pressable>
         </Box>
       </Box>
 

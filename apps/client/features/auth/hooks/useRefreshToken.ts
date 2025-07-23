@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from 'react-native';
+// import { Alert } from 'react-native';
 import { Trpc } from '@/features/trpc';
 import { useAuth } from '../components/Provider';
 
@@ -24,15 +24,15 @@ export const useRefreshToken = () => {
         setAuth({ type: 'LOGOUT' });
         return;
       }
-      Alert.alert('Error', `${err.message}`, [
-        {
-          text: 'Retry',
-          isPreferred: true,
-          onPress: () => {
-            refresh.mutateAsync(input);
-          },
-        },
-      ]);
+      // Alert.alert('Error', `${err.message}`, [
+      //   {
+      //     text: 'Retry',
+      //     isPreferred: true,
+      //     onPress: () => {
+      //       refresh.mutateAsync(input);
+      //     },
+      //   },
+      // ]);
     },
   });
 

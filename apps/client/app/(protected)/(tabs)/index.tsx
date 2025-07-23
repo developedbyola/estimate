@@ -43,7 +43,7 @@ const HomePage = () => {
         <TouchableOpacity
           hitSlop={20}
           onPress={() => {
-            router.push('/(protected)/(settings)');
+            router.push('/farms/create');
           }}
         >
           <Box

@@ -9,7 +9,7 @@ export const useUpdateFarm = () => {
 
   const update = Trpc.client.farms.me.update.useMutation({
     onSuccess: (data) => {
-      setFarms({ type: 'ADD_FARM', payload: { farm: data.farm } });
+      setFarms({ type: 'UPDATE_FARM', payload: { farm: data.farm } });
       router.back();
       popup.open({
         title: 'Farm Updated Successfully',

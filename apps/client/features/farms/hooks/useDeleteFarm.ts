@@ -1,25 +1,34 @@
-import { Alert } from 'react-native';
+import { Popup } from '@/components';
 import { Trpc } from '@/features/trpc';
+import { useRouter } from 'expo-router';
 import { useFarms } from '../components/Provider';
 import { useLocalSearchParams } from 'expo-router';
 
-type Props = {
-  onSuccess?: (data: any) => void;
-};
-
-export const useDeleteFarm = ({ onSuccess }: Props) => {
-  const { farmId } = useLocalSearchParams<{ farmId: string }>();
+export const useDeleteFarm = () => {
+  const router = useRouter();
   const { setFarms } = useFarms();
+  const popup = Popup.usePopup();
+  const { farmId } = useLocalSearchParams<{ farmId: string }>();
 
-  const remove = Trpc.client.farms.delete.useMutation({
-    onSuccess: (data) => {
+  const remove = Trpc.client.farms.me.delete.useMutation({
+    onSuccess: () => {
       setFarms({ type: 'REMOVE_FARM', payload: { farmId } });
-      onSuccess?.(data);
+      router.back();
     },
     onError: (err) => {
-      Alert.alert('We couldn’t delete the farm', err.message, [
-        { text: 'Okay' },
-      ]);
+      popup.open({
+        title: 'We couldn’t delete the farm',
+        message: err.message,
+        variant: 'destructive',
+        actions: [
+          {
+            text: 'Retry',
+            onPress: async () => {
+              await remove.mutateAsync({ farmId });
+            },
+          },
+        ],
+      });
     },
   });
 

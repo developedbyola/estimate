@@ -21,7 +21,10 @@ const Delete = ({ children }: Props) => {
   if (status === 'pending') return <ActivityIndicator />;
 
   return (
-    <TouchableOpacity onPress={async () => await mutate({ farmId })}>
+    <TouchableOpacity
+      style={{ flex: 1 }}
+      onPress={async () => await mutate({ farmId })}
+    >
       {children}
     </TouchableOpacity>
   );

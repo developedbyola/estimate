@@ -1,7 +1,7 @@
 import React from 'react';
 import { Farms } from '@/features/farms';
 
-const CreateFarmPage = () => {
+const UpdateFarmPage = () => {
   return (
     <React.Fragment>
       <Farms.Add />
@@ -9,4 +9,4 @@ const CreateFarmPage = () => {
   );
 };
 
-export default CreateFarmPage;
+export default UpdateFarmPage;
