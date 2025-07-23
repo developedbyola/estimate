@@ -12,6 +12,7 @@ import {
 } from '@/components';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { Space } from '@/constants';
 
 const Category = () => {
   const colors = useThemeColors();
@@ -30,13 +31,34 @@ const Category = () => {
 
   if (categories.length > 0) {
     return (
-      <Box style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <Box
+        style={{
+          gap: Space['lg'],
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <Ionicons
           size={32}
           name='bookmark'
           color={colors.getColor('icon.inactive')}
         />
-        <Text>No categories found</Text>
+        <Text
+          size='lg'
+          leading='sm'
+          color='text.soft'
+        >
+          No categories found
+        </Text>
+        <TouchableOpacity>
+          <Text
+            size='lg'
+            leading='sm'
+            color='text.strong'
+          >
+            Create category
+          </Text>
+        </TouchableOpacity>
       </Box>
     );
   }
