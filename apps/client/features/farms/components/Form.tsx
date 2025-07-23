@@ -32,7 +32,7 @@ const Category = () => {
     );
   }
 
-  if (categories.length > 0) {
+  if (categories.length === 0) {
     return (
       <Box
         style={{
@@ -47,15 +47,15 @@ const Category = () => {
           color={colors.getColor('icon.inactive')}
         />
         <Text
-          size='lg'
+          size='xl'
           leading='sm'
           color='text.soft'
         >
-          No categories found
+          No categories
         </Text>
         <TouchableOpacity
           style={{
-            paddingBlock: Space['xl'],
+            paddingBlock: Space['lg'],
             paddingInline: Space['2xl'],
             borderRadius: Border.radius['full'],
             backgroundColor: colors.getColor('bg.strong'),
@@ -63,8 +63,9 @@ const Category = () => {
           onPress={() => router.push('/categories/create')}
         >
           <Text
-            size='lg'
+            size='base'
             leading='sm'
+            weight='medium'
             color='text.base'
           >
             Create category
