@@ -2,6 +2,7 @@ import React from 'react';
 import EmojiPicker from 'rn-emoji-keyboard';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Box, Field, Heading, Accordion } from '@/components';
+import { TouchableOpacity } from 'react-native';
 
 const Name = () => {
   const { control } = useFormContext<{ name: string }>();
@@ -33,6 +34,9 @@ const Icon = () => {
       render={({ field }) => {
         return (
           <Box style={{ minHeight: 400 }}>
+            <TouchableOpacity onPress={() => setIsOpen(true)}>
+              <Text>{}</Text>
+            </TouchableOpacity>
             <EmojiPicker
               open={isOpen}
               categoryPosition='top'
