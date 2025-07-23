@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from './Form';
 import { Category } from '../types';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { categorySchema } from '../schemas';
 import { useLocalSearchParams } from 'expo-router';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -49,7 +49,9 @@ export const Add = ({ category }: AddProps) => {
         </Box>
 
         <Box px='xl'>
-          <Form />
+          <FormProvider {...form}>
+            <Form />
+          </FormProvider>
         </Box>
       </Scroll>
       <Box
