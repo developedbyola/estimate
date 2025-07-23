@@ -51,13 +51,15 @@ export const Add = ({ category }: AddProps) => {
           <Heading
             size='3xl'
             leading='xl'
-            style={{ maxWidth: 280 }}
+            align='center'
+            style={{ maxWidth: 280, marginInline: 'auto' }}
           >
             {title}
           </Heading>
           <Text
+            align='center'
             color='text.soft'
-            style={{ maxWidth: 320 }}
+            style={{ maxWidth: 320, marginInline: 'auto' }}
           >
             {subTitle}
           </Text>
