@@ -46,7 +46,12 @@ const Icon = () => {
                 justifyContent: 'center',
               }}
             >
-              <Text>{field.value}</Text>
+              <Text
+                size='xl'
+                weight='bold'
+              >
+                {field.value}
+              </Text>
             </TouchableOpacity>
             <EmojiPicker
               open={isOpen}
