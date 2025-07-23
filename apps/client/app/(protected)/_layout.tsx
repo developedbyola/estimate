@@ -29,6 +29,13 @@ const ProtectedLayout = () => {
         }}
       />
       <Stack.Screen
+        name='(categories)'
+        options={{
+          title: 'Categories',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name='farm'
         options={{
           presentation: 'modal',
