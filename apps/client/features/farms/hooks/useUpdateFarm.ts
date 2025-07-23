@@ -1,5 +1,5 @@
-import { Alert } from 'react-native';
 import { Popup } from '@/components';
+import { router } from 'expo-router';
 import { Trpc } from '@/features/trpc';
 import { useFarms } from '../components/Provider';
 
@@ -10,25 +10,35 @@ export const useUpdateFarm = () => {
   const update = Trpc.client.farms.me.update.useMutation({
     onSuccess: (data) => {
       setFarms({ type: 'ADD_FARM', payload: { farm: data.farm } });
+      router.back();
       popup.open({
-        title: 'Farm data updated',
-        message: '',
+        title: 'Farm Updated Successfully',
+        message:
+          'Your farm details have been saved successfully. The changes are now active and visible.',
+        variant: 'success',
         actions: [
           {
-            text: 'Understood',
+            text: 'Got it',
+            variant: 'primary',
           },
         ],
       });
     },
     onError: (err, input) => {
-      Alert.alert('Unable to update farm', err.message, [
-        {
-          text: 'Retry',
-          onPress: async () => {
-            await update.mutateAsync(input);
+      popup.open({
+        message: err.message,
+        variant: 'destructive',
+        title: 'Unable to update farm',
+        actions: [
+          {
+            text: 'Retry',
+            variant: 'primary',
+            onPress: async () => {
+              await update.mutateAsync(input);
+            },
           },
-        },
-      ]);
+        ],
+      });
     },
   });
 

@@ -14,7 +14,6 @@ export const useRegister = () => {
       popup.open({
         variant: 'success',
         title: 'Congratulations, your account is now active.',
-        onDismiss: () => router.back(),
         message:
           'We’re excited to have you on board and can’t wait for you to explore everything we have to offer.',
         actions: [{ text: 'OK', onPress: () => router.back() }],

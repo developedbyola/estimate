@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from './Form';
 import { Space } from '@/constants';
-import type { Farm } from '../types';
+import { useFarms } from './Provider';
 import { farmSchema } from '../schemas';
 import { useLocalSearchParams } from 'expo-router';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,12 +10,12 @@ import { useUpdateFarm } from '../hooks/useUpdateFarm';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Action, Box, Heading, Safe, Scroll, Text } from '@/components';
 
-type AddProps = {
-  farm?: Farm;
-};
-
-export const Add = ({ farm }: AddProps) => {
+export const Add = () => {
+  const { farms } = useFarms();
   const { farmId } = useLocalSearchParams<{ farmId: string }>();
+
+  const farm = farms.find((farm) => farm.id === farmId);
+
   const { mutate: update, status: updateStatus } = useUpdateFarm();
   const { mutate: create, status: createStatus } = useCreateFarm();
   const form = useForm({
@@ -37,17 +37,14 @@ export const Add = ({ farm }: AddProps) => {
     ? 'Update this farm record details'
     : 'Set a new farm record for your estimates';
   const subTitle = farm
-    ? 'Update your farm details to keep your information accurate and up-to-date for better estimate management.'
-    : "Create a new farm profile to easily manage and organize all your farm's information and estimates in a single, convenient location.";
+    ? 'Update your farm details to keep your information accurate and up-to-date.'
+    : "Create a new farm profile to easily manage and organize all your farm's data and estimates.";
 
   const btnLabel = farm ? 'Update farm' : 'Create farm';
 
   return (
     <Safe style={{ flex: 1 }}>
-      <Scroll
-        mb='xl'
-        style={{ flex: 1 }}
-      >
+      <Scroll style={{ flex: 1 }}>
         <Box
           px='xl'
           mt='4xl'
@@ -56,11 +53,18 @@ export const Add = ({ farm }: AddProps) => {
           <Heading
             size='3xl'
             leading='lg'
-            style={{ maxWidth: 280 }}
+            align='center'
+            style={{ maxWidth: 280, marginInline: 'auto' }}
           >
             {title}
           </Heading>
-          <Text color='text.soft'>{subTitle}</Text>
+          <Text
+            align='center'
+            color='text.soft'
+            style={{ maxWidth: 320, marginInline: 'auto' }}
+          >
+            {subTitle}
+          </Text>
         </Box>
 
         <Box
@@ -74,11 +78,17 @@ export const Add = ({ farm }: AddProps) => {
         </Box>
       </Scroll>
 
-      <Box px='xl'>
+      <Box
+        px='xl'
+        bg='bg.base'
+        style={{}}
+      >
         <Action.Root
           size='xl'
           loading={isPending}
-          disabled={!form.formState.isValid || isPending}
+          disabled={
+            !form.formState.isValid || !form.formState.isDirty || isPending
+          }
           onPress={form.handleSubmit(async (value) => {
             if (farm) {
               await update({ farmId, ...value });

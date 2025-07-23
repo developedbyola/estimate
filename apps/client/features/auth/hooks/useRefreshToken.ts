@@ -19,6 +19,7 @@ export const useRefreshToken = () => {
       });
     },
     onError: (err, input) => {
+      setAuth({ type: 'ERROR' });
       if (err.data?.code === 'UNAUTHORIZED') {
         setAuth({ type: 'LOGOUT' });
         return;
@@ -26,12 +27,12 @@ export const useRefreshToken = () => {
       Alert.alert('Error', `${err.message}`, [
         {
           text: 'Retry',
+          isPreferred: true,
           onPress: () => {
             refresh.mutateAsync(input);
           },
         },
       ]);
-      setAuth({ type: 'ERROR' });
     },
   });
 

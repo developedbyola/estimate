@@ -1,12 +1,18 @@
 import { Banner } from '@/components';
 import { Trpc } from '@/features/trpc';
 import { useProfile } from '../components/Provider';
+import { Auth } from '@/features/auth';
 
 export const useGetMyProfile = () => {
   const banner = Banner.useBanner();
   const { setProfile } = useProfile();
+  const { isAuthenticated } = Auth.useAuth();
 
-  const profile = Trpc.useQuery(Trpc.client.profiles.me.get.useQuery(), {
+  const query = Trpc.client.profiles.me.get.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  const profile = Trpc.useQuery(query, {
     onSuccess: (data) => {
       setProfile({
         type: 'SET_PROFILE',

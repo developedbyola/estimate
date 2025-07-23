@@ -95,59 +95,60 @@ const Item = (props: ItemProps) => {
   const router = useRouter();
   const colors = useThemeColors();
   const { setFarms } = useFarms();
-  const icon = Icons.find((icon) => icon.id === farm.category.icon);
 
   return (
-    <MotiView
-      animate={{ translateY: 0, opacity: 1 }}
-      from={{ translateY: 12 * index, opacity: 0 }}
-      transition={{ type: 'spring', stiffness: 100, delay: 120 * index }}
-      style={{
-        height: 56,
-        width: '100%',
-        overflow: 'hidden',
-        borderRadius: Border.radius.lg,
-        backgroundColor: colors.getColor('bg.base'),
+    <TouchableOpacity
+      activeOpacity={0.6}
+      onPress={() => {
+        setFarms({ type: 'SET_FARM', payload: { farm } });
+        router.push('/farms/create');
       }}
     >
-      <TouchableOpacity
-        activeOpacity={0.6}
-        onPress={() => {
-          setFarms({ type: 'SET_FARM', payload: { farm } });
-          router.push('/farms/create');
-        }}
+      <MotiView
+        animate={{ translateY: 0, opacity: 1 }}
+        from={{ translateY: 12 * index, opacity: 0 }}
+        transition={{ type: 'spring', stiffness: 100, delay: 120 * index }}
         style={{
-          flex: 1,
-          gap: Space.lg,
-          alignItems: 'center',
+          gap: 12,
           flexDirection: 'row',
-          paddingInline: Space.lg,
+          alignItems: 'center',
+          borderRadius: Border.radius.lg,
+          backgroundColor: colors.getColor('bg.base'),
         }}
       >
-        <Ionicons
-          size={30}
-          color={icon?.normalColor || ''}
-          name={(icon?.icon || '') as any}
-        />
-        <Box>
+        <Box
+          bg='bg.soft'
+          style={{
+            height: 48,
+            aspectRatio: 1,
+            borderRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{ fontSize: 32, lineHeight: 48 }}>
+            {farm.category.icon}
+          </Text>
+        </Box>
+        <Box style={{ gap: 2 }}>
           <Heading
             size='lg'
-            leading='base'
+            leading='sm'
             weight='medium'
           >
             {excerpt(farm.name, 20)}
           </Heading>
-
           <Text
             size='sm'
-            leading='sm'
-          >{`${farm.size} ${farm.sizeUnit} at ${excerpt(
-            farm.address,
-            20
-          )}`}</Text>
+            leading='xs'
+          >{`${farm.size} ${farm.sizeUnit}`}</Text>
+          <Text
+            size='sm'
+            leading='xs'
+          >{`${farm.city}, ${farm.state}`}</Text>
         </Box>
-      </TouchableOpacity>
-    </MotiView>
+      </MotiView>
+    </TouchableOpacity>
   );
 };
 

@@ -1,11 +1,16 @@
 import { Banner } from '@/components';
 import { Trpc } from '@/features/trpc';
 import { useCategories } from '../components/Provider';
+import { Auth } from '@/features/auth';
 
 export const useGetCategories = () => {
   const banner = Banner.useBanner();
   const { setCategories } = useCategories();
-  const query = Trpc.client.categories.me.list.useQuery();
+  const { isAuthenticated } = Auth.useAuth();
+
+  const query = Trpc.client.categories.me.list.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
 
   const list = Trpc.useQuery(query, {
     onError: (err) => {

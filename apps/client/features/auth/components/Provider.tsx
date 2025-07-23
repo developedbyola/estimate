@@ -99,7 +99,6 @@ export const authReducer = (state: State, action: Action): State => {
     case 'ERROR':
       return {
         ...state,
-        isAuthenticated: false,
         isLoading: false,
       };
     default:

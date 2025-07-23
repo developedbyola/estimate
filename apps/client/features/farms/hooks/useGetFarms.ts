@@ -1,12 +1,16 @@
 import { Banner } from '@/components';
 import { Trpc } from '@/features/trpc';
+import { Auth } from '@/features/auth';
 import { useFarms } from '../components/Provider';
 
 export const useGetFarms = () => {
   const { setFarms } = useFarms();
   const banner = Banner.useBanner();
+  const { isAuthenticated } = Auth.useAuth();
 
-  const query = Trpc.client.farms.me.list.useQuery();
+  const query = Trpc.client.farms.me.list.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
 
   const list = Trpc.useQuery(query, {
     onError: (err) => {

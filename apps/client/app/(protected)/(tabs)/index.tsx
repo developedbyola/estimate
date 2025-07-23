@@ -71,7 +71,7 @@ const HomePage = () => {
         >
           <Ionicons
             size={24}
-            name='podium-outline'
+            name='information-circle-outline'
             color={colors.getColor('icon.strong')}
           />
         </TouchableOpacity>

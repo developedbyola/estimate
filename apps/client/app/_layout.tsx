@@ -34,28 +34,28 @@ const Stacks = () => {
       <Stack>
         <Stack.Protected guard={!isAuthenticated}>
           <Stack.Screen
-            name='index'
+            name='(auth)'
             options={{
               headerShown: false,
+              presentation: 'formSheet',
+              sheetCornerRadius: 40,
+              contentStyle: { height: '100%' },
             }}
           />
           <Stack.Screen
-            name='login'
+            name='(main)'
             options={{
-              presentation: 'formSheet',
-            }}
-          />
-          <Stack.Screen
-            name='register'
-            options={{
-              presentation: 'formSheet',
+              headerShown: false,
             }}
           />
         </Stack.Protected>
         <Stack.Protected guard={isAuthenticated}>
           <Stack.Screen
             name='(protected)'
-            options={{ title: 'App', headerShown: false }}
+            options={{
+              title: 'App',
+              headerShown: false,
+            }}
           />
         </Stack.Protected>
       </Stack>
