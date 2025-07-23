@@ -70,9 +70,12 @@ const Item = ({
       <MotiView
         style={{
           gap: 12,
+          paddingBlock: 4,
           alignItems: 'center',
           flexDirection: 'row',
           justifyContent: 'space-between',
+          borderBottomWidth: isLastItem ? 0 : 1,
+          borderBottomColor: colors.getColor('border.subtle'),
         }}
       >
         <Heading
@@ -88,9 +91,7 @@ const Item = ({
             borderRadius: 24,
             alignItems: 'center',
             justifyContent: 'center',
-            borderBottomWidth: isLastItem ? 0 : 1,
             backgroundColor: colors.getColor('bg.soft'),
-            borderBottomColor: colors.getColor('border.base'),
           }}
         >
           <Heading style={{ fontSize: 24, lineHeight: 32 }}>
@@ -115,12 +116,7 @@ export const List = ({ Empty }: ListProps) => {
   if (categories.length === 0) return Empty ? Empty : <DefaultEmpty />;
 
   return (
-    <Scroll
-      style={{
-        flex: 1,
-        gap: Space.sm,
-      }}
-    >
+    <Scroll style={{ flex: 1 }}>
       {categories.map((category, index) => {
         return (
           <Item
