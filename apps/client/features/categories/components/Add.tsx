@@ -23,7 +23,7 @@ export const Add = ({ category }: AddProps) => {
     resolver: zodResolver(categorySchema),
     defaultValues: {
       name: category?.name || '',
-      icon: category?.icon || '',
+      icon: category?.icon || '🥜',
     },
   });
 
