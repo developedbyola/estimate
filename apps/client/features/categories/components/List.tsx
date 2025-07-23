@@ -100,6 +100,7 @@ type ListProps = {
 
 export const List = ({ Empty }: ListProps) => {
   const _ = useGetCategories();
+  const colors = useThemeColors();
   const { loading, categories } = useCategories();
 
   if (loading) return <Loader />;
@@ -110,6 +111,10 @@ export const List = ({ Empty }: ListProps) => {
       style={{
         flex: 1,
         gap: Space.sm,
+        borderRadius: 24,
+        paddingInline: 24,
+        paddingVertical: 12,
+        backgroundColor: colors.getColor('bg.base'),
       }}
     >
       {categories.map((category) => {
