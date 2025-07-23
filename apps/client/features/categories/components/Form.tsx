@@ -1,7 +1,7 @@
 import React from 'react';
 import EmojiPicker from 'rn-emoji-keyboard';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Box, Field, Heading, Accordion } from '@/components';
+import { Box, Field, Heading, Accordion, Text } from '@/components';
 import { TouchableOpacity } from 'react-native';
 
 const Name = () => {
@@ -34,8 +34,16 @@ const Icon = () => {
       render={({ field }) => {
         return (
           <Box style={{ minHeight: 400 }}>
-            <TouchableOpacity onPress={() => setIsOpen(true)}>
-              <Text>{}</Text>
+            <TouchableOpacity
+              onPress={() => setIsOpen(true)}
+              style={{
+                height: 64,
+                aspectRatio: 1,
+                borderRadius: 16,
+                marginInline: 'auto',
+              }}
+            >
+              <Text>{field.value}</Text>
             </TouchableOpacity>
             <EmojiPicker
               open={isOpen}
