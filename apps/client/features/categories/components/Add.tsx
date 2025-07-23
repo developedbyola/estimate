@@ -27,7 +27,9 @@ export const Add = ({ category }: AddProps) => {
     },
   });
 
-  const title = categoryId ? 'Update category' : 'Add category';
+  const title = categoryId
+    ? 'Update this category data'
+    : 'Add category to manage farms';
   const subTitle = categoryId
     ? 'Update category details to keep your information accurate and up-to-date for better estimate management.'
     : "Create a new category to easily manage and organize all your farm's information and estimates in a single, convenient location.";
@@ -47,12 +49,17 @@ export const Add = ({ category }: AddProps) => {
         >
           <Heading
             size='3xl'
-            leading='lg'
+            leading='xl'
             style={{ maxWidth: 280 }}
           >
             {title}
           </Heading>
-          <Text color='text.soft'>{subTitle}</Text>
+          <Text
+            color='text.soft'
+            style={{ maxWidth: 320 }}
+          >
+            {subTitle}
+          </Text>
         </Box>
 
         <Box
