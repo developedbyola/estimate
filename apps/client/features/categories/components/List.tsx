@@ -1,14 +1,13 @@
 import React from 'react';
 import { MotiView } from 'moti';
 import { Space } from '@/constants';
+import { Category } from '../types';
 import { useRouter } from 'expo-router';
 import { useCategories } from './Provider';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { TouchableWithoutFeedback } from 'react-native';
-import { useGetCategories } from '../hooks/useGetCategories';
 import { ActivityIndicator, Box, Heading, Scroll } from '@/components';
-import { Category } from '../types';
 
 const DefaultEmpty = () => {
   const colors = useThemeColors();
@@ -111,8 +110,6 @@ type ListProps = {
 };
 
 export const List = ({ Empty }: ListProps) => {
-  const _ = useGetCategories();
-  const colors = useThemeColors();
   const { loading, categories } = useCategories();
 
   if (loading) return <Loader />;

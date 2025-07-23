@@ -1,5 +1,6 @@
 import React from 'react';
 import { Category } from '../types';
+import { useGetCategories } from '../hooks/useGetCategories';
 
 type State = {
   loading: boolean;
@@ -70,6 +71,7 @@ export const Provider = ({
   initialState = { categories: [], loading: true },
 }: CategoryProviderProps) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
+  useGetCategories();
 
   return (
     <categoryContext.Provider
