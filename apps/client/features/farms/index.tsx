@@ -1,14 +1,14 @@
+import { Add } from './components/Add';
 import Delete from './components/Delete';
 import { List } from './components/List';
-import { Single } from './components/Single';
+import { View } from './components/View';
 import { Provider, useFarms } from './components/Provider';
-import { Add } from './components/Add';
 
 export const Farms = {
-  Provider,
+  Add,
+  View,
   List,
   Delete,
-  Add,
-  Single,
   useFarms,
+  Provider,
 };

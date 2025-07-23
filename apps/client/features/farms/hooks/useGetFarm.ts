@@ -1,32 +1,36 @@
-import React from 'react';
-import { Alert } from 'react-native';
+import { Popup } from '@/components';
 import { Trpc } from '@/features/trpc';
-import { Farm, useFarms } from '../components/Provider';
+import { useFarms } from '../components/Provider';
 import { useLocalSearchParams } from 'expo-router';
 
 export const useGetFarm = () => {
+  const popup = Popup.usePopup();
   const { setFarms } = useFarms();
   const { farmId } = useLocalSearchParams<{ farmId: string }>();
 
-  const farm = Trpc.client.farms.get.useQuery({ farmId });
+  const query = Trpc.client.farms.me.get.useQuery({ farmId });
 
-  const data = farm.data as any;
-
-  React.useEffect(() => {
-    if (farm.status === 'error') {
-      Alert.alert('Failed to fetch farm', farm.error.message, [
-        { text: 'Cancel' },
-        {
-          text: 'Retry',
-          onPress: async () => {
-            await farm.refetch();
+  const data = query.data;
+  const farm = Trpc.useQuery(query, {
+    onError: (err) => {
+      popup.open({
+        title: 'Failed to fetch farm',
+        message: err.message,
+        variant: 'destructive',
+        actions: [
+          {
+            text: 'Retry',
+            onPress: async () => {
+              await farm.refetch();
+            },
           },
-        },
-      ]);
-    } else if (farm.status === 'success') {
+        ],
+      });
+    },
+    onSuccess: (data) => {
       setFarms({ type: 'SET_FARM', payload: { farm: data?.farm } });
-    }
-  }, [farm.status]);
+    },
+  });
 
-  return { status: farm.status, data: data?.farm as Farm };
+  return { status: farm.status, data: data?.farm };
 };

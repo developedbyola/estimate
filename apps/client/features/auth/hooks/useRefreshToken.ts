@@ -1,6 +1,6 @@
 import React from 'react';
-import { Trpc } from '@/features/trpc';
 import { Alert } from 'react-native';
+import { Trpc } from '@/features/trpc';
 import { useAuth } from '../components/Provider';
 
 export const useRefreshToken = () => {

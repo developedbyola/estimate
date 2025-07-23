@@ -37,6 +37,34 @@ const FarmsLayout = () => {
           ),
         }}
       />
+      <Stack.Screen
+        name='view'
+        options={{
+          title: 'Farm',
+          contentStyle: {
+            backgroundColor: colors.getColor('bg.base'),
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={{
+                height: 32,
+                aspectRatio: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: Border.radius.full,
+                backgroundColor: colors.getColor('bg.soft'),
+              }}
+            >
+              <Ionicons
+                size={20}
+                name='chevron-back'
+                color={colors.getColor('icon.strong')}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack>
   );
 };

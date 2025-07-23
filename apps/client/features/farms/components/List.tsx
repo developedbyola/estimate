@@ -1,16 +1,15 @@
 import React from 'react';
 import { MotiView } from 'moti';
+import { Farm } from '../types';
+import { useFarms } from './Provider';
 import { useRouter } from 'expo-router';
 import { excerpt } from '@/utils/excerpt';
 import { Border, Space } from '@/constants';
-import { useFarms } from './Provider';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useGetFarms } from '../hooks/useGetFarms';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import Icons from '@/features/categories/constants/Icons';
 import { Box, Heading, Text, ActivityIndicator, Action } from '@/components';
-import { Farm } from '../types';
 
 const Loader = () => {
   return (
@@ -94,20 +93,25 @@ const Item = (props: ItemProps) => {
 
   const router = useRouter();
   const colors = useThemeColors();
-  const { setFarms } = useFarms();
 
   return (
     <TouchableOpacity
       activeOpacity={0.6}
+      style={{ width: '100%' }}
       onPress={() => {
-        setFarms({ type: 'SET_FARM', payload: { farm } });
-        router.push('/farms/create');
+        router.push({
+          pathname: '/farms/view',
+          params: { farmId: farm.id },
+        });
       }}
     >
       <MotiView
         animate={{ translateY: 0, opacity: 1 }}
-        from={{ translateY: 12 * index, opacity: 0 }}
-        transition={{ type: 'spring', stiffness: 100, delay: 120 * index }}
+        from={{ translateY: 12 * (index + 1), opacity: 0 }}
+        transition={{
+          type: 'timing',
+          delay: 120 * (index + 1),
+        }}
         style={{
           gap: 12,
           flexDirection: 'row',
@@ -139,12 +143,8 @@ const Item = (props: ItemProps) => {
             {excerpt(farm.name, 20)}
           </Heading>
           <Text
-            size='sm'
-            leading='xs'
-          >{`${farm.size} ${farm.sizeUnit}`}</Text>
-          <Text
-            size='sm'
-            leading='xs'
+            size='base'
+            leading='sm'
           >{`${farm.city}, ${farm.state}`}</Text>
         </Box>
       </MotiView>

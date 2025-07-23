@@ -1,7 +1,7 @@
 import { Banner } from '@/components';
 import { Trpc } from '@/features/trpc';
-import { useCategories } from '../components/Provider';
 import { Auth } from '@/features/auth';
+import { useCategories } from '../components/Provider';
 
 export const useGetCategories = () => {
   const banner = Banner.useBanner();

@@ -34,18 +34,18 @@ const Stacks = () => {
       <Stack>
         <Stack.Protected guard={!isAuthenticated}>
           <Stack.Screen
+            name='(main)'
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name='(auth)'
             options={{
               headerShown: false,
               presentation: 'formSheet',
               sheetCornerRadius: 40,
               contentStyle: { height: '100%' },
-            }}
-          />
-          <Stack.Screen
-            name='(main)'
-            options={{
-              headerShown: false,
             }}
           />
         </Stack.Protected>
