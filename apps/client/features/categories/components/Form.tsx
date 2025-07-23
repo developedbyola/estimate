@@ -58,7 +58,7 @@ const Icon = () => {
               categoryPosition='top'
               onClose={() => setIsOpen(false)}
               onEmojiSelected={(value) => {
-                field.onChange(value.name);
+                field.onChange(value.unicode_version);
               }}
             />
           </Box>
