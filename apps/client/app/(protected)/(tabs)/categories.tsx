@@ -18,7 +18,7 @@ const CategoriesPage = () => {
       style={{ flex: 1 }}
     >
       <Box
-        px='3xl'
+        px='xl'
         mt='5xl'
         style={{
           flexDirection: 'row',
