@@ -66,12 +66,16 @@ type CategoryProviderProps = {
   initialState?: State;
 };
 
+const Get = () => {
+  useGetCategories();
+  return null;
+};
+
 export const Provider = ({
   children,
   initialState = { categories: [], loading: true },
 }: CategoryProviderProps) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  useGetCategories();
 
   return (
     <categoryContext.Provider
@@ -80,6 +84,7 @@ export const Provider = ({
         setCategories: dispatch,
       }}
     >
+      <Get />
       {children}
     </categoryContext.Provider>
   );
