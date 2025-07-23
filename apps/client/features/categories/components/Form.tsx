@@ -61,6 +61,14 @@ const Icon = () => {
                 field.onChange(value.emoji);
               }}
             />
+            <Text
+              size='sm'
+              leading='sm'
+              align='center'
+              style={{ marginTop: 12 }}
+            >
+              Click on the button above to choose an emoji
+            </Text>
           </Box>
         );
       }}
