@@ -10,8 +10,11 @@ import {
   Heading,
   Text,
 } from '@/components';
+import { Ionicons } from '@expo/vector-icons';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 const Category = () => {
+  const colors = useThemeColors();
   const { loading, categories } = useCategories();
   const { control } = useFormContext<{
     categoryId: string;
@@ -21,6 +24,19 @@ const Category = () => {
     return (
       <Box style={{ alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator />
+      </Box>
+    );
+  }
+
+  if (categories.length > 0) {
+    return (
+      <Box style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <Ionicons
+          size={32}
+          name='bookmark'
+          color={colors.getColor('icon.inactive')}
+        />
+        <Text>No categories found</Text>
       </Box>
     );
   }
