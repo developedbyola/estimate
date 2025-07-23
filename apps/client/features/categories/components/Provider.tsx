@@ -45,7 +45,7 @@ const reducer = (state: State, action: Action): State => {
     case 'ADD_CATEGORY':
       return {
         ...state,
-        categories: [...state.categories, action.payload.category],
+        categories: [action.payload.category, ...state.categories],
       };
     case 'UPDATE_CATEGORY':
       return {

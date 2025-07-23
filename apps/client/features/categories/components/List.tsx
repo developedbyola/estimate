@@ -5,8 +5,8 @@ import { Category } from '../types';
 import { useRouter } from 'expo-router';
 import { useCategories } from './Provider';
 import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { TouchableWithoutFeedback } from 'react-native';
 import { ActivityIndicator, Box, Heading, Scroll } from '@/components';
 
 const DefaultEmpty = () => {
@@ -61,7 +61,7 @@ const Item = ({
   const colors = useThemeColors();
 
   return (
-    <TouchableWithoutFeedback
+    <TouchableOpacity
       onPress={() => {
         // router.push('/add-category');
       }}
@@ -101,7 +101,7 @@ const Item = ({
           </Heading>
         </MotiView>
       </MotiView>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 
@@ -116,7 +116,10 @@ export const List = ({ Empty }: ListProps) => {
   if (categories.length === 0) return Empty ? Empty : <DefaultEmpty />;
 
   return (
-    <Scroll style={{ flex: 1, paddingBlock: 12 }}>
+    <Scroll
+      showsVerticalScrollIndicator={false}
+      style={{ flex: 1, paddingBlock: 12 }}
+    >
       {categories.map((category, index) => {
         return (
           <Item
