@@ -2,13 +2,28 @@ import React from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { useCategories } from '@/features/categories';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Accordion, Box, Field, Heading, Text } from '@/components';
+import {
+  Accordion,
+  ActivityIndicator,
+  Box,
+  Field,
+  Heading,
+  Text,
+} from '@/components';
 
 const Category = () => {
-  const { categories } = useCategories();
+  const { loading, categories } = useCategories();
   const { control } = useFormContext<{
     categoryId: string;
   }>();
+
+  if (loading) {
+    return (
+      <Box style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
+      </Box>
+    );
+  }
 
   return (
     <Controller
@@ -25,7 +40,7 @@ const Category = () => {
                 <Picker.Item
                   key={category.id}
                   value={category.id}
-                  label={category.name}
+                  label={`${category.name} ${category.icon}`}
                 />
               );
             })}
