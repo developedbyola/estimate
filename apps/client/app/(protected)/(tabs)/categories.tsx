@@ -59,7 +59,6 @@ const CategoriesPage = () => {
             flex: 1,
             borderRadius: 24,
             paddingInline: 24,
-            paddingVertical: 12,
           }}
         >
           <Categories.List />

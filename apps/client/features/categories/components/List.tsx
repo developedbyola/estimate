@@ -116,7 +116,7 @@ export const List = ({ Empty }: ListProps) => {
   if (categories.length === 0) return Empty ? Empty : <DefaultEmpty />;
 
   return (
-    <Scroll style={{ flex: 1 }}>
+    <Scroll style={{ flex: 1, paddingBlock: 12 }}>
       {categories.map((category, index) => {
         return (
           <Item

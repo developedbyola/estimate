@@ -2,16 +2,13 @@ import { Popup } from '@/components';
 import { router } from 'expo-router';
 import { Trpc } from '@/features/trpc';
 import { useCategories } from '../components/Provider';
-import { useFormContext } from 'react-hook-form';
 
 export const useCreateCategory = () => {
   const popup = Popup.usePopup();
-  const form = useFormContext();
   const { setCategories } = useCategories();
 
   const create = Trpc.client.categories.me.create.useMutation({
     onSuccess: (data) => {
-      form.reset();
       setCategories({
         type: 'ADD_CATEGORY',
         payload: { category: data.category },
