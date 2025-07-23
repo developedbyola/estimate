@@ -1,10 +1,11 @@
 import { Popup } from '@/components';
-import { router } from 'expo-router';
 import { Trpc } from '@/features/trpc';
+import { useRouter } from 'expo-router';
 import { useCategories } from '../components/Provider';
 
 export const useCreateCategory = () => {
   const popup = Popup.usePopup();
+  const router = useRouter();
   const { setCategories } = useCategories();
 
   const create = Trpc.client.categories.me.create.useMutation({
