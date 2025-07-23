@@ -30,7 +30,7 @@ const CategoriesPage = () => {
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => {
-            router.push('/(protected)/(categories)/create');
+            router.push('/(protected)/categories/create');
           }}
         >
           <Box

@@ -63,10 +63,9 @@ const Item = ({
   return (
     <TouchableOpacity
       onPress={() => {
-        router.setParams({ categoryId: category.id });
         router.push({
-          pathname: '/(protected)/(categories)/[id]',
           params: { id: category.id },
+          pathname: '/(protected)/categories/[id]',
         });
       }}
     >

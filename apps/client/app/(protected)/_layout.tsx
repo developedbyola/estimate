@@ -29,7 +29,7 @@ const ProtectedLayout = () => {
         }}
       />
       <Stack.Screen
-        name='(categories)'
+        name='categories'
         options={{
           title: 'Categories',
           headerShown: false,
