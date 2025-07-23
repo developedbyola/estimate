@@ -4,12 +4,16 @@ import { router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { TouchableOpacity } from 'react-native';
+import { useTheme } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 
 const CategoriesLayout = () => {
   const colors = useThemeColors();
+  const theme = useTheme();
 
   return (
     <Stack>
+      <StatusBar />
       <Stack.Screen
         name='create'
         options={{
