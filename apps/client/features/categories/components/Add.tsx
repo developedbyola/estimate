@@ -88,7 +88,7 @@ export const Add = ({ category }: AddProps) => {
               });
               return;
             }
-            await createCategory(values);
+            await createCategory(values as any);
           })}
         >
           <Action.Loader />

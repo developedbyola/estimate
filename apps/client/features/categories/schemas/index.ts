@@ -8,7 +8,7 @@ export const categorySchema = z.object({
     })
     .min(3, 'Title must be at least 3 characters long.'),
 
-  icon: z.string({
+  icon: z.any({
     required_error: 'An icon is required for the category.',
     invalid_type_error: 'Icon must be a string.',
   }),
