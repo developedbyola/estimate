@@ -56,7 +56,7 @@
         "react-dom": "19.0.0",
         "react-hook-form": "^7.56.3",
         "react-native": "0.79.2",
-        "react-native-emoji-popup": "^0.3.2",
+        "react-native-emoji-popup": "0.3.1",
         "react-native-emoji-selector": "^0.2.0",
         "react-native-gesture-handler": "^2.26.0",
         "react-native-pager-view": "^6.8.0",
@@ -1578,7 +1578,7 @@
 
     "react-native-edge-to-edge": ["react-native-edge-to-edge@1.6.0", "", { "peerDependencies": { "react": "*", "react-native": "*" } }, "sha512-2WCNdE3Qd6Fwg9+4BpbATUxCLcouF6YRY7K+J36KJ4l3y+tWN6XCqAC4DuoGblAAbb2sLkhEDp4FOlbOIot2Og=="],
 
-    "react-native-emoji-popup": ["react-native-emoji-popup@0.3.2", "", { "peerDependencies": { "react": "*", "react-native": "*" } }, "sha512-ZhuTEi40FwcPy8+b90sAZWKdhIEMeR15C3NWslWHUQdczc+67NeIJyIcoEUpJbWvy9osFLLgeYcnKDZSGHIhMw=="],
+    "react-native-emoji-popup": ["react-native-emoji-popup@0.3.1", "", { "peerDependencies": { "react": "*", "react-native": "*" } }, "sha512-YcPjpgpS7WImdf4/OIhpmUmUtpPJCNRP+F0nK0iGNl2qW/zOPn5pHbD6I9DYjMY0AZ7+MKt4Pob/1TSMqpvVEA=="],
 
     "react-native-emoji-selector": ["react-native-emoji-selector@0.2.0", "", { "dependencies": { "emoji-datasource": "^6.0.0" } }, "sha512-+rPPWG5vl5AexdH8udEwtzdq9QUGD6kp+dQ8C/459d3ScM0S3UnT/qAvhmpsTgCbgjpdwiJIcrKNxKmGEDb15g=="],
 
