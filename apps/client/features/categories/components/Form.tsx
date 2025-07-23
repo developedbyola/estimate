@@ -24,7 +24,7 @@ const Name = () => {
 };
 
 const Icon = () => {
-  const [isOpen, setIsOpen] = React.useState(true);
+  const [isOpen, setIsOpen] = React.useState(false);
   const { control } = useFormContext<{ icon: string }>();
 
   return (
@@ -37,10 +37,13 @@ const Icon = () => {
             <TouchableOpacity
               onPress={() => setIsOpen(true)}
               style={{
-                height: 64,
+                height: 80,
                 aspectRatio: 1,
-                borderRadius: 16,
+                borderRadius: 24,
                 marginInline: 'auto',
+                alignItems: 'center',
+                backgroundColor: '#eee',
+                justifyContent: 'center',
               }}
             >
               <Text>{field.value}</Text>
@@ -50,7 +53,7 @@ const Icon = () => {
               categoryPosition='top'
               onClose={() => setIsOpen(false)}
               onEmojiSelected={(value) => {
-                field.onChange(value);
+                field.onChange(value.name);
               }}
             />
           </Box>
