@@ -115,7 +115,7 @@ const Icon = () => {
 const options = [
   {
     name: 'Name',
-    value: 'icon',
+    value: 'name',
     Component: Name,
   },
   {
