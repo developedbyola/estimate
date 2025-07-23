@@ -14,16 +14,14 @@ export const useCreateCategory = () => {
         type: 'ADD_CATEGORY',
         payload: { category: data.category },
       });
+      router.back();
       popup.open({
         variant: 'success',
         title: 'Category created successfully',
         message: 'You can now add farms to this category',
         actions: [
           {
-            text: 'Browse categories',
-            onPress: () => {
-              router.push('/(protected)/(tabs)/categories');
-            },
+            text: 'See all categories',
           },
         ],
       });
