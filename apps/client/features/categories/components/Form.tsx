@@ -41,7 +41,7 @@ const Icon = () => {
               style={{
                 height: 80,
                 aspectRatio: 1,
-                borderRadius: 24,
+                borderRadius: 80,
                 marginInline: 'auto',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -50,7 +50,7 @@ const Icon = () => {
             >
               <Text
                 weight='bold'
-                style={{ fontSize: 52, lineHeight: 56 }}
+                style={{ fontSize: 52, lineHeight: 64 }}
               >
                 {field.value}
               </Text>
