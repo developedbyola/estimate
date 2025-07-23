@@ -23,7 +23,7 @@ const Name = () => {
 };
 
 const Icon = () => {
-  const { control } = useFormContext<{ title: string; icon: string }>();
+  const { control } = useFormContext<{ icon: string }>();
 
   return (
     <Controller
@@ -34,7 +34,7 @@ const Icon = () => {
           <Box style={{ minHeight: 400 }}>
             <EmojiSelector
               onEmojiSelected={(value) => {
-                console.log(value);
+                field.onChange(value);
               }}
             />
           </Box>
