@@ -13,7 +13,7 @@ const CategoriesLayout = () => {
 
   return (
     <Stack>
-      <StatusBar />
+      <StatusBar style={theme.dark ? 'light' : 'dark'} />
       <Stack.Screen
         name='create'
         options={{
