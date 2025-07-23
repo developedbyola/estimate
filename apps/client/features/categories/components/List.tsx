@@ -1,14 +1,13 @@
 import React from 'react';
 import { MotiView } from 'moti';
-import Icons from '../constants/Icons';
+import { Space } from '@/constants';
 import { useRouter } from 'expo-router';
 import { useCategories } from './Provider';
-import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { TouchableWithoutFeedback } from 'react-native';
 import { useGetCategories } from '../hooks/useGetCategories';
-import { ActivityIndicator, Box, Heading } from '@/components';
+import { ActivityIndicator, Box, Heading, Scroll } from '@/components';
 import { Category } from '../types';
 
 const DefaultEmpty = () => {
@@ -62,22 +61,34 @@ const Item = ({ category }: { category: Category }) => {
         // router.push('/add-category');
       }}
     >
-      <MotiView style={{ gap: 12, alignItems: 'center', flexDirection: 'row' }}>
+      <MotiView
+        style={{
+          gap: 12,
+          alignItems: 'center',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Heading
+          size='xl'
+          weight='medium'
+        >
+          {category.name}
+        </Heading>
         <MotiView
           style={{
-            height: 48,
+            height: 40,
             aspectRatio: 1,
-            borderRadius: 16,
+            borderRadius: 24,
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: colors.getColor('bg.base'),
           }}
         >
-          <Heading style={{ fontSize: 32, lineHeight: 32 }}>
+          <Heading style={{ fontSize: 24, lineHeight: 32 }}>
             {category.icon}
           </Heading>
         </MotiView>
-        <Heading>{category.name}</Heading>
       </MotiView>
     </TouchableWithoutFeedback>
   );
@@ -95,8 +106,13 @@ export const List = ({ Empty }: ListProps) => {
   if (categories.length === 0) return Empty ? Empty : <DefaultEmpty />;
 
   return (
-    <Box>
-      {categories.map((category, index) => {
+    <Scroll
+      style={{
+        flex: 1,
+        gap: Space.sm,
+      }}
+    >
+      {categories.map((category) => {
         return (
           <Item
             key={category.id}
@@ -104,6 +120,6 @@ export const List = ({ Empty }: ListProps) => {
           />
         );
       })}
-    </Box>
+    </Scroll>
   );
 };

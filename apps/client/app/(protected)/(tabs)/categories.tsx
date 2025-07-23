@@ -48,6 +48,7 @@ const CategoriesPage = () => {
 
       <Box
         px='xl'
+        py='3xl'
         style={{ flex: 1 }}
       >
         <Categories.List />
