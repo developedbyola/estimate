@@ -35,6 +35,7 @@ export const Add = ({ category }: AddProps) => {
     : "Create a new category to easily manage and organize all your farm's information and estimates in a single, convenient location.";
 
   const isPending = createStatus === 'pending' || updateStatus === 'pending';
+  const btnLabel = categoryId ? 'Update' : 'Save';
 
   return (
     <Safe
@@ -95,7 +96,7 @@ export const Add = ({ category }: AddProps) => {
             size='lg'
             weight='medium'
           >
-            Save
+            {btnLabel}
           </Action.Label>
         </Action.Root>
       </Box>
