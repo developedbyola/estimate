@@ -65,7 +65,7 @@ export const Add = ({ category }: AddProps) => {
 
         <Box
           px='xl'
-          mt='4xl'
+          mt='8xl'
         >
           <FormProvider {...form}>
             <Form />
