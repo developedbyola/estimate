@@ -47,8 +47,8 @@ const Icon = () => {
               }}
             >
               <Text
-                size='xl'
                 weight='bold'
+                style={{ fontSize: 52, lineHeight: 56 }}
               >
                 {field.value}
               </Text>
@@ -58,7 +58,7 @@ const Icon = () => {
               categoryPosition='top'
               onClose={() => setIsOpen(false)}
               onEmojiSelected={(value) => {
-                field.onChange(value.unicode_version);
+                field.onChange(value.emoji);
               }}
             />
           </Box>
