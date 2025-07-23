@@ -1,9 +1,5 @@
 import React from 'react';
-import { Border } from '@/constants';
-import Icons from '../constants/Icons';
-import { excerpt } from '@/utils/excerpt';
-import { Ionicons } from '@expo/vector-icons';
-import EmojiSelector, { Categories } from 'react-native-emoji-selector';
+import { EmojiPopup } from 'react-native-emoji-popup';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Box, Text, Field, Heading, RadioGroup, Accordion } from '@/components';
 
@@ -36,12 +32,13 @@ const Icon = () => {
       render={({ field }) => {
         return (
           <Box style={{ minHeight: 400 }}>
-            <EmojiSelector
-              category={Categories.symbols}
+            <EmojiPopup
               onEmojiSelected={(value) => {
                 console.log(value);
               }}
-            />
+            >
+              <Text>Click to select an emoji</Text>
+            </EmojiPopup>
           </Box>
         );
       }}
