@@ -63,7 +63,8 @@ const Item = ({
   return (
     <TouchableOpacity
       onPress={() => {
-        // router.push('/add-category');
+        router.setParams({ categoryId: category.id });
+        router.push('/(protected)/(categories)/update');
       }}
     >
       <MotiView
