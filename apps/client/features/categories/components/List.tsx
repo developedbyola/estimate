@@ -64,7 +64,10 @@ const Item = ({
     <TouchableOpacity
       onPress={() => {
         router.setParams({ categoryId: category.id });
-        router.push('/(protected)/(categories)/update');
+        router.push({
+          pathname: '/(protected)/(categories)/[id]',
+          params: { id: category.id },
+        });
       }}
     >
       <MotiView

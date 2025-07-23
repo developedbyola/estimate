@@ -40,7 +40,7 @@ const CategoriesLayout = () => {
         }}
       />
       <Stack.Screen
-        name='update'
+        name='[id]'
         options={{
           title: 'Update category',
           headerLeft: () => (
