@@ -3,7 +3,7 @@ import { Border } from '@/constants';
 import Icons from '../constants/Icons';
 import { excerpt } from '@/utils/excerpt';
 import { Ionicons } from '@expo/vector-icons';
-import EmojiSelector from 'react-native-emoji-selector';
+import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Box, Text, Field, Heading, RadioGroup, Accordion } from '@/components';
 
@@ -37,6 +37,7 @@ const Icon = () => {
         return (
           <Box style={{ minHeight: 400 }}>
             <EmojiSelector
+              category={Categories.symbols}
               onEmojiSelected={(value) => {
                 console.log(value);
               }}
