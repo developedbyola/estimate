@@ -18,7 +18,17 @@ export const authRouter = router({
     implement: procedures.public.query(async ({ ctx }) => {
       try {
         const res = await auth.handler(ctx.req.raw);
-        return ctx.ok(res.json());
+        const json = (await res.json()) as object;
+
+        if (!json) {
+          return ctx.fail({
+            code: 'INTERNAL_SERVER_ERROR',
+            message:
+              'We encountered an unexpected error while processing your request.',
+          });
+        }
+
+        return ctx.ok(json);
       } catch (err) {
         return ctx.fail(err);
       }
