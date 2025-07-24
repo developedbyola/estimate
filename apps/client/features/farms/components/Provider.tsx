@@ -58,7 +58,7 @@ const farmsReducer = (state: State, action: Action): State => {
     case 'ADD_FARM':
       return {
         ...state,
-        farms: [...state.farms, action.payload.farm],
+        farms: [action.payload.farm, ...state.farms],
       };
     case 'UPDATE_FARM':
       return {
