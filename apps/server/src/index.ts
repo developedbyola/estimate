@@ -14,10 +14,10 @@ app.on(['POST', 'GET'], '/auth/**', (c) => auth.handler(c.req.raw));
 
 // tRPC routes
 app.use(
-  '/*',
+  '/trpc/*',
   trpcServer({
     router: appRouter,
-    endpoint: '/',
+    endpoint: '/trpc/*',
     createContext: (_opts, c) => createContext(c),
   })
 );
