@@ -8,6 +8,7 @@ export const auth = betterAuth({
     window: 10,
     enabled: true,
   },
+  cookiePrefix: 'taxed',
   database: new Pool({
     connectionString: env.DATABASE_URL,
   }),
@@ -15,6 +16,7 @@ export const auth = betterAuth({
   url: env.BETTER_AUTH_URL,
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: false,
   },
   socialProviders: {
     google: {
