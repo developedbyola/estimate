@@ -1,5 +1,4 @@
 import { router } from '@/trpc/middleware';
-import { authRouter } from '@/trpc/routers/auth';
 import { usersRouter } from '@/trpc/routers/users';
 import { farmsRouter } from '@/trpc/routers/farms';
 import { systemRouter } from '@/trpc/routers/system';
@@ -9,7 +8,6 @@ import { categoriesRouter } from '@/trpc/routers/categories';
 import { profilesRouter } from '@/trpc/routers/profiles';
 
 export const appRouter = router({
-  auth: authRouter,
   users: usersRouter,
   sessions: sessionsRouter,
   farms: farmsRouter,
