@@ -4,6 +4,7 @@ import { env } from '@/configs/env';
 import { response } from '@/utils/response';
 import type { Context } from '@/trpc/context';
 import { initTRPC, TRPCError } from '@trpc/server';
+import { auth } from '@/lib/auth';
 
 const t = initTRPC.context<Context>().create({
   errorFormatter: (opts) => {
@@ -24,34 +25,21 @@ const t = initTRPC.context<Context>().create({
 });
 
 const isAuthed = t.middleware(async ({ ctx, next }) => {
-  const authorization = ctx.req.header('Authorization');
-  const accessToken = authorization?.split('Bearer ')[1];
-
-  if (!accessToken) {
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: 'You need to be signed in to access this feature.',
-    });
-  }
-
   try {
-    const actor = await jwt.verify<{ userId: string }>(
-      env.ACCESS_TOKEN_SECRET,
-      accessToken
-    );
+    const session = await auth.api.getSession({ headers: ctx.req.raw.headers });
 
-    if (!actor) {
+    if (!session) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
-        message:
-          'Your sign-in authorization is invalid. Please refresh your sign-in.',
+        message: 'You need to be signed in to access this feature.',
       });
     }
 
     return next({
       ctx: {
         ...ctx,
-        actor,
+        user: session.user,
+        session: session.session,
       },
     });
   } catch (err) {
