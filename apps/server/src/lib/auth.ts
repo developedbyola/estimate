@@ -3,6 +3,11 @@ import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 
 export const auth = betterAuth({
+  rateLimit: {
+    max: 20,
+    window: 10,
+    enabled: true,
+  },
   database: new Pool({
     connectionString: env.DATABASE_URL,
   }),
