@@ -1,14 +1,15 @@
 import z from 'zod';
-import { protectedProcedure, router } from '../middleware';
+import { router } from '../context';
+import { procedures } from '../procedures';
 
 export const categoriesRouter = router({
   me: {
-    list: protectedProcedure.query(async ({ ctx }) => {
+    list: procedures.protected.query(async ({ ctx }) => {
       try {
         const categories = await ctx.supabase
           .from('categories')
           .select('*')
-          .eq('user_id', ctx.actor.userId)
+          .eq('user_id', ctx.actor.user.id)
           .order('created_at', { ascending: false });
 
         if (categories.error) {
@@ -31,7 +32,7 @@ export const categoriesRouter = router({
         return ctx.fail(err);
       }
     }),
-    get: protectedProcedure
+    get: procedures.protected
       .input(z.object({ categoryId: z.string() }))
       .query(async ({ input, ctx }) => {
         try {
@@ -39,7 +40,7 @@ export const categoriesRouter = router({
             .from('categories')
             .select('*')
             .eq('id', input.categoryId)
-            .eq('user_id', ctx.actor.userId)
+            .eq('user_id', ctx.actor.user.id)
             .single();
 
           if (category.error || !category.data) {
@@ -66,7 +67,7 @@ export const categoriesRouter = router({
           });
         }
       }),
-    create: protectedProcedure
+    create: procedures.protected
       .input(
         z.object({
           name: z
@@ -83,7 +84,7 @@ export const categoriesRouter = router({
             .insert({
               name: input.name,
               icon: input.icon,
-              user_id: ctx.actor.userId,
+              user_id: ctx.actor.user.id,
             })
             .select('*')
             .single();
@@ -109,7 +110,7 @@ export const categoriesRouter = router({
           return ctx.fail(err);
         }
       }),
-    update: protectedProcedure
+    update: procedures.protected
       .input(
         z.object({
           categoryId: z.string().min(1, 'Category ID is required'),
@@ -127,7 +128,7 @@ export const categoriesRouter = router({
             .from('categories')
             .update({ name: input.name, icon: input.icon })
             .eq('id', input.categoryId)
-            .eq('user_id', ctx.actor.userId)
+            .eq('user_id', ctx.actor.user.id)
             .select('*')
             .single();
 
@@ -151,7 +152,7 @@ export const categoriesRouter = router({
           return ctx.fail(err);
         }
       }),
-    delete: protectedProcedure
+    delete: procedures.protected
       .input(
         z.object({ categoryId: z.string().min(1, 'Category ID is required') })
       )
@@ -161,7 +162,7 @@ export const categoriesRouter = router({
             .from('categories')
             .delete()
             .eq('id', input.categoryId)
-            .eq('user_id', ctx.actor.userId)
+            .eq('user_id', ctx.actor.user.id)
             .select('*')
             .single();
 
