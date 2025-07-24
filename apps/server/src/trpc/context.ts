@@ -6,7 +6,7 @@ export const createContext = async (c: HonoContext) => {
   return {
     res: c.res,
     req: c.req,
-    honoContext: c,
+    context: c,
     fail: response.error,
     ok: response.success,
     supabase: supabaseClient,
