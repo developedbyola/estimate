@@ -1,16 +1,17 @@
 import z from 'zod';
-import { protectedProcedure, router } from '../middleware';
+import { router } from '../context';
+import { procedures } from '../procedures';
 
 const SELECT = `*, category:category_id(id, name, icon, created_at)`;
 
 export const farmsRouter = router({
   me: {
-    list: protectedProcedure.query(async ({ ctx }) => {
+    list: procedures.protected.query(async ({ ctx }) => {
       try {
         const farms = await ctx.supabase
           .from('farms')
           .select(SELECT)
-          .eq('user_id', ctx.actor.userId)
+          .eq('user_id', ctx.actor.user.id)
           .order('created_at', { ascending: false });
 
         if (farms.error) {
@@ -45,7 +46,7 @@ export const farmsRouter = router({
       }
     }),
 
-    get: protectedProcedure
+    get: procedures.protected
       .input(z.object({ farmId: z.string().min(1, 'Farm ID is required') }))
       .query(async ({ input, ctx }) => {
         try {
@@ -53,7 +54,7 @@ export const farmsRouter = router({
             .from('farms')
             .select(SELECT)
             .eq('id', input.farmId)
-            .eq('user_id', ctx.actor.userId)
+            .eq('user_id', ctx.actor.user.id)
             .single();
 
           if (farm.error) {
@@ -88,7 +89,7 @@ export const farmsRouter = router({
         }
       }),
 
-    update: protectedProcedure
+    update: procedures.protected
       .input(
         z.object({
           farmId: z.string().min(1, 'Farm ID is required'),
@@ -132,7 +133,7 @@ export const farmsRouter = router({
               category_id: input.categoryId,
             })
             .eq('id', input.farmId)
-            .eq('user_id', ctx.actor.userId)
+            .eq('user_id', ctx.actor.user.id)
             .select(SELECT)
             .single();
 
@@ -168,7 +169,7 @@ export const farmsRouter = router({
         }
       }),
 
-    delete: protectedProcedure
+    delete: procedures.protected
       .input(z.object({ farmId: z.string().min(1, 'Farm ID is required') }))
       .mutation(async ({ input, ctx }) => {
         try {
@@ -176,7 +177,7 @@ export const farmsRouter = router({
             .from('farms')
             .delete()
             .eq('id', input.farmId)
-            .eq('user_id', ctx.actor.userId)
+            .eq('user_id', ctx.actor.user.id)
             .select(SELECT)
             .single();
 
@@ -211,7 +212,7 @@ export const farmsRouter = router({
         }
       }),
 
-    create: protectedProcedure
+    create: procedures.protected
       .input(
         z.object({
           name: z.string().min(1, 'Please provide a name for your farm'),
@@ -248,7 +249,7 @@ export const farmsRouter = router({
               city: input.city,
               size: input.size,
               state: input.state,
-              user_id: ctx.actor.userId,
+              user_id: ctx.actor.user.id,
               address: input.address,
               size_unit: input.sizeUnit,
               category_id: input.categoryId,
