@@ -8,4 +8,17 @@ export const auth = betterAuth({
   }),
   secret: env.BETTER_AUTH_SECRET,
   url: env.BETTER_AUTH_URL,
+  emailAndPassword: {
+    enabled: true,
+  },
+  socialProviders: {
+    google: {
+      clientId: '',
+      clientSecret: '',
+    },
+    apple: {
+      clientId: '',
+      clientSecret: '',
+    },
+  },
 });
