@@ -15,10 +15,13 @@ import { procedures } from '../procedures';
 
 export const authRouter = router({
   public: {
-    signInEmail: procedures.public.mutation(async ({ ctx }) => {
-      const res = await auth.api.signInEmail({
-        body: { email: '', password: '' },
-      });
+    implement: procedures.public.query(async ({ ctx }) => {
+      try {
+        const res = await auth.handler(ctx.req.raw);
+        return ctx.ok(res.json());
+      } catch (err) {
+        return ctx.fail(err);
+      }
     }),
   },
 });
