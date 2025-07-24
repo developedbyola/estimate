@@ -1,6 +1,6 @@
 import { getClientIp } from 'request-ip';
 import { TRPCError } from '@trpc/server';
-import { middleware } from '@/trpc/middleware';
+import { middleware } from '@/trpc/context';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 export const rateLimiter = (options: { points: number; duration: number }) => {

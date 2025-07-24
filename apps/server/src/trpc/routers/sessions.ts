@@ -1,14 +1,15 @@
 import { z } from 'zod';
-import { protectedProcedure, router } from '../middleware';
+import { procedures } from '../procedures';
+import { router } from '../context';
 
 export const sessionsRouter = router({
   me: {
-    list: protectedProcedure.query(async ({ ctx }) => {
+    list: procedures.protected.query(async ({ ctx }) => {
       try {
         const sessions = await ctx.supabase
           .from('sessions')
           .select('*')
-          .eq('user_id', ctx.actor.userId)
+          .eq('user_id', ctx.actor.user.id)
           .order('created_at', { ascending: false });
 
         if (sessions.error) {
@@ -40,7 +41,7 @@ export const sessionsRouter = router({
       }
     }),
 
-    revoke: protectedProcedure
+    revoke: procedures.protected
       .input(z.object({ sessionId: z.string() }))
       .mutation(async ({ input, ctx }) => {
         try {
@@ -48,7 +49,7 @@ export const sessionsRouter = router({
             .from('sessions')
             .update({ revoked: true })
             .eq('id', input.sessionId)
-            .eq('user_id', ctx.actor.userId);
+            .eq('user_id', ctx.actor.user.id);
 
           if (session.error) {
             return ctx.fail({

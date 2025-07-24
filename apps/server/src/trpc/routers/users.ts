@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import argon2 from 'argon2';
-import { protectedProcedure, publicProcedure, router } from '../middleware';
+import { router } from '../context';
+import { procedures } from '../procedures';
 
 const passwordSchema = z
   .string()
@@ -16,12 +17,12 @@ const passwordSchema = z
 
 export const usersRouter = router({
   me: {
-    get: protectedProcedure.query(async ({ ctx }) => {
+    get: procedures.protected.query(async ({ ctx }) => {
       try {
         const user = await ctx.supabase
           .from('users')
           .select('id, created_at, is_onboarded, email')
-          .eq('id', ctx.actor.userId)
+          .eq('id', ctx.actor.user.id)
           .single();
 
         if (!user.data) {
@@ -47,7 +48,7 @@ export const usersRouter = router({
         return ctx.fail(err);
       }
     }),
-    update: protectedProcedure
+    update: procedures.protected
       .input(
         z.object({
           isOnboarded: z.boolean().optional(),
@@ -60,7 +61,7 @@ export const usersRouter = router({
             .update({
               is_onboarded: input.isOnboarded,
             })
-            .eq('id', ctx.actor.userId)
+            .eq('id', ctx.actor.user.id)
             .select('id, created_at, is_onboarded, email')
             .single();
 
@@ -84,7 +85,7 @@ export const usersRouter = router({
           return ctx.fail(err);
         }
       }),
-    changePassword: protectedProcedure
+    changePassword: procedures.protected
       .input(
         z.object({
           newPassword: passwordSchema,
@@ -96,7 +97,7 @@ export const usersRouter = router({
           const user = await ctx.supabase
             .from('users')
             .select('password')
-            .eq('id', ctx.actor.userId)
+            .eq('id', ctx.actor.user.id)
             .single();
 
           if (!user.data) {
@@ -128,7 +129,7 @@ export const usersRouter = router({
             .update({
               password: hashedPassword,
             })
-            .eq('id', ctx.actor.userId)
+            .eq('id', ctx.actor.user.id)
             .select('id, created_at')
             .single();
 
@@ -148,7 +149,7 @@ export const usersRouter = router({
         }
       }),
 
-    changeEmail: protectedProcedure
+    changeEmail: procedures.protected
       .input(
         z.object({
           email: z.string().email('Please enter a valid email address'),
@@ -163,7 +164,7 @@ export const usersRouter = router({
           const user = await ctx.supabase
             .from('users')
             .select('password')
-            .eq('id', ctx.actor.userId)
+            .eq('id', ctx.actor.user.id)
             .single();
 
           if (!user.data) {
@@ -192,7 +193,7 @@ export const usersRouter = router({
             .from('users')
             .select('id')
             .eq('email', input.email)
-            .neq('id', ctx.actor.userId)
+            .neq('id', ctx.actor.user.id)
             .single();
 
           if (existingUser.data) {
@@ -209,7 +210,7 @@ export const usersRouter = router({
             .update({
               email: input.email,
             })
-            .eq('id', ctx.actor.userId)
+            .eq('id', ctx.actor.user.id)
             .select('id, name, created_at')
             .single();
 
@@ -230,7 +231,7 @@ export const usersRouter = router({
       }),
 
     public: {
-      getById: publicProcedure
+      getById: procedures.public
         .input(
           z.object({
             userId: z.string().min(1, 'User ID is required'),

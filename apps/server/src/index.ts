@@ -1,6 +1,3 @@
-// import { config } from 'dotenv';
-// config();
-
 import { Hono } from 'hono';
 import { appRouter } from '@/trpc';
 import { auth } from '@/lib/auth';
