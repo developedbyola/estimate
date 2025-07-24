@@ -18,6 +18,11 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: false,
   },
+  session: {
+    freshAge: 60 * 15,
+    updateAge: 60 * 60 * 24,
+    expiresIn: 60 * 60 * 24 * 30, // 30 days
+  },
   //   socialProviders: {
   //     google: {
   //       clientId: '',
