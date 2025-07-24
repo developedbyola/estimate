@@ -1,17 +1,23 @@
 import { env } from '@/configs/env';
-import { router } from '../middleware';
-import { publicProcedure } from '../middleware';
+import { router } from '../context';
+import { procedures } from '../procedures';
 
 export const systemRouter = router({
   public: {
-    health: publicProcedure.query(() => ({
-      status: 'OK',
-    })),
-    version: publicProcedure.query(() => ({
-      version: env.VERSION,
-    })),
-    ping: publicProcedure.query(() => ({
-      message: 'pong',
-    })),
+    health: procedures.public.query(({ ctx }) => {
+      return ctx.ok({
+        status: 'OK',
+      });
+    }),
+    version: procedures.public.query(({ ctx }) => {
+      return ctx.ok({
+        version: env.VERSION,
+      });
+    }),
+    ping: procedures.public.query(({ ctx }) => {
+      return ctx.ok({
+        message: 'pong',
+      });
+    }),
   },
 });

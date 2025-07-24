@@ -1,14 +1,15 @@
 import { z } from 'zod';
-import { protectedProcedure, router } from '../middleware';
+import { router } from '../context';
+import { procedures } from '../procedures';
 
 export const profilesRouter = router({
   me: {
-    get: protectedProcedure.query(async ({ ctx }) => {
+    get: procedures.protected.query(async ({ ctx }) => {
       try {
         const profile = await ctx.supabase
           .from('profiles')
           .select('*')
-          .eq('user_id', ctx.actor.userId)
+          .eq('user_id', ctx.actor.user.id)
           .single();
 
         if (profile.error) {
@@ -33,7 +34,7 @@ export const profilesRouter = router({
         return ctx.fail(err);
       }
     }),
-    update: protectedProcedure
+    update: procedures.protected
       .input(
         z.object({
           firstName: z
@@ -70,7 +71,7 @@ export const profilesRouter = router({
               .from('profiles')
               .select('user_id')
               .eq('username', input.username)
-              .neq('user_id', ctx.actor.userId)
+              .neq('user_id', ctx.actor.user.id)
               .maybeSingle();
 
             if (existingError) {
@@ -93,7 +94,7 @@ export const profilesRouter = router({
             .from('profiles')
             .upsert(
               {
-                user_id: ctx.actor.userId,
+                user_id: ctx.actor.user.id,
                 last_name: input.lastName,
                 first_name: input.firstName,
                 username: input.username,
@@ -126,7 +127,7 @@ export const profilesRouter = router({
       }),
   },
   public: {
-    getByUserId: protectedProcedure
+    getByUserId: procedures.protected
       .input(
         z.object({
           userId: z.string().min(1, 'Profile ID is required'),
