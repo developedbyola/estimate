@@ -9,8 +9,6 @@ import { env } from './configs/env';
 
 const app = new Hono();
 
-app.use;
-
 // tRPC routes
 app.use(
   '/api/trpc/*',
