@@ -9,8 +9,8 @@ export const useUpdateFarm = () => {
 
   const update = Trpc.client.farms.me.update.useMutation({
     onSuccess: (data) => {
-      router.replace({ pathname: '/(protected)/(tabs)' });
       setFarms({ type: 'UPDATE_FARM', payload: { farm: data.farm } });
+      router.replace({ pathname: '/(protected)/(tabs)' });
       popup.open({
         title: 'Farm Updated Successfully',
         message:
