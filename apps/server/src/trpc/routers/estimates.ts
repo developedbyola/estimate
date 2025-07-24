@@ -1,9 +1,10 @@
 import z from 'zod';
-import { protectedProcedure, router } from '../middleware';
+import { router } from '../context';
+import { procedures } from '../procedures';
 
 export const estimatesRouter = router({
   me: {
-    list: protectedProcedure
+    list: procedures.protected
       .input(
         z.object({
           farmId: z.string().min(1, 'Farm ID is required').optional(),
@@ -14,7 +15,7 @@ export const estimatesRouter = router({
           let query = ctx.supabase
             .from('estimates')
             .select('*')
-            .eq('user_id', ctx.actor.userId);
+            .eq('user_id', ctx.actor.user.id);
 
           if (input.farmId) {
             query = query.eq('farm_id', input.farmId);
@@ -45,7 +46,7 @@ export const estimatesRouter = router({
           return ctx.fail(err);
         }
       }),
-    get: protectedProcedure
+    get: procedures.protected
       .input(z.object({ estimateId: z.string() }))
       .query(async ({ input, ctx }) => {
         try {
@@ -53,7 +54,7 @@ export const estimatesRouter = router({
             .from('estimates')
             .select('*')
             .eq('id', input.estimateId)
-            .eq('user_id', ctx.actor.userId)
+            .eq('user_id', ctx.actor.user.id)
             .single();
 
           if (estimate.error) {
@@ -77,7 +78,7 @@ export const estimatesRouter = router({
           return ctx.fail(err);
         }
       }),
-    create: protectedProcedure
+    create: procedures.protected
       .input(
         z.object({
           title: z
@@ -98,7 +99,7 @@ export const estimatesRouter = router({
               title: input.title,
               farm_id: input.farmId,
               calculations: input.calculations,
-              user_id: ctx.actor.userId,
+              user_id: ctx.actor.user.id,
             })
             .select('*')
             .single();
@@ -124,7 +125,7 @@ export const estimatesRouter = router({
           return ctx.fail(err);
         }
       }),
-    update: protectedProcedure
+    update: procedures.protected
       .input(
         z.object({
           estimateId: z.string().min(1, 'Estimate ID is required'),
@@ -166,7 +167,7 @@ export const estimatesRouter = router({
           return ctx.fail(err);
         }
       }),
-    delete: protectedProcedure
+    delete: procedures.protected
       .input(
         z.object({
           estimateId: z.string().min(1, 'Estimate ID is required'),
