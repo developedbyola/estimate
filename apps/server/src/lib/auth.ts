@@ -1,6 +1,6 @@
+import { Pool } from 'pg';
 import { env } from '@/configs/env';
 import { betterAuth } from 'better-auth';
-import { Pool } from 'pg';
 
 export const auth = betterAuth({
   rateLimit: {
@@ -18,14 +18,14 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: false,
   },
-  socialProviders: {
-    google: {
-      clientId: '',
-      clientSecret: '',
-    },
-    apple: {
-      clientId: '',
-      clientSecret: '',
-    },
-  },
+  //   socialProviders: {
+  //     google: {
+  //       clientId: '',
+  //       clientSecret: '',
+  //     },
+  //     apple: {
+  //       clientId: '',
+  //       clientSecret: '',
+  //     },
+  //   },
 });
