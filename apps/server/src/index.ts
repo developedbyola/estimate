@@ -3,11 +3,14 @@
 
 import { Hono } from 'hono';
 import { appRouter } from '@/trpc';
+import { auth } from '@/lib/auth';
+import { env } from './configs/env';
 import { trpcServer } from '@hono/trpc-server';
 import { createContext } from '@/trpc/context';
-import { env } from './configs/env';
 
 const app = new Hono();
+
+app.on(['POST', 'GET'], '/api/trpc/auth/**', (c) => auth.handler(c.req.raw));
 
 // tRPC routes
 app.use(
