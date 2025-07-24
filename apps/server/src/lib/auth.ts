@@ -1,8 +1,11 @@
+import { env } from '@/configs/env';
 import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 
 export const auth = betterAuth({
   database: new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: env.DATABASE_URL,
   }),
+  secret: env.BETTER_AUTH_SECRET,
+  url: env.BETTER_AUTH_URL,
 });

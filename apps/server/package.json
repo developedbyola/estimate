@@ -5,6 +5,7 @@
   "private": true,
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/pg": "^8.15.4",
     "@types/request-ip": "^0.0.41"
   },
   "scripts": {
