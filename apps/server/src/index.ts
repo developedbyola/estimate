@@ -8,16 +8,16 @@ import { env } from './configs/env';
 import { trpcServer } from '@hono/trpc-server';
 import { createContext } from '@/trpc/context';
 
-const app = new Hono();
+const app = new Hono().basePath('/api');
 
-app.on(['POST', 'GET'], '/api/trpc/auth/**', (c) => auth.handler(c.req.raw));
+app.on(['POST', 'GET'], '/auth/**', (c) => auth.handler(c.req.raw));
 
 // tRPC routes
 app.use(
-  '/api/trpc/*',
+  '/*',
   trpcServer({
     router: appRouter,
-    endpoint: '/api/trpc',
+    endpoint: '/',
     createContext: (_opts, c) => createContext(c),
   })
 );
