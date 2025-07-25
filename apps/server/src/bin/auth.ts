@@ -1,9 +1,8 @@
-import { z } from 'zod';
-import { auth } from '@/lib/auth';
-import { router } from '../trpc/context';
-import { procedures } from '../trpc/procedures';
+// import { z } from 'zod';
+// import { router } from '../trpc/context';
+// import { procedures } from '../trpc/procedures';
 
-// // Strong password validation schema
+//  Strong password validation schema
 // const passwordSchema = z
 //   .string()
 //   .min(8, 'Your password should be at least 8 characters long')
@@ -12,29 +11,6 @@ import { procedures } from '../trpc/procedures';
 //   .regex(/[0-9]/, 'Include at least one number (0-9)')
 //   .regex(/[^A-Za-z0-9]/, 'Include at least one special character (!@#$%^&*)')
 //   .regex(/^\S+$/, 'Password cannot contain spaces');
-
-export const authRouter = router({
-  public: {
-    implement: procedures.public.query(async ({ ctx }) => {
-      try {
-        const res = await auth.handler(ctx.req.raw);
-        const json = (await res.json()) as object;
-
-        if (!json) {
-          return ctx.fail({
-            code: 'INTERNAL_SERVER_ERROR',
-            message:
-              'We encountered an unexpected error while processing your request.',
-          });
-        }
-
-        return ctx.ok(json);
-      } catch (err) {
-        return ctx.fail(err);
-      }
-    }),
-  },
-});
 
 // export const depAuthRouter = router({
 //   public: {
