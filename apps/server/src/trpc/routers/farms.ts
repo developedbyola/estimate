@@ -110,13 +110,7 @@ export const farmsRouter = router({
             .string()
             .min(1, 'Please select a valid category')
             .optional(),
-          sizeUnit: z
-            .enum(['acres', 'hectares', 'square meters'], {
-              errorMap: () => ({
-                message: 'Please select a valid unit of measurement',
-              }),
-            })
-            .optional(),
+          sizeUnit: z.enum(['acres', 'hectares', 'square meters']).optional(),
         })
       )
       .mutation(async ({ input, ctx }) => {
@@ -233,11 +227,7 @@ export const farmsRouter = router({
               (value) => !isNaN(Number(value)) && Number(value) > 0,
               'Please enter a valid positive number for the farm size'
             ),
-          sizeUnit: z.enum(['acres', 'hectares', 'square meters'], {
-            errorMap: () => ({
-              message: 'Please select a valid unit of measurement',
-            }),
-          }),
+          sizeUnit: z.enum(['acres', 'hectares', 'square meters']),
         })
       )
       .mutation(async ({ input, ctx }) => {

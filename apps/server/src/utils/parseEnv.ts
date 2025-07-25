@@ -1,3 +1,5 @@
+import Bun from 'bun';
+
 export const parseEnv = (key: string) => {
   const value = Bun.env[key];
   if (!value) {
