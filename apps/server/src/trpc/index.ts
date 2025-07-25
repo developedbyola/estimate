@@ -6,10 +6,8 @@ import { profilesRouter } from '@/trpc/routers/profiles';
 import { sessionsRouter } from '@/trpc/routers/sessions';
 import { estimatesRouter } from '@/trpc/routers/estimates';
 import { categoriesRouter } from '@/trpc/routers/categories';
-import { authRouter } from '@/trpc/routers/auth';
 
 export const appRouter = router({
-  auth: authRouter,
   users: usersRouter,
   sessions: sessionsRouter,
   farms: farmsRouter,

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
-import { router } from '../context';
-import { procedures } from '../procedures';
+import { router } from '../trpc/context';
+import { procedures } from '../trpc/procedures';
 
 // // Strong password validation schema
 // const passwordSchema = z
