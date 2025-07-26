@@ -85,8 +85,8 @@ export const Login = () => {
               onPress={async () => {
                 await mutate();
               }}
-              loading={status === 'pending'}
-              disabled={!form.formState.isValid || status === 'pending'}
+              loading={form.formState.isSubmitting}
+              disabled={!form.formState.isValid || form.formState.isSubmitting}
             >
               <Action.Loader />
               <Action.Label style={{ fontSize: 18 }}>Sign in</Action.Label>
