@@ -5,10 +5,12 @@ import { registerSchema } from '../schemas';
 import { useRegister } from '../hooks/useRegister';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
-import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 import { Action, Box, Field, Safe, Text } from '@/components';
+import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 
 export const Register = () => {
+  const { mutate } = useRegister();
+
   const form = useForm({
     mode: 'all',
     resolver: zodResolver(registerSchema),
@@ -17,8 +19,6 @@ export const Register = () => {
       password: '',
     },
   });
-
-  const { status, mutate } = useRegister();
 
   return (
     <FormProvider {...form}>
@@ -84,11 +84,11 @@ export const Register = () => {
           <Box px='xl'>
             <Action.Root
               size='xl'
-              loading={status === 'pending'}
               style={{ marginTop: Space['xl'] }}
-              disabled={status === 'pending' || !form.formState.isValid}
+              loading={form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting || !form.formState.isValid}
               onPress={async () => {
-                await mutate(form.getValues());
+                await mutate();
               }}
             >
               <Action.Loader />
