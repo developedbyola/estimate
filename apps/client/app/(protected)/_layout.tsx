@@ -22,6 +22,16 @@ const ProtectedLayout = () => {
         }}
       />
       <Stack.Screen
+        name='estimates'
+        options={{
+          title: 'Estimates',
+          headerShown: false,
+          sheetCornerRadius: 40,
+          presentation: 'formSheet',
+          contentStyle: { height: '100%' },
+        }}
+      />
+      <Stack.Screen
         name='farms'
         options={{
           title: 'Farms',

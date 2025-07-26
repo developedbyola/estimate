@@ -6,21 +6,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
-const FarmsLayout = () => {
+const HeaderLeft = () => {
   const colors = useThemeColors();
   const router = useRouter();
-
+  
   return (
-    <Stack>
-      <Stack.Screen
-        name='create'
-        options={{
-          title: 'Add farm',
-          contentStyle: {
-            backgroundColor: colors.getColor('bg.base'),
-          },
-          headerLeft: () => (
-            <TouchableOpacity
+    <TouchableOpacity
               onPress={() => router.back()}
               style={{
                 height: 32,
@@ -37,6 +28,24 @@ const FarmsLayout = () => {
                 color={colors.getColor('icon.strong')}
               />
             </TouchableOpacity>
+  )
+}
+
+const FarmsLayout = () => {
+  const colors = useThemeColors();
+  const router = useRouter();
+
+  return (
+    <Stack>
+      <Stack.Screen
+        name='create'
+        options={{
+          title: 'Add farm',
+          contentStyle: {
+            backgroundColor: colors.getColor('bg.base'),
+          },
+          headerLeft: () => (
+            
           ),
         }}
       />
