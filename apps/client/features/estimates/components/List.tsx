@@ -1,12 +1,12 @@
 import React from 'react';
-import { ActivityIndicator, Box, Text } from '@/components';
 import { Estimate } from '../types';
-import { useListEstimates } from '../hooks/useListEstimates';
 import { Pressable } from 'react-native';
+import { ActivityIndicator, Box, Text } from '@/components';
+import { useListEstimates } from '../hooks/useListEstimates';
 
 const DefaultError = ({ refetch }: { refetch: () => void }) => {
   return (
-    <Box>
+    <Box style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text
         style={{
           textAlign: 'center',
@@ -26,7 +26,23 @@ const DefaultError = ({ refetch }: { refetch: () => void }) => {
 };
 
 const DefaultEmpty = () => {
-  return <Box style={{ flex: 1 }}></Box>;
+  return (
+    <Box style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text
+        style={{
+          textAlign: 'center',
+          fontSize: 24,
+          fontWeight: '600',
+          letterSpacing: -0.5,
+        }}
+      >
+        No estimates
+      </Text>
+      <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: '500' }}>
+        Please add an estimate
+      </Text>
+    </Box>
+  );
 };
 
 const Loader = () => {

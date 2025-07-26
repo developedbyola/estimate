@@ -25,6 +25,8 @@ const EstimatesPage = () => {
             Track your farm expenses and income with ease.
           </Text>
         </Box>
+
+        <Box px='xl'></Box>
       </Safe>
     </React.Fragment>
   );
