@@ -19,7 +19,6 @@
     "format:fix": "prettier --write .",
     "build": "bun build src/index.ts --outdir dist --target bun",
     "types": "tsc -p tsconfig.build.json",
-    "build:all": "bun run build && bun run types",
     "clean": "rm -rf dist",
     "deploy": "npx wrangler deploy"
   },

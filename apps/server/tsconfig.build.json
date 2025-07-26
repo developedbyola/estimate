@@ -12,6 +12,8 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "incremental": true,
+    "noEmit": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
 
