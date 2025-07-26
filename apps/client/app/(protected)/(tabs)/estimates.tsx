@@ -1,5 +1,5 @@
-import { Box, Heading, Safe } from '@/components';
 import React from 'react';
+import { Box, Heading, Safe, Text } from '@/components';
 
 const EstimatesPage = () => {
   return (
@@ -11,12 +11,19 @@ const EstimatesPage = () => {
         <Box
           px='xl'
           mt='5xl'
+          style={{ gap: 8 }}
         >
           <Heading
             style={{ fontSize: 40, fontWeight: '600', letterSpacing: -0.5 }}
           >
             Estimates
           </Heading>
+          <Text
+            color='text.soft'
+            style={{ fontSize: 18, fontWeight: '500' }}
+          >
+            Track your farm expenses and income with ease.
+          </Text>
         </Box>
       </Safe>
     </React.Fragment>
