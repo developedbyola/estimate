@@ -3,7 +3,6 @@ import { Stack } from 'expo-router';
 import { Auth } from '@/features/auth';
 import { Trpc } from '@/features/trpc';
 import { Farms } from '@/features/farms';
-import { Profiles } from '@/features/profiles';
 import { Currency } from '@/features/currency';
 import { Box, Popup, Banner } from '@/components';
 import { Estimates } from '@/features/estimates';
@@ -77,17 +76,15 @@ const RootLayout = () => {
                 <Auth.Provider>
                   <Trpc.Provider>
                     <Auth.RefreshToken>
-                      <Profiles.Provider>
-                        <Currency.Provider>
-                          <Categories.Provider>
-                            <Farms.Provider>
-                              <Estimates.Provider>
-                                <Stacks />
-                              </Estimates.Provider>
-                            </Farms.Provider>
-                          </Categories.Provider>
-                        </Currency.Provider>
-                      </Profiles.Provider>
+                      <Currency.Provider>
+                        <Categories.Provider>
+                          <Farms.Provider>
+                            <Estimates.Provider>
+                              <Stacks />
+                            </Estimates.Provider>
+                          </Farms.Provider>
+                        </Categories.Provider>
+                      </Currency.Provider>
                     </Auth.RefreshToken>
                   </Trpc.Provider>
                 </Auth.Provider>
