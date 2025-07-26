@@ -1,7 +1,7 @@
 import React from 'react';
 import { Estimate } from '../types';
 import { Pressable } from 'react-native';
-import { ActivityIndicator, Box, Text } from '@/components';
+import { ActivityIndicator, Box, Scroll, Text } from '@/components';
 import { useListEstimates } from '../hooks/useListEstimates';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Border } from '@/constants';
@@ -61,14 +61,14 @@ const DefaultEmpty = () => {
       </Text>
       <Text
         color='text.soft'
-        style={{ textAlign: 'center', fontSize: 18 }}
+        style={{ marginTop: 4, textAlign: 'center', fontSize: 18 }}
       >
-        Please add an estimate
+        Add an estimate to get started
       </Text>
       <Pressable
         onPress={() => router.push('/estimates/create')}
         style={{
-          marginTop: 16,
+          marginTop: 20,
           paddingBlock: 12,
           paddingInline: 20,
           borderRadius: Border.radius.full,
@@ -111,13 +111,16 @@ export const List = ({ Empty, Error }: ListProps) => {
   if (estimates?.length === 0) return Empty || <DefaultEmpty />;
 
   return (
-    <Box style={{ flex: 1 }}>
+    <Scroll
+      showsVerticalScrollIndicator={false}
+      style={{ flex: 1 }}
+    >
       {estimates?.map((estimate) => (
         <Item
           key={estimate.id}
           estimate={estimate}
         />
       ))}
-    </Box>
+    </Scroll>
   );
 };
