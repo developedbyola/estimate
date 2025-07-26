@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Heading, Safe, Text } from '@/components';
+import { Estimates } from '@/features/estimates';
 
 const EstimatesPage = () => {
   return (
@@ -26,7 +27,12 @@ const EstimatesPage = () => {
           </Text>
         </Box>
 
-        <Box px='xl'></Box>
+        <Box
+          px='xl'
+          style={{ flex: 1 }}
+        >
+          <Estimates.List />
+        </Box>
       </Safe>
     </React.Fragment>
   );
