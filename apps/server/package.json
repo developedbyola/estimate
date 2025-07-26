@@ -17,8 +17,9 @@
     "lint": "eslint ./src --ext .ts",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "hey": "bun build src/index.ts --outdir dist --target bun",
+    "build": "bun build src/index.ts --outdir dist --target bun",
     "types": "tsc -p tsconfig.build.json",
+    "prepare": "bun run build && bun run types",
     "clean": "rm -rf dist",
     "deploy": "npx wrangler deploy"
   },
