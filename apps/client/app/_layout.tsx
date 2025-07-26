@@ -4,8 +4,8 @@ import { Auth } from '@/features/auth';
 import { Trpc } from '@/features/trpc';
 import { Farms } from '@/features/farms';
 import { Currency } from '@/features/currency';
-import { Box, Popup, Banner } from '@/components';
 import { Estimates } from '@/features/estimates';
+import { Box, Popup, Banner } from '@/components';
 import { Categories } from '@/features/categories';
 import * as SplashScreen from 'expo-splash-screen';
 import { RootSiblingParent } from 'react-native-root-siblings';
@@ -13,7 +13,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stacks = () => {
-  const { isPending, data: session } = Auth.useAuth();
+  const { isPending, isAuthenticated } = Auth.useAuth();
 
   const onLayout = React.useCallback(async () => {
     if (!isPending) {
@@ -24,8 +24,6 @@ const Stacks = () => {
   if (isPending) {
     return null;
   }
-
-  const isAuthenticated = !isPending && !!session;
 
   return (
     <Box

@@ -5,12 +5,12 @@ import { RefreshToken } from './components/RefreshToken';
 import { Provider, useAuth } from './components/Provider';
 
 const Auth = {
-  Provider,
-  useAuth,
-  RefreshToken,
   Login,
-  Register,
+  useAuth,
   Onboard,
+  Provider,
+  Register,
+  RefreshToken,
 };
 
 export { Auth };

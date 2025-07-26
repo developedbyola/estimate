@@ -24,7 +24,6 @@ app.on(['POST', 'GET'], '/auth/**', (c) => {
   return auth.handler(c.req.raw);
 });
 
-// tRPC routes
 app.use(
   '/trpc/**',
   trpcServer({

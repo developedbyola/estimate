@@ -1,38 +1,33 @@
 import { signIn } from '@/lib/auth';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
-import { useFormContext } from 'react-hook-form';
+import { loginSchema } from '../schemas';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const useLogin = () => {
-  const form = useFormContext();
+  const form = useForm({
+    mode: 'all',
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
+  });
 
-  const mutate = async () => {
-    await signIn.email(
-      {
-        email: form.getValues('email'),
-        password: form.getValues('password'),
+  const mutate = form.handleSubmit(async (data) => {
+    await signIn.email(data, {
+      onSuccess: () => {
+        router.push('/(protected)');
       },
-      {
-        onSuccess: () => {
-          router.push('/(protected)');
-        },
-        onError: (err: any) => {
-          Alert.prompt(
-            'Login Failed',
-            err?.message ||
-              'An unexpected error occurred during login. Please try again later.',
-            [
-              { text: 'OK' },
-              {
-                text: 'Try Again',
-                onPress: async () => await mutate(),
-              },
-            ]
-          );
-        },
-      }
-    );
-  };
+      onError: ({ error }) => {
+        Alert.alert('Login Failed', error.message, [
+          { text: 'OK' },
+          {
+            text: 'Try Again',
+            onPress: async () => await mutate(),
+          },
+        ]);
+      },
+    });
+  });
 
-  return { mutate };
+  return { mutate, form };
 };

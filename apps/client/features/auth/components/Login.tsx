@@ -1,23 +1,12 @@
 import React from 'react';
 import { Keyboard } from 'react-native';
-import { loginSchema } from '../schemas';
 import { useLogin } from '../hooks/useLogin';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 import { Action, Box, Field, Safe, Text } from '@/components';
 import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 
 export const Login = () => {
-  const { mutate } = useLogin();
-
-  const form = useForm({
-    mode: 'all',
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  const { mutate, form } = useLogin();
 
   return (
     <FormProvider {...form}>

@@ -1,7 +1,9 @@
 import React from 'react';
 import { auth } from '@/lib/auth';
 
-type AuthContext = ReturnType<typeof auth.useSession>;
+type AuthContext = ReturnType<typeof auth.useSession> & {
+  isAuthenticated: boolean;
+};
 export const authContext = React.createContext<AuthContext | null>(null);
 
 export const useAuth = () => {
@@ -16,5 +18,11 @@ type Props = React.PropsWithChildren;
 export const Provider = ({ children }: Props) => {
   const value = auth.useSession();
 
-  return <authContext.Provider value={value}>{children}</authContext.Provider>;
+  return (
+    <authContext.Provider
+      value={{ ...value, isAuthenticated: !value.isPending && !!value.data }}
+    >
+      {children}
+    </authContext.Provider>
+  );
 };

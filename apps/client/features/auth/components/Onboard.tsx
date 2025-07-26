@@ -17,7 +17,7 @@ export const Onboard = () => {
     },
     resolver: zodResolver(onboardSchema),
   });
-  const { mutate, isPending } = useOnboard();
+  useOnboard();
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -83,15 +83,10 @@ export const Onboard = () => {
         </Box>
 
         <Box px='xl'>
-          <Action.Root
-            size='xl'
-            loading={isPending}
-            disabled={!form.formState.isValid || isPending}
-            onPress={async () => await mutate(form.getValues())}
-          >
+          <Action.Root size='xl'>
             <Action.Loader />
             <Action.Label style={{ fontSize: Typography.size.lg }}>
-              {isPending ? 'Personalizing...' : 'Personalize'}
+              Personalize
             </Action.Label>
           </Action.Root>
         </Box>
