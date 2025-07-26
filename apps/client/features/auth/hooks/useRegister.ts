@@ -32,12 +32,7 @@ export const useRegister = () => {
             {
               text: 'Retry',
               isPreferred: true,
-              onPress: () =>
-                signUp.email({
-                  name: '',
-                  email: form.getValues('email'),
-                  password: form.getValues('password'),
-                }),
+              onPress: async () => await mutate(),
             },
           ]);
         },
