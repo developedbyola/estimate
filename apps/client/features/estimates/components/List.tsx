@@ -4,7 +4,7 @@ import { Estimate } from '../types';
 import { useListEstimates } from '../hooks/useListEstimates';
 import { Pressable } from 'react-native';
 
-const DefaultError = () => {
+const DefaultError = ({ refetch }: { refetch: () => void }) => {
   return (
     <Box>
       <Text
@@ -20,7 +20,7 @@ const DefaultError = () => {
       <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: '500' }}>
         Please try again later
       </Text>
-      <Pressable></Pressable>
+      <Pressable onPress={refetch}>Retry</Pressable>
     </Box>
   );
 };
@@ -47,10 +47,10 @@ type ListProps = {
 };
 
 export const List = ({ Empty, Error }: ListProps) => {
-  const { status, estimates } = useListEstimates();
+  const { status, estimates, refetch } = useListEstimates();
 
   if (status === 'pending') return <Loader />;
-  if (status === 'error') return Error || <DefaultError />;
+  if (status === 'error') return Error || <DefaultError refetch={refetch} />;
   if (estimates?.length === 0) return Empty || <DefaultEmpty />;
 
   return (
