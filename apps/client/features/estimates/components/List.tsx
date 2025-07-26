@@ -19,12 +19,17 @@ const Item = ({ estimate }: { estimate: Estimate }) => {
   return <Box></Box>;
 };
 
-export const List = () => {
+type ListProps = {
+  Empty?: React.ReactNode;
+  Error?: React.ReactNode;
+};
+
+export const List = ({ Empty, Error }: ListProps) => {
   const { status, estimates } = useListEstimates();
 
   if (status === 'pending') return <Loader />;
-  if (status === 'error') return <DefaultError />;
-  if (estimates?.length === 0) return <DefaultEmpty />;
+  if (status === 'error') return Error || <DefaultError />;
+  if (estimates?.length === 0) return Empty || <DefaultEmpty />;
 
   return (
     <Box>
