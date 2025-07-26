@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box } from '@/components';
+import { Estimate } from '../types';
 import { useListEstimates } from '../hooks/useListEstimates';
 
 const DefaultError = () => {
@@ -14,6 +15,10 @@ const Loader = () => {
   return <Box></Box>;
 };
 
+const Item = ({ estimate }: { estimate: Estimate }) => {
+  return <Box></Box>;
+};
+
 export const List = () => {
   const { status, estimates } = useListEstimates();
 
@@ -21,5 +26,14 @@ export const List = () => {
   if (status === 'error') return <DefaultError />;
   if (estimates?.length === 0) return <DefaultEmpty />;
 
-  return <div>List</div>;
+  return (
+    <Box>
+      {estimates?.map((estimate) => (
+        <Item
+          key={estimate.id}
+          estimate={estimate}
+        />
+      ))}
+    </Box>
+  );
 };

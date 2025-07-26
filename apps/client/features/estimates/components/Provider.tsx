@@ -1,19 +1,5 @@
 import React from 'react';
-
-type CalculationItem = {
-  id: string;
-  quantity: string;
-  unitPrice: string;
-  description: string;
-  attachedTo: string | null;
-  operation: 'add' | 'subtract';
-};
-
-export type Estimate = {
-  id: string;
-  title: string;
-  calculations: CalculationItem[];
-};
+import { Estimate } from '../types';
 
 type State = {
   isLoading: boolean;
