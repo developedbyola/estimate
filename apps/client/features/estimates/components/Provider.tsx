@@ -3,10 +3,10 @@ import React from 'react';
 type CalculationItem = {
   id: string;
   quantity: string;
-  unit_price: string;
+  unitPrice: string;
   description: string;
+  attachedTo: string | null;
   operation: 'add' | 'subtract';
-  attached_to: string | null;
 };
 
 export type Estimate = {
@@ -16,6 +16,7 @@ export type Estimate = {
 };
 
 type State = {
+  isLoading: boolean;
   estimates: Estimate[];
 };
 
@@ -46,15 +47,21 @@ const estimateContext = React.createContext<EstimateContext | null>(null);
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'SET_ESTIMATES':
-      return { ...state, estimates: action.payload.estimates };
+      return {
+        ...state,
+        isLoading: false,
+        estimates: action.payload.estimates,
+      };
     case 'ADD_ESTIMATE':
       return {
         ...state,
+        isLoading: false,
         estimates: [...state.estimates, action.payload.estimate],
       };
     case 'REMOVE_ESTIMATE':
       return {
         ...state,
+        isLoading: false,
         estimates: state.estimates.filter(
           (estimate) => estimate.id !== action.payload.id
         ),
@@ -62,6 +69,7 @@ const reducer = (state: State, action: Action): State => {
     case 'UPDATE_ESTIMATE':
       return {
         ...state,
+        isLoading: false,
         estimates: state.estimates.map((estimate) =>
           estimate.id === action.payload.estimate.id
             ? action.payload.estimate
@@ -90,6 +98,7 @@ export const Provider: React.FC<Props> = ({
   children,
   initialState = {
     estimates: [],
+    isLoading: false,
   },
 }) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
@@ -97,8 +106,8 @@ export const Provider: React.FC<Props> = ({
   return (
     <estimateContext.Provider
       value={{
+        ...state,
         setEstimates: dispatch,
-        estimates: state.estimates,
       }}
     >
       {children}
