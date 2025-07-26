@@ -29,6 +29,7 @@ export const useListEstimates = () => {
 
   return {
     status: list.status,
+    refetch: list.refetch,
     estimates: list.data?.estimates,
   };
 };
