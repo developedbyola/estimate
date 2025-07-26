@@ -35,12 +35,10 @@ app.use(
 );
 
 // Add this at the end of index.ts
-const port = env.PORT || 4700;
+const port = env.PORT || 4500;
 Bun.serve({
   port,
   fetch: app.fetch,
 });
 
 console.log(`Server is running on http://localhost:${port}`);
-
-export default app;
