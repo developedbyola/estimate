@@ -10,18 +10,17 @@
     "drizzle-kit": "^0.31.4"
   },
   "scripts": {
-    "clean": "rm -rf dist",
-    "typecheck": "tsc --noEmit",
-    "format": "prettier --check .",
-    "deploy": "npx wrangler deploy",
-    "start": "bun run dist/index.js",
-    "lint": "eslint ./src --ext .ts",
     "dev": "bun --watch src/index.ts",
-    "format:fix": "prettier --write .",
+    "start": "bun run dist/index.js",
     "watch": "bun --watch src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ./src --ext .ts",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "hey": "bun build src/index.ts --outdir dist --target bun",
     "types": "tsc -p tsconfig.build.json",
-    "prebuild": "bun build src/index.ts --outdir dist --target bun",
-    "build": "bun run prebuild && bun run types"
+    "clean": "rm -rf dist",
+    "deploy": "npx wrangler deploy"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
