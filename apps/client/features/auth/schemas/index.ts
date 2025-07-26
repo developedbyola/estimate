@@ -27,14 +27,20 @@ export const loginSchema = z.object({
 });
 
 export const onboardSchema = z.object({
-  lastName: z.string().min(1, 'What is your last name?'),
-  firstName: z.string().min(1, 'What is your first name?'),
-  username: z.string()
-    .min(3, 'Username must be at least 3 characters')
-    .max(30, 'Username cannot exceed 30 characters')
-    .regex(/^[a-zA-Z]/, 'Username must start with a letter')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Only letters, numbers, underscores, and hyphens are allowed')
-    .regex(/^((?!__).)*$/, 'Username cannot contain consecutive underscores')
-    .regex(/^((?!--).)*$/, 'Username cannot contain consecutive hyphens')
-    .regex(/^[^_].*[^_]$/, 'Username cannot start or end with an underscore or hyphen'),
+  lastName: z
+    .string()
+    .min(1, 'What is your last name?')
+    .regex(/^\S*$/, 'Last name cannot contain spaces'),
+  firstName: z
+    .string()
+    .min(1, 'What is your first name?')
+    .regex(/^\S*$/, 'First name cannot contain spaces'),
+  // username: z.string()
+  //   .min(3, 'Username must be at least 3 characters')
+  //   .max(30, 'Username cannot exceed 30 characters')
+  //   .regex(/^[a-zA-Z]/, 'Username must start with a letter')
+  //   .regex(/^[a-zA-Z0-9_-]+$/, 'Only letters, numbers, underscores, and hyphens are allowed')
+  //   .regex(/^((?!__).)*$/, 'Username cannot contain consecutive underscores')
+  //   .regex(/^((?!--).)*$/, 'Username cannot contain consecutive hyphens')
+  //   .regex(/^[^_].*[^_]$/, 'Username cannot start or end with an underscore or hyphen'),
 });

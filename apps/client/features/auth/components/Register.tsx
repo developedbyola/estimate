@@ -1,24 +1,13 @@
 import React from 'react';
 import { Space } from '@/constants';
 import { Keyboard } from 'react-native';
-import { registerSchema } from '../schemas';
+import { FormProvider } from 'react-hook-form';
 import { useRegister } from '../hooks/useRegister';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm } from 'react-hook-form';
 import { Action, Box, Field, Safe, Text } from '@/components';
 import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 
 export const Register = () => {
-  const { mutate } = useRegister();
-
-  const form = useForm({
-    mode: 'all',
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  const { mutate, form } = useRegister();
 
   return (
     <FormProvider {...form}>
@@ -85,11 +74,9 @@ export const Register = () => {
             <Action.Root
               size='xl'
               style={{ marginTop: Space['xl'] }}
+              onPress={async () => await mutate()}
               loading={form.formState.isSubmitting}
               disabled={form.formState.isSubmitting || !form.formState.isValid}
-              onPress={async () => {
-                await mutate();
-              }}
             >
               <Action.Loader />
               <Action.Label style={{ fontSize: 18 }}>Create</Action.Label>

@@ -71,9 +71,7 @@ export const Login = () => {
           <Box px={'xl'}>
             <Action.Root
               size='xl'
-              onPress={async () => {
-                await mutate();
-              }}
+              onPress={async () => await mutate()}
               loading={form.formState.isSubmitting}
               disabled={!form.formState.isValid || form.formState.isSubmitting}
             >

@@ -25,10 +25,10 @@ app.on(['POST', 'GET'], '/auth/**', (c) => {
 });
 
 app.use(
-  '/trpc/**',
+  '/trpc/*',
   trpcServer({
     router: appRouter,
-    endpoint: '/trpc/**',
+    endpoint: '/trpc/*',
     createContext: (_opts, c) => createContext(c),
   })
 );

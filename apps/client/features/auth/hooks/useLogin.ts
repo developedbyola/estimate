@@ -15,6 +15,7 @@ export const useLogin = () => {
   const mutate = form.handleSubmit(async (data) => {
     await signIn.email(data, {
       onSuccess: () => {
+        form.reset();
         router.push('/(protected)');
       },
       onError: ({ error }) => {
