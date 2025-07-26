@@ -1,4 +1,4 @@
-import { useQuery } from '././components/useQuery';
+import { useQuery } from './hooks/useQuery';
 import { Provider, trpc } from './components/Provider';
 
 export const Trpc = {

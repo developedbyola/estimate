@@ -12,7 +12,7 @@ export const useGetCategories = () => {
     enabled: isAuthenticated,
   });
 
-  const list = Trpc.useQuery(query, {
+  const list = Trpc.useQuery<typeof query>(query, {
     onError: (err) => {
       banner.open({
         variant: 'destructive',
