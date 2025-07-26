@@ -1,9 +1,8 @@
 import { Add } from './components/Add';
-import { Provider, useEstimates, type Estimate } from './components/Provider';
+import { Provider, useEstimates } from './components/Provider';
 
-const Estimates = {
+export const Estimates = {
   Provider,
+  useEstimates,
   Add,
 };
-
-export { Estimates, useEstimates, Estimate };

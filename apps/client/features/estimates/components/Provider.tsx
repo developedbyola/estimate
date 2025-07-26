@@ -98,7 +98,7 @@ export const Provider: React.FC<Props> = ({
   children,
   initialState = {
     estimates: [],
-    isLoading: false,
+    isLoading: true,
   },
 }) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
