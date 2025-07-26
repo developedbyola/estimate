@@ -1,6 +1,6 @@
 import React from 'react';
-import { loginSchema } from '../schemas';
 import { Keyboard } from 'react-native';
+import { loginSchema } from '../schemas';
 import { useLogin } from '../hooks/useLogin';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -8,7 +8,7 @@ import { Action, Box, Field, Safe, Text } from '@/components';
 import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 
 export const Login = () => {
-  const { mutate, status } = useLogin();
+  const { mutate } = useLogin();
 
   const form = useForm({
     mode: 'all',
@@ -83,7 +83,7 @@ export const Login = () => {
             <Action.Root
               size='xl'
               onPress={async () => {
-                await mutate(form.getValues());
+                await mutate();
               }}
               loading={status === 'pending'}
               disabled={!form.formState.isValid || status === 'pending'}

@@ -34,8 +34,13 @@ app.use(
   })
 );
 
-app.get('/', (c) => c.text('Hono + tRPC server is running!'));
+// Add this at the end of index.ts
+const port = env.PORT || 4700;
+Bun.serve({
+  port,
+  fetch: app.fetch,
+});
 
-console.log(`Server is running on port ${env.PORT}`);
+console.log(`Server is running on http://localhost:${port}`);
 
 export default app;

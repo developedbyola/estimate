@@ -1,5 +1,5 @@
 import React from 'react';
-import { Auth } from '@/features/auth';
+import { auth } from '@/lib/auth';
 import { httpBatchLink } from '@trpc/client';
 import { createTRPCReact } from '@trpc/react-query';
 import { type AppRouter } from '../../../../server/dist/trpc';
@@ -12,23 +12,19 @@ type ProviderProps = {
 };
 
 export const Provider = ({ children }: ProviderProps) => {
-  const { accessToken } = Auth.useAuth();
   const queryClient = new QueryClient();
 
   const trpcClient = trpc.createClient({
     links: [
       httpBatchLink({
         url: `${process.env.EXPO_PUBLIC_SERVER_API_URL}/api/trpc`,
-        async fetch(url, options) {
-          const token = accessToken || '';
-          return fetch(url, {
-            ...options,
-            headers: {
-              ...options?.headers,
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: 'include',
-          });
+        headers: () => {
+          const headers = new Map<string, string>();
+          const cookies = auth.getCookie();
+          if (cookies) {
+            headers.set('Cookie', cookies);
+          }
+          return Object.fromEntries(headers);
         },
       }),
     ],

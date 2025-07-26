@@ -14,17 +14,19 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stacks = () => {
-  const { isLoading, isAuthenticated } = Auth.useAuth();
+  const { isPending, data: session } = Auth.useAuth();
 
   const onLayout = React.useCallback(async () => {
-    if (!isLoading) {
+    if (!isPending) {
       await SplashScreen.hideAsync();
     }
-  }, [isLoading]);
+  }, [isPending]);
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
+
+  const isAuthenticated = !isPending && !!session;
 
   return (
     <Box

@@ -22,6 +22,7 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
     window: 10,
     enabled: true,
   },
+  trustedOrigins: ['estimate://'],
   cookiePrefix: 'estimate',
   emailAndPassword: {
     enabled: true,

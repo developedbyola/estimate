@@ -1,60 +1,18 @@
-import React from 'react';
-// import { Alert } from 'react-native';
-import { Trpc } from '@/features/trpc';
-import { useAuth } from '../components/Provider';
+import { useAuth } from '@/contexts/authContext';
+import { refreshToken } from '@/lib/auth';
 
 export const useRefreshToken = () => {
-  const { refreshToken, isLoading, setAuth } = useAuth();
+  const data = useAuth();
 
-  const refresh = Trpc.client.auth.public.refresh.useMutation({
-    onSuccess: async (data) => {
-      setAuth({
-        type: 'SET_TOKENS',
-        payload: {
-          user: data.user,
-          session: data.session,
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-        },
-      });
-    },
-    onError: (err, input) => {
-      setAuth({ type: 'ERROR' });
-      if (err.data?.code === 'UNAUTHORIZED') {
-        setAuth({ type: 'LOGOUT' });
-        return;
-      }
-      // Alert.alert('Error', `${err.message}`, [
-      //   {
-      //     text: 'Retry',
-      //     isPreferred: true,
-      //     onPress: () => {
-      //       refresh.mutateAsync(input);
-      //     },
-      //   },
-      // ]);
-    },
-  });
-
-  const mutate = React.useCallback(async () => {
-    if (!refreshToken) {
-      setAuth({ type: 'LOGOUT' });
-      return;
-    }
-    await refresh.mutateAsync({ refreshToken });
-  }, [refreshToken]);
-
-  React.useEffect(() => {
-    if (isLoading) {
-      mutate();
-    }
-
-    const interval = setInterval(() => {
-      mutate();
-    }, 1000 * 60 * 25);
-
-    return () => clearInterval(interval);
-  }, [isLoading, mutate]);
-
-  return { mutate, status: refresh.status };
+  // const mutate = refreshToken(
+  //   { userId: session?.user.id },
+  //   {
+  //     onSuccess: (data) => {
+  //       setAuth({ type: 'REFRESH_TOKEN' });
+  //     },
+  //     onError: (err) => {
+  //       setAuth({ type: 'ERROR' });
+  //     },
+  //   }
+  // );
 };
