@@ -112,8 +112,8 @@ export const List = ({ Empty, Error }: ListProps) => {
 
   return (
     <Scroll
-      showsVerticalScrollIndicator={false}
       style={{ flex: 1 }}
+      showsVerticalScrollIndicator={false}
     >
       {estimates?.map((estimate) => (
         <Item
