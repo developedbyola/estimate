@@ -9,31 +9,30 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 const HeaderLeft = () => {
   const colors = useThemeColors();
   const router = useRouter();
-  
+
   return (
     <TouchableOpacity
-              onPress={() => router.back()}
-              style={{
-                height: 32,
-                aspectRatio: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: Border.radius.full,
-                backgroundColor: colors.getColor('bg.soft'),
-              }}
-            >
-              <Ionicons
-                size={20}
-                name='chevron-back'
-                color={colors.getColor('icon.strong')}
-              />
-            </TouchableOpacity>
-  )
-}
+      onPress={() => router.back()}
+      style={{
+        height: 32,
+        aspectRatio: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: Border.radius.full,
+        backgroundColor: colors.getColor('bg.soft'),
+      }}
+    >
+      <Ionicons
+        size={20}
+        name='chevron-back'
+        color={colors.getColor('icon.strong')}
+      />
+    </TouchableOpacity>
+  );
+};
 
 const FarmsLayout = () => {
   const colors = useThemeColors();
-  const router = useRouter();
 
   return (
     <Stack>
@@ -44,9 +43,7 @@ const FarmsLayout = () => {
           contentStyle: {
             backgroundColor: colors.getColor('bg.base'),
           },
-          headerLeft: () => (
-            
-          ),
+          headerLeft: HeaderLeft,
         }}
       />
       <Stack.Screen
@@ -56,25 +53,7 @@ const FarmsLayout = () => {
           contentStyle: {
             backgroundColor: colors.getColor('bg.base'),
           },
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={{
-                height: 32,
-                aspectRatio: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: Border.radius.full,
-                backgroundColor: colors.getColor('bg.soft'),
-              }}
-            >
-              <Ionicons
-                size={20}
-                name='chevron-back'
-                color={colors.getColor('icon.strong')}
-              />
-            </TouchableOpacity>
-          ),
+          headerLeft: HeaderLeft,
         }}
       />
       <Stack.Screen
@@ -84,25 +63,17 @@ const FarmsLayout = () => {
           contentStyle: {
             backgroundColor: colors.getColor('bg.base'),
           },
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={{
-                height: 32,
-                aspectRatio: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: Border.radius.full,
-                backgroundColor: colors.getColor('bg.soft'),
-              }}
-            >
-              <Ionicons
-                size={20}
-                name='chevron-back'
-                color={colors.getColor('icon.strong')}
-              />
-            </TouchableOpacity>
-          ),
+          headerLeft: HeaderLeft,
+        }}
+      />
+      <Stack.Screen
+        name='view'
+        options={{
+          title: 'Farm',
+          contentStyle: {
+            backgroundColor: colors.getColor('bg.base'),
+          },
+          headerLeft: HeaderLeft,
         }}
       />
     </Stack>
