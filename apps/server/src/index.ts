@@ -35,4 +35,4 @@ app.use(
 );
 
 const port = env.PORT || 4500;
-console.log(`Server is running on http://localhost:${port}`);
+console.log(`Server is running on port ${port}`);
