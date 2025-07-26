@@ -20,19 +20,21 @@ app.use(
   })
 );
 
-app.on(['POST', 'GET'], '/auth/*', (c) => {
+app.on(['POST', 'GET'], '/auth/**', (c) => {
   return auth.handler(c.req.raw);
 });
 
 // tRPC routes
 app.use(
-  '/trpc/*',
+  '/trpc/**',
   trpcServer({
     router: appRouter,
-    endpoint: '/trpc/*',
+    endpoint: '/trpc/**',
     createContext: (_opts, c) => createContext(c),
   })
 );
 
 const port = env.PORT || 4500;
 console.log(`Server is running on port ${port}`);
+
+export default app;
