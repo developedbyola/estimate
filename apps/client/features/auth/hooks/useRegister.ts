@@ -11,7 +11,7 @@ export const useRegister = () => {
   const mutate = async () => {
     await signUp.email(
       {
-        name: '',
+        name: 'null',
         email: form.getValues('email'),
         password: form.getValues('password'),
       },
@@ -27,14 +27,18 @@ export const useRegister = () => {
           });
         },
         onError: (err: any) => {
-          Alert.alert('Registration failed', err.message, [
-            { text: 'Cancel' },
-            {
-              text: 'Retry',
-              isPreferred: true,
-              onPress: async () => await mutate(),
-            },
-          ]);
+          Alert.prompt(
+            'Registration failed',
+            err?.message ||
+              'An unexpected error occurred during registration. Please try again later.',
+            [
+              { text: 'Cancel' },
+              {
+                text: 'Retry',
+                onPress: async () => await mutate(),
+              },
+            ]
+          );
         },
       }
     );

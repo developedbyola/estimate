@@ -19,7 +19,7 @@ export const useLogin = () => {
         onError: (err: any) => {
           Alert.prompt(
             'Login Failed',
-            err.message ||
+            err?.message ||
               'An unexpected error occurred during login. Please try again later.',
             [
               { text: 'OK' },
