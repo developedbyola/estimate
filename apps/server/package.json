@@ -20,7 +20,7 @@
     "format:fix": "prettier --write .",
     "watch": "bun --watch src/index.ts",
     "types": "tsc -p tsconfig.build.json",
-    "build": "bun build src/index.ts --outdir dist --target"
+    "build": "bun build src/index.ts --outdir dist --target bun"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
