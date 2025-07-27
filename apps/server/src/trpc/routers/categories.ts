@@ -25,6 +25,7 @@ export const categoriesRouter = router({
             id: category.id,
             name: category.name,
             icon: category.icon,
+            updatedAt: category.updated_at,
             createdAt: category.created_at,
           })),
         });
@@ -32,7 +33,7 @@ export const categoriesRouter = router({
         return ctx.fail(err);
       }
     }),
-    get: procedures.protected
+    getById: procedures.protected
       .input(z.object({ categoryId: z.string() }))
       .query(async ({ input, ctx }) => {
         try {
@@ -56,6 +57,7 @@ export const categoriesRouter = router({
               id: category.data.id,
               name: category.data.name,
               icon: category.data.icon,
+              updatedAt: category.data.updated_at,
               createdAt: category.data.created_at,
             },
           });
@@ -104,6 +106,7 @@ export const categoriesRouter = router({
               name: category.data.name,
               icon: category.data.icon,
               createdAt: category.data.created_at,
+              updatedAt: category.data.updated_at,
             },
           });
         } catch (err) {
@@ -126,7 +129,11 @@ export const categoriesRouter = router({
         try {
           const category = await ctx.supabase
             .from('categories')
-            .update({ name: input.name, icon: input.icon })
+            .update({
+              name: input.name,
+              icon: input.icon,
+              updated_at: new Date().toISOString(),
+            })
             .eq('id', input.categoryId)
             .eq('user_id', ctx.actor.user.id)
             .select('*')
@@ -146,6 +153,7 @@ export const categoriesRouter = router({
               name: category.data.name,
               icon: category.data.icon,
               createdAt: category.data.created_at,
+              updatedAt: category.data.updated_at,
             },
           });
         } catch (err) {
@@ -180,6 +188,7 @@ export const categoriesRouter = router({
               name: category.data.name,
               icon: category.data.icon,
               createdAt: category.data.created_at,
+              updatedAt: category.data.updated_at,
             },
           });
         } catch (err) {

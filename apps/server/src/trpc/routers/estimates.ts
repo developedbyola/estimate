@@ -38,6 +38,7 @@ export const estimatesRouter = router({
               id: estimate.id,
               title: estimate.title,
               farmId: estimate.farm_id,
+              updatedAt: estimate.updated_at,
               createdAt: estimate.created_at,
               calculations: estimate.calculations,
             })),
@@ -70,6 +71,7 @@ export const estimatesRouter = router({
               id: estimate.data.id,
               title: estimate.data.title,
               farmId: estimate.data.farm_id,
+              updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
               calculations: estimate.data.calculations,
             },
@@ -117,6 +119,7 @@ export const estimatesRouter = router({
               id: estimate.data.id,
               title: estimate.data.title,
               farmId: estimate.data.farm_id,
+              updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
               calculations: estimate.data.calculations,
             },
@@ -147,6 +150,7 @@ export const estimatesRouter = router({
             .update({
               title: input.title,
               calculations: input.calculations,
+              updated_at: new Date().toISOString(),
             })
             .eq('id', input.estimateId)
             .select('*')
@@ -161,7 +165,14 @@ export const estimatesRouter = router({
           }
 
           return ctx.ok({
-            estimate: estimate.data,
+            estimate: {
+              id: estimate.data.id,
+              title: estimate.data.title,
+              farmId: estimate.data.farm_id,
+              updatedAt: estimate.data.updated_at,
+              createdAt: estimate.data.created_at,
+              calculations: estimate.data.calculations,
+            },
           });
         } catch (err) {
           return ctx.fail(err);
@@ -195,6 +206,7 @@ export const estimatesRouter = router({
               id: estimate.data.id,
               title: estimate.data.title,
               farmId: estimate.data.farm_id,
+              updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
               calculations: estimate.data.calculations,
             },

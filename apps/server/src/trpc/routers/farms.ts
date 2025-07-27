@@ -32,6 +32,8 @@ export const farmsRouter = router({
             address: farm.address,
             sizeUnit: farm.size_unit,
             categoryId: farm.category_id,
+            userId: farm.user_id,
+            updatedAt: farm.updated_at,
             createdAt: farm.created_at,
             category: {
               id: farm.category.id,
@@ -76,6 +78,8 @@ export const farmsRouter = router({
               sizeUnit: farm.data.size_unit,
               categoryId: farm.data.category_id,
               createdAt: farm.data.created_at,
+              updatedAt: farm.data.updated_at,
+              userId: farm.data.user_id,
               category: {
                 id: farm.data.category.id,
                 name: farm.data.category.name,
@@ -125,6 +129,7 @@ export const farmsRouter = router({
               address: input.address,
               size_unit: input.sizeUnit,
               category_id: input.categoryId,
+              updated_at: new Date().toISOString(),
             })
             .eq('id', input.farmId)
             .eq('user_id', ctx.actor.user.id)
@@ -150,6 +155,8 @@ export const farmsRouter = router({
               sizeUnit: farm.data.size_unit,
               categoryId: farm.data.category_id,
               createdAt: farm.data.created_at,
+              updatedAt: farm.data.updated_at,
+              userId: farm.data.user_id,
               category: {
                 id: farm.data.category.id,
                 name: farm.data.category.name,
@@ -193,6 +200,8 @@ export const farmsRouter = router({
               sizeUnit: farm.data.size_unit,
               categoryId: farm.data.category_id,
               createdAt: farm.data.created_at,
+              updatedAt: farm.data.updated_at,
+              userId: farm.data.user_id,
               category: {
                 id: farm.data.category.id,
                 name: farm.data.category.name,
@@ -266,6 +275,8 @@ export const farmsRouter = router({
               sizeUnit: farm.data.size_unit,
               categoryId: farm.data.category_id,
               createdAt: farm.data.created_at,
+              updatedAt: farm.data.updated_at,
+              userId: farm.data.user_id,
               category: {
                 id: farm.data.category.id,
                 name: farm.data.category.name,
