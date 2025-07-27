@@ -29,4 +29,9 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
     autoSignIn: false,
     requireEmailVerification: false,
   },
+  advanced: {
+    database: {
+      generateId: false,
+    },
+  },
 });
