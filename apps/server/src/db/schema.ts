@@ -5,42 +5,39 @@ import {
   boolean,
   decimal,
   jsonb,
+  uuid,
 } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
-  id: text('id').primaryKey(),
+  id: uuid('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified')
     .$defaultFn(() => false)
     .notNull(),
   image: text('image'),
-  createdAt: timestamp('created_at')
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp('updated_at')
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const sessions = pgTable('sessions', {
-  id: text('id').primaryKey(),
+  id: uuid('id').primaryKey(),
   expiresAt: timestamp('expires_at').notNull(),
   token: text('token').notNull().unique(),
-  createdAt: timestamp('created_at').notNull(),
-  updatedAt: timestamp('updated_at').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
   ipAddress: text('ip_address'),
   userAgent: text('user_agent'),
-  userId: text('user_id')
+  userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
 });
 
 export const accounts = pgTable('accounts', {
-  id: text('id').primaryKey(),
+  id: uuid('id').primaryKey(),
   accountId: text('account_id').notNull(),
   providerId: text('provider_id').notNull(),
-  userId: text('user_id')
+  userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   accessToken: text('access_token'),
@@ -50,28 +47,24 @@ export const accounts = pgTable('accounts', {
   refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
   scope: text('scope'),
   password: text('password'),
-  createdAt: timestamp('created_at').notNull(),
-  updatedAt: timestamp('updated_at').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const verifications = pgTable('verifications', {
-  id: text('id').primaryKey(),
+  id: uuid('id').primaryKey(),
   identifier: text('identifier').notNull(),
   value: text('value').notNull(),
   expiresAt: timestamp('expires_at').notNull(),
-  createdAt: timestamp('created_at').$defaultFn(
-    () => /* @__PURE__ */ new Date()
-  ),
-  updatedAt: timestamp('updated_at').$defaultFn(
-    () => /* @__PURE__ */ new Date()
-  ),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const categories = pgTable('categories', {
-  id: text('id').primaryKey(),
+  id: uuid('id').primaryKey(),
   name: text('name').notNull(),
-  icon: text('icon'),
-  userId: text('user_id')
+  icon: text('icon').notNull(),
+  userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -79,17 +72,19 @@ export const categories = pgTable('categories', {
 });
 
 export const farms = pgTable('farms', {
-  id: text('id').primaryKey(),
+  id: uuid('id').primaryKey(),
   name: text('name').notNull(),
-  size: decimal('size'),
-  sizeUnit: text('size_unit'),
-  address: text('address'),
-  city: text('city'),
-  state: text('state'),
-  categoryId: text('category_id').references(() => categories.id, {
-    onDelete: 'set null',
-  }),
-  userId: text('user_id')
+  size: decimal('size').notNull(),
+  sizeUnit: text('size_unit').notNull(),
+  address: text('address').notNull(),
+  city: text('city').notNull(),
+  state: text('state').notNull(),
+  categoryId: uuid('category_id')
+    .notNull()
+    .references(() => categories.id, {
+      onDelete: 'set null',
+    }),
+  userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -97,13 +92,13 @@ export const farms = pgTable('farms', {
 });
 
 export const estimates = pgTable('estimates', {
-  id: text('id').primaryKey(),
+  id: uuid('id').primaryKey(),
   title: text('title').notNull(),
   calculations: jsonb('calculations').notNull(),
-  farmId: text('farm_id')
+  farmId: uuid('farm_id')
     .notNull()
     .references(() => farms.id, { onDelete: 'cascade' }),
-  userId: text('user_id')
+  userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
