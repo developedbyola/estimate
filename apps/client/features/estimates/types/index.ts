@@ -1,7 +1,7 @@
 type Calculation = {
   id: string;
+  price: string;
   quantity: string;
-  unitPrice: string;
   description: string;
   type: 'income' | 'expense';
 };
@@ -9,5 +9,7 @@ type Calculation = {
 export type Estimate = {
   id: string;
   title: string;
+  userId: string;
+  createdAt: string;
   calculations: Calculation[];
 };

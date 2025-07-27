@@ -1,7 +1,7 @@
 import React from 'react';
-import NativeSegmentedControl from '@react-native-segmented-control/segmented-control';
 import { MotiView } from 'moti';
-
+import { Space } from '@/constants';
+import NativeSegmentedControl from '@react-native-segmented-control/segmented-control';
 type SegmentedControlsContext = {
   value: number;
   setValue: (index: number) => void;
@@ -79,7 +79,7 @@ type RootProps = Omit<
 > &
   UseSegmentedControlConfigParams;
 const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
-  const { value, defaultValue, onValueChange, ...restProps } = props;
+  const { value, style, defaultValue, onValueChange, ...restProps } = props;
 
   const context = useSegmentedControlConfig({
     value,
@@ -88,9 +88,13 @@ const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
   });
 
   return (
-    <Provider value={context}>
+    <Provider
+      value={context}
+      style={{ flex: 1 }}
+    >
       <MotiView
         ref={ref}
+        style={[{ flex: 1 }, style]}
         {...restProps}
       />
     </Provider>
@@ -130,14 +134,14 @@ const Control = React.forwardRef<ControlRef, ControlProps>((props, ref) => {
         values={values}
         onChange={(e) => setValue(e.nativeEvent.selectedSegmentIndex)}
         enabled={enabled}
+        tabStyle={tabStyle}
         momentary={momentary}
         tintColor={tintColor}
+        fontStyle={fontStyle}
         appearance={appearance}
         sliderStyle={sliderStyle}
         selectedIndex={selectedIndex}
         activeFontStyle={activeFontStyle}
-        tabStyle={tabStyle}
-        fontStyle={fontStyle}
         backgroundColor={backgroundColor}
       />
     </MotiView>
@@ -157,7 +161,7 @@ const Content = React.forwardRef<ContentRef, ContentProps>((props, ref) => {
   return (
     <MotiView
       ref={ref}
-      style={[{}, style]}
+      style={[{ flex: 1, paddingBlock: Space['lg'] }, style]}
       {...restProps}
     />
   );

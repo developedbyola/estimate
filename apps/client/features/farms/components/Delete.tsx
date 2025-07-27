@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 import { ActivityIndicator } from '@/components';
 import { useDeleteFarm } from '../hooks/useDeleteFarm';
@@ -9,14 +9,9 @@ type Props = {
 };
 
 const Delete = ({ children }: Props) => {
-  const router = useRouter();
   const { farmId } = useLocalSearchParams<{ farmId: string }>();
 
-  const { status, mutate } = useDeleteFarm({
-    onSuccess: () => {
-      router.back();
-    },
-  });
+  const { status, mutate } = useDeleteFarm();
 
   if (status === 'pending') return <ActivityIndicator />;
 

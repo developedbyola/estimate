@@ -3,4 +3,5 @@ export type Category = {
   name: string;
   icon: string;
   createdAt: string;
+  updatedAt: string;
 };
