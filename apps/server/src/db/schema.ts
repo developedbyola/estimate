@@ -79,11 +79,9 @@ export const farms = pgTable('farms', {
   address: text('address').notNull(),
   city: text('city').notNull(),
   state: text('state').notNull(),
-  categoryId: uuid('category_id')
-    .notNull()
-    .references(() => categories.id, {
-      onDelete: 'set null',
-    }),
+  categoryId: uuid('category_id').references(() => categories.id, {
+    onDelete: 'set null',
+  }),
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
