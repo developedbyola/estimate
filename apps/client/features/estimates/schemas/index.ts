@@ -1,32 +1,33 @@
 import { z } from 'zod';
 
-const calculationItemSchema = z.object({
+const calculationSchema = z.object({
   id: z.string(),
-  description: z.string().min(1, 'Description is required'),
+  description: z.string().optional(),
   quantity: z
     .string()
     .refine((val) => !isNaN(Number(val)), 'Must be a number')
-    .refine((val) => Number(val) >= 0.01, 'Minimum quantity is 0.01'),
-  unitPrice: z
+    .refine((val) => Number(val) >= 1, 'Minimum quantity is 1'),
+  price: z
     .string()
     .refine((val) => !isNaN(Number(val)), 'Must be a number')
-    .refine((val) => Number(val) >= 0, 'Price cannot be negative'),
-  operation: z.enum(['add', 'subtract']).default('add'),
-  attachedTo: z.string().nullable(),
+    .refine((val) => Number(val) >= 0, 'Price cannot be less than 0'),
+  type: z.enum(['income', 'expense']).default('expense'),
 });
 
-export const calculationSchema = z.object({
+export const calculationsSchema = z.object({
   calculations: z
-    .array(calculationItemSchema)
+    .array(calculationSchema)
     .nonempty('At least one item is required'),
 });
 
-export type Calculations = z.infer<typeof calculationSchema>;
-export type CalculationItem = z.infer<typeof calculationItemSchema>;
+export type Calculation = z.infer<typeof calculationSchema>;
+export type Calculations = z.infer<typeof calculationsSchema>;
 
 export const estimateSchema = z.object({
-  title: z.string().min(3, 'Name is required'),
+  title: z.string().min(3, 'Estimate title is required'),
   calculations: z
-    .array(calculationItemSchema)
+    .array(calculationSchema)
     .nonempty('At least one item is required'),
 });
+
+export type EstimateSchema = z.infer<typeof estimateSchema>;

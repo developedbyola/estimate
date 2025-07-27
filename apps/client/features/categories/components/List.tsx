@@ -4,49 +4,71 @@ import { Space } from '@/constants';
 import { Category } from '../types';
 import { useRouter } from 'expo-router';
 import { useCategories } from './Provider';
-import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+
+import { Button, TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { ActivityIndicator, Box, Heading, Scroll } from '@/components';
+import { ActivityIndicator, Box, Heading, Scroll, Text } from '@/components';
+import { Controller, useFormContext } from 'react-hook-form';
 
 const DefaultEmpty = () => {
-  const colors = useThemeColors();
+  const router = useRouter();
 
   return (
-    <Box
-      px='xl'
-      style={{
-        gap: Space.xl,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-      }}
-    >
-      <Ionicons
-        size={48}
-        name='remove-circle'
-        color={colors.getColor('icon.inactive')}
-      />
-      <Heading
-        size='xl'
+    <React.Fragment>
+      <Text
         leading='sm'
-        weight='medium'
-        color='text.soft'
+        style={{
+          maxWidth: 200,
+          textAlign: 'center',
+          marginInline: 'auto',
+        }}
       >
-        No categories
-      </Heading>
-    </Box>
+        No categories found, create one to get started
+      </Text>
+      <Button
+        title='Create category'
+        onPress={() => router.navigate('/categories/create')}
+      />
+    </React.Fragment>
   );
 };
 
 const Loader = () => {
   return (
-    <Box
-      px='xl'
-      style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-    >
+    <React.Fragment>
       <ActivityIndicator />
-    </Box>
+    </React.Fragment>
+  );
+};
+
+const Select = () => {
+  const form = useFormContext<any>();
+  const { categories } = useCategories();
+
+  return (
+    <Controller
+      name='categoryId'
+      control={form.control}
+      render={({ field }) => {
+        return (
+          <Picker
+            selectedValue={field.value}
+            onValueChange={(itemValue) => field.onChange(itemValue)}
+          >
+            {categories.map((category) => {
+              return (
+                <Picker.Item
+                  key={category.id}
+                  value={category.id}
+                  label={`${category.name} ${category.icon}`}
+                />
+              );
+            })}
+          </Picker>
+        );
+      }}
+    />
   );
 };
 
@@ -109,29 +131,36 @@ const Item = ({
 };
 
 type ListProps = {
+  pickerOnly?: boolean;
   Empty?: React.ReactNode;
 };
 
-export const List = ({ Empty }: ListProps) => {
+export const List = ({ pickerOnly = false, Empty }: ListProps) => {
   const { loading, categories } = useCategories();
 
   if (loading) return <Loader />;
   if (categories.length === 0) return Empty ? Empty : <DefaultEmpty />;
 
   return (
-    <Scroll
-      showsVerticalScrollIndicator={false}
-      style={{ flex: 1, paddingBlock: 12 }}
-    >
-      {categories.map((category, index) => {
-        return (
-          <Item
-            key={category.id}
-            category={category}
-            isLastItem={index === categories.length - 1}
-          />
-        );
-      })}
-    </Scroll>
+    <React.Fragment>
+      {pickerOnly ? (
+        <Select />
+      ) : (
+        <Scroll
+          showsVerticalScrollIndicator={false}
+          style={{ flex: 1, paddingBlock: 12 }}
+        >
+          {categories.map((category, index) => {
+            return (
+              <Item
+                key={category.id}
+                category={category}
+                isLastItem={index === categories.length - 1}
+              />
+            );
+          })}
+        </Scroll>
+      )}
+    </React.Fragment>
   );
 };

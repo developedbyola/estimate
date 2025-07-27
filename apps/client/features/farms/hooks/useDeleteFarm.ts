@@ -2,20 +2,18 @@ import { Popup } from '@/components';
 import { Trpc } from '@/features/trpc';
 import { useRouter } from 'expo-router';
 import { useFarms } from '../components/Provider';
-import { useLocalSearchParams } from 'expo-router';
 
 export const useDeleteFarm = () => {
   const router = useRouter();
-  const { setFarms } = useFarms();
   const popup = Popup.usePopup();
-  const { farmId } = useLocalSearchParams<{ farmId: string }>();
+  const { setFarms } = useFarms();
 
   const remove = Trpc.client.farms.me.delete.useMutation({
-    onSuccess: () => {
-      setFarms({ type: 'REMOVE_FARM', payload: { farmId } });
+    onSuccess: (data) => {
+      setFarms({ type: 'REMOVE_FARM', payload: { farmId: data.farm.id } });
       router.back();
     },
-    onError: (err) => {
+    onError: (err, input) => {
       popup.open({
         title: 'We couldn’t delete the farm',
         message: err.message,
@@ -24,7 +22,7 @@ export const useDeleteFarm = () => {
           {
             text: 'Retry',
             onPress: async () => {
-              await remove.mutateAsync({ farmId });
+              await remove.mutateAsync(input);
             },
           },
         ],

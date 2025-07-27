@@ -149,12 +149,12 @@ const SheetTrigger = React.forwardRef<SheetTriggerRef, SheetTriggerProps>(
     const { open, bottomSheet } = useOverlayContext();
 
     const handlePress = (event: GestureResponderEvent) => {
+      onPress?.(event);
       if (open) {
         bottomSheet.close();
         return;
       }
       bottomSheet.open();
-      onPress?.(event);
     };
 
     return (

@@ -66,16 +66,6 @@ const FarmsLayout = () => {
           headerLeft: HeaderLeft,
         }}
       />
-      <Stack.Screen
-        name='view'
-        options={{
-          title: 'Farm',
-          contentStyle: {
-            backgroundColor: colors.getColor('bg.base'),
-          },
-          headerLeft: HeaderLeft,
-        }}
-      />
     </Stack>
   );
 };

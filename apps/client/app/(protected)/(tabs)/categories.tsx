@@ -59,6 +59,8 @@ const CategoriesPage = () => {
             flex: 1,
             borderRadius: 24,
             paddingInline: 24,
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           <Categories.List />

@@ -1,104 +1,11 @@
 import React from 'react';
+import { Categories } from '@/features/categories';
 import { Picker } from '@react-native-picker/picker';
-import { useCategories } from '@/features/categories';
 import { Controller, useFormContext } from 'react-hook-form';
-import {
-  Accordion,
-  ActivityIndicator,
-  Box,
-  Field,
-  Heading,
-  Text,
-} from '@/components';
-import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { Border, Space } from '@/constants';
-import { TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Accordion, Box, Field, Heading, Text } from '@/components';
 
 const Category = () => {
-  const router = useRouter();
-  const colors = useThemeColors();
-  const { loading, categories } = useCategories();
-  const { control } = useFormContext<{
-    categoryId: string;
-  }>();
-
-  if (loading) {
-    return (
-      <Box style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator />
-      </Box>
-    );
-  }
-
-  if (categories.length === 0) {
-    return (
-      <Box
-        style={{
-          gap: Space['xl'],
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Ionicons
-          size={32}
-          name='bookmarks'
-          color={colors.getColor('icon.inactive')}
-        />
-        <Text
-          size='xl'
-          leading='sm'
-          color='text.soft'
-        >
-          No categories
-        </Text>
-        <TouchableOpacity
-          style={{
-            paddingBlock: Space['lg'],
-            paddingInline: Space['2xl'],
-            borderRadius: Border.radius['full'],
-            backgroundColor: colors.getColor('bg.strong'),
-          }}
-          onPress={() => router.push('/categories/create')}
-        >
-          <Text
-            size='base'
-            leading='sm'
-            weight='medium'
-            color='text.base'
-          >
-            Create category
-          </Text>
-        </TouchableOpacity>
-      </Box>
-    );
-  }
-
-  return (
-    <Controller
-      name='categoryId'
-      control={control}
-      render={({ field }) => {
-        return (
-          <Picker
-            selectedValue={field.value}
-            onValueChange={(itemValue) => field.onChange(itemValue)}
-          >
-            {categories.map((category) => {
-              return (
-                <Picker.Item
-                  key={category.id}
-                  value={category.id}
-                  label={`${category.name} ${category.icon}`}
-                />
-              );
-            })}
-          </Picker>
-        );
-      }}
-    />
-  );
+  return <Categories.List pickerOnly />;
 };
 
 const Name = () => {
