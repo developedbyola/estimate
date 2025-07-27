@@ -22,3 +22,5 @@ export { default as Gradient } from '@/components/Gradient';
 export { Popup } from '@/components/Popup';
 export { Banner } from '@/components/Banner';
 export { Accordion } from '@/components/Accordion';
+export { Tabs } from '@/components/Tabs';
+export { SegmentedControl } from '@/components/SegmentedControl';
