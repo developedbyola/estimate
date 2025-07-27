@@ -30,8 +30,6 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
     requireEmailVerification: false,
   },
   advanced: {
-    database: {
-      generateId: false,
-    },
+    generateId: false,
   },
 });
