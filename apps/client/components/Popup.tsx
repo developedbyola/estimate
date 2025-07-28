@@ -95,7 +95,8 @@ const PopupComponent = ({
     >
       <Scroll
         mt='3xl'
-        style={{
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
           flex: 1,
           gap: Space.base,
           alignItems: 'center',
