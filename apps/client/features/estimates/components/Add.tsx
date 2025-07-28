@@ -75,7 +75,7 @@ const Type = () => {
 
 export const Add = () => {
   const colors = useThemeColors();
-  const overlay = Overlay.use();
+  const overlay = Overlay.useConfig();
   const { form, mutate } = useCreateEstimate();
 
   const title = form.watch('title');
@@ -84,7 +84,7 @@ export const Add = () => {
     <React.Fragment>
       <FormProvider {...form}>
         <Overlay.Provider value={overlay}>
-          {/* <Edit /> */}
+          <Edit />
           <Stack.Screen
             options={{
               headerTitle: excerpt(title || 'Title', 20),
