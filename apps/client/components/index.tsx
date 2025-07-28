@@ -7,11 +7,7 @@ export { default as AsChild } from '@/components/AsChild';
 export { default as Field, useFieldContext } from '@/components/Field';
 export { default as Flow, useFlow, useFlowContext } from '@/components/Flow';
 export { default as ActivityIndicator } from '@/components/Activity_Indicator';
-export {
-  default as Overlay,
-  useOverlay,
-  useOverlayContext,
-} from '@/components/Overlay';
+export { Overlay } from '@/components/Overlay';
 export { default as Box } from '@/components/Box';
 export { default as Blur } from '@/components/Blur';
 export { default as Safe } from '@/components/Safe';

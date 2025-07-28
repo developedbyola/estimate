@@ -1,5 +1,3 @@
-import React from 'react';
-import { useThemeColors } from '@/hooks/useThemeColors';
 import {
   GestureResponderEvent,
   Modal as NativeModal,
@@ -9,12 +7,14 @@ import BottomSheet, {
   BottomSheetView,
   BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
-import { FullWindowOverlay } from 'react-native-screens';
-import { StatusBar } from 'expo-status-bar';
-import { Border } from '@/constants';
-import Blur from './Blur';
+
+import React from 'react';
 import AsChild from './AsChild';
 import { MotiView } from 'moti';
+import { Border } from '@/constants';
+import { StatusBar } from 'expo-status-bar';
+import { FullWindowOverlay } from 'react-native-screens';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 type OverlayContext = {
   open: boolean;
@@ -197,13 +197,7 @@ const Modal = React.forwardRef<ModalRef, ModalProps>((props, ref) => {
         backdropColor={colors.getColor('bg.overlay')}
         {...restProps}
       >
-        <Blur
-          tint={theme}
-          intensity={100}
-          style={[{ flex: 1 }]}
-        >
-          {children}
-        </Blur>
+        {children}
       </NativeModal>
     </React.Fragment>
   );
@@ -295,13 +289,13 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
 });
 
 const Overlay = {
-  Provider,
-  Root,
-  Trigger,
-  Modal,
-  useConfig,
   use,
+  Root,
+  Modal,
   Sheet,
+  Trigger,
+  Provider,
+  useConfig,
   SheetTrigger,
 };
 
