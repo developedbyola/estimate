@@ -1,8 +1,3 @@
-import {
-  GestureResponderEvent,
-  Modal as NativeModal,
-  useColorScheme,
-} from 'react-native';
 import BottomSheet, {
   BottomSheetView,
   BottomSheetBackdrop,
@@ -15,6 +10,7 @@ import { Border } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { FullWindowOverlay } from 'react-native-screens';
+import { GestureResponderEvent, Modal as NativeModal } from 'react-native';
 
 type OverlayContext = {
   open: boolean;
@@ -212,14 +208,12 @@ type SheetRef = React.ComponentRef<typeof BottomSheetView>;
 type SheetProps = React.ComponentProps<typeof BottomSheetView> & {
   snapPoints?: string[];
   onDismiss?: () => void;
-  statusBarStyle?: 'dark' | 'light';
 };
 const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
   const {
     style,
     children,
     onDismiss,
-    statusBarStyle = 'light',
     snapPoints = ['25%', '50%', '75%'],
     ...restProps
   } = props;
@@ -245,8 +239,6 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
 
   return (
     <React.Fragment>
-      <StatusBar style={statusBarStyle} />
-
       <FullWindowOverlay>
         <BottomSheet
           enablePanDownToClose

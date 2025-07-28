@@ -8,6 +8,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { useCreateEstimate } from '../hooks/useCreateEstimate';
 import { Box, Field, Action, Overlay, SegmentedControl } from '@/components';
+import { StatusBar } from 'expo-status-bar';
 
 const Edit = () => {
   const form = useFormContext();
@@ -83,6 +84,7 @@ export const Add = () => {
 
   return (
     <React.Fragment>
+      <StatusBar style={'light'} />
       <Stack.Screen
         options={{
           headerTitle: excerpt(title || 'Title', 20),
