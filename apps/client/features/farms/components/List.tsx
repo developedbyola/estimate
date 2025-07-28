@@ -40,14 +40,14 @@ const Select = () => {
               return (
                 <Box
                   key={farm.id}
-                  style={{ width: '50%', padding: Space['xs'] }}
+                  style={{ width: '33.33%', padding: Space['2xs'] }}
                 >
                   <RadioGroup.Item
                     bg='bg.subtle'
                     value={farm.id}
                     style={{
                       padding: 16,
-                      minHeight: 124,
+                      height: 120,
                       borderRadius: 20,
                       overflow: 'hidden',
                       position: 'relative',
@@ -78,8 +78,8 @@ const Select = () => {
                     <Text
                       color='text.strong'
                       style={{
-                        fontSize: 16,
-                        lineHeight: 18,
+                        fontSize: 13,
+                        lineHeight: 16,
                         fontWeight: '600',
                       }}
                     >

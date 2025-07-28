@@ -34,7 +34,11 @@ const Edit = () => {
           }}
         >
           <Field.Row>
-            <Field.TextInput placeholder='e.g October estimate' />
+            <Field.Label>Title</Field.Label>
+            <Field.TextInput
+              style={{ textAlign: 'right' }}
+              placeholder='e.g October estimate'
+            />
           </Field.Row>
         </Field.Container>
       </Field.Root>
