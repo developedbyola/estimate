@@ -9,6 +9,7 @@ type Calculation = {
 export type Estimate = {
   id: string;
   title: string;
+  farmId: string;
   userId: string;
   createdAt: string;
   calculations: Calculation[];
