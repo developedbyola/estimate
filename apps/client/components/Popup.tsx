@@ -5,11 +5,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import {
   Action,
+  Box,
   Gradient,
   Heading,
   Overlay,
+  Scroll,
   Text,
-  useOverlay,
 } from '@/components';
 
 type PopupAction = {
@@ -25,7 +26,7 @@ type Config = {
   variant?: 'success' | 'destructive' | 'warning' | 'info';
 };
 
-const usePopupConfig = () => {
+const useConfig = () => {
   const [config, setConfig] = React.useState<Config>({
     title: '',
     message: '',
@@ -33,7 +34,7 @@ const usePopupConfig = () => {
     variant: 'success',
   });
 
-  const overlay = useOverlay({ open: true });
+  const overlay = Overlay.useConfig({ open: true });
 
   const open = (newConfig: Config) => {
     Keyboard.dismiss();
@@ -48,7 +49,7 @@ const usePopupConfig = () => {
   return { open, close, overlay, config };
 };
 
-const usePopup = () => {
+const use = () => {
   const context = React.useContext(popupContext);
   if (!context) {
     throw new Error('usePopup must be used within a PopupProvider');
@@ -135,7 +136,7 @@ const PopupComponent = ({
           {config.message}
         </Text>
       </Scroll>
-      <Overlay.SheetFooter>
+      <Box>
         {config.actions?.map((action, index) => (
           <Action.Root
             key={index}
@@ -149,16 +150,16 @@ const PopupComponent = ({
             <Action.Label>{action.text}</Action.Label>
           </Action.Root>
         ))}
-      </Overlay.SheetFooter>
+      </Box>
     </Overlay.Sheet>
   );
 };
 
-type PopupContextType = ReturnType<typeof usePopupConfig>;
+type PopupContextType = ReturnType<typeof useConfig>;
 const popupContext = React.createContext<PopupContextType | null>(null);
 
 const PopupProvider = ({ children }: { children: React.ReactNode }) => {
-  const popup = usePopupConfig();
+  const popup = useConfig();
 
   return (
     <popupContext.Provider value={popup}>
@@ -174,6 +175,6 @@ const PopupProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const Popup = {
+  use,
   Provider: PopupProvider,
-  usePopup,
 };

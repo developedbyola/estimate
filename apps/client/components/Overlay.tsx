@@ -55,24 +55,22 @@ const useConfig = (params: UseConfigParams): OverlayContext => {
     [isControlled, setExternalOpen]
   );
 
-  const closeBottomSheet = React.useCallback(() => {
-    onToggle(false);
-    bottomSheetRef.current?.collapse();
-  }, [onToggle]);
-
-  const openBottomSheet = React.useCallback(() => {
-    onToggle(true);
-    bottomSheetRef.current?.expand();
-  }, [onToggle]);
+  const bottomSheet = {
+    ref: bottomSheetRef,
+    open: () => {
+      onToggle(true);
+      bottomSheetRef.current?.collapse();
+    },
+    close: () => {
+      onToggle(false);
+      bottomSheetRef.current?.expand();
+    },
+  };
 
   return {
-    open, // Ensure open is never undefined
+    open,
     onToggle,
-    bottomSheet: {
-      ref: bottomSheetRef,
-      open: openBottomSheet,
-      close: closeBottomSheet,
-    },
+    bottomSheet,
   };
 };
 
