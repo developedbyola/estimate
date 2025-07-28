@@ -37,7 +37,9 @@ export const Add = () => {
         <Box>
           <Form />
         </Box>
-        <Action.Root></Action.Root>
+        <Action.Root size='lg'>
+          <Action.Label>Create estimate</Action.Label>
+        </Action.Root>
       </Box>
     </FormProvider>
   );
