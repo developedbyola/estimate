@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from './Form';
 import { useEstimates } from './Provider';
-import { Action, Box } from '@/components';
+import { Action, Box, Safe } from '@/components';
 import { estimateSchema } from '../schemas';
 import { useLocalSearchParams } from 'expo-router';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -43,26 +43,35 @@ export const Add = () => {
 
   return (
     <FormProvider {...form}>
-      <Box style={{ flex: 1 }}>
-        <Box>
+      <Safe style={{ flex: 1 }}>
+        <Box
+          mt='2xl'
+          px='xl'
+          style={{ flex: 1 }}
+        >
           <Form />
         </Box>
-        <Action.Root
-          size='lg'
-          onPress={form.handleSubmit(async (data) => {
-            if (estimate) {
-              await update({ estimateId, ...data });
-              return;
-            }
-            await create(data);
-          })}
-          loading={form.formState.isSubmitting}
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
+        <Box
+          px='xl'
+          py={'lg'}
         >
-          <Action.Loader />
-          <Action.Label>Create estimate</Action.Label>
-        </Action.Root>
-      </Box>
+          <Action.Root
+            size='lg'
+            onPress={form.handleSubmit(async (data) => {
+              if (estimate) {
+                await update({ estimateId, ...data });
+                return;
+              }
+              await create(data);
+            })}
+            loading={form.formState.isSubmitting}
+            disabled={!form.formState.isValid || form.formState.isSubmitting}
+          >
+            <Action.Loader />
+            <Action.Label>Create estimate</Action.Label>
+          </Action.Root>
+        </Box>
+      </Safe>
     </FormProvider>
   );
 };
