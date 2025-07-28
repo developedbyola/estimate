@@ -12,10 +12,9 @@ import BottomSheet, {
 import { FullWindowOverlay } from 'react-native-screens';
 import { StatusBar } from 'expo-status-bar';
 import { Border } from '@/constants';
-import Box from './Box';
 import Blur from './Blur';
 import AsChild from './AsChild';
-import Scroll from './Scroll';
+import { MotiView } from 'moti';
 
 type OverlayContext = {
   open: boolean;
@@ -27,15 +26,21 @@ type OverlayContext = {
   onToggle: (open: boolean) => void;
 };
 
-export const overlayContext = React.createContext<OverlayContext | null>(null);
+const overlayContext = React.createContext<OverlayContext | null>(null);
 
-export const useOverlay = (value?: Partial<OverlayContext>): OverlayContext => {
-  const { open: externalOpen = false, onToggle: setExternalOpen } = value || {};
+type UseConfigParams = {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+};
+
+const useConfig = (params: UseConfigParams): OverlayContext => {
+  const { open: externalOpen = false, onOpenChange: setExternalOpen } =
+    params || {};
 
   const bottomSheetRef = React.useRef<BottomSheet>(null);
   const [internalOpen, setInternalOpen] = React.useState(false);
 
-  const isControlled = setExternalOpen !== undefined;
+  const isControlled = externalOpen !== undefined;
 
   const open = isControlled ? externalOpen : internalOpen;
 
@@ -49,10 +54,6 @@ export const useOverlay = (value?: Partial<OverlayContext>): OverlayContext => {
     },
     [isControlled, setExternalOpen]
   );
-
-  const close = React.useCallback(() => {
-    onToggle(false);
-  }, [onToggle]);
 
   const closeBottomSheet = React.useCallback(() => {
     onToggle(false);
@@ -75,7 +76,7 @@ export const useOverlay = (value?: Partial<OverlayContext>): OverlayContext => {
   };
 };
 
-export const useOverlayContext = () => {
+const use = () => {
   const context = React.useContext(overlayContext);
   if (!context) {
     throw new Error('useOverlayContext must be used within an Overlay.Root');
@@ -83,8 +84,8 @@ export const useOverlayContext = () => {
   return context;
 };
 
-type ProviderRef = React.ComponentRef<typeof Box>;
-type ProviderProps = React.ComponentProps<typeof Box> &
+type ProviderRef = React.ComponentRef<typeof MotiView>;
+type ProviderProps = React.ComponentProps<typeof MotiView> &
   React.ComponentProps<typeof overlayContext.Provider>;
 
 const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
@@ -92,7 +93,7 @@ const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
 
   return (
     <overlayContext.Provider value={value}>
-      <Box
+      <MotiView
         ref={ref}
         {...restProps}
       />
@@ -100,18 +101,15 @@ const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
   );
 });
 
-type RootRef = React.ComponentRef<typeof Box>;
-type RootProps = React.ComponentProps<typeof Box> & {
-  open?: boolean;
-  onToggle?: (open: boolean) => void;
-};
+type RootRef = React.ComponentRef<typeof MotiView>;
+type RootProps = React.ComponentProps<typeof MotiView> & UseConfigParams;
 const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
-  const { style, open = false, ...restProps } = props;
-  const context = useOverlay({ open });
+  const { style, open = false, onOpenChange, ...restProps } = props;
+  const context = useConfig({ open, onOpenChange });
 
   return (
     <Provider value={context}>
-      <Box
+      <MotiView
         ref={ref}
         style={[style]}
         {...restProps}
@@ -124,7 +122,7 @@ type TriggerRef = React.ComponentRef<typeof AsChild>;
 type TriggerProps = React.ComponentProps<typeof AsChild>;
 const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   const { asChild = true, onPress, ...restProps } = props;
-  const { open, onToggle } = useOverlayContext();
+  const { open, onToggle } = use();
 
   const handlePress = (event: GestureResponderEvent) => {
     onPress?.(event);
@@ -146,7 +144,7 @@ type SheetTriggerProps = React.ComponentProps<typeof AsChild>;
 const SheetTrigger = React.forwardRef<SheetTriggerRef, SheetTriggerProps>(
   (props, ref) => {
     const { asChild = true, onPress, ...restProps } = props;
-    const { open, bottomSheet } = useOverlayContext();
+    const { open, bottomSheet } = use();
 
     const handlePress = (event: GestureResponderEvent) => {
       onPress?.(event);
@@ -185,7 +183,7 @@ const Modal = React.forwardRef<ModalRef, ModalProps>((props, ref) => {
 
   const colors = useThemeColors();
   const theme = useColorScheme() ?? 'light';
-  const { open } = useOverlayContext();
+  const { open } = use();
 
   return (
     <React.Fragment>
@@ -226,7 +224,7 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
     snapPoints = ['25%', '50%', '75%'],
     ...restProps
   } = props;
-  const { bottomSheet, open } = useOverlayContext();
+  const { bottomSheet, open } = use();
 
   const colors = useThemeColors();
 
@@ -296,86 +294,15 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
   );
 });
 
-type SheetHeaderRef = React.ComponentRef<typeof Box>;
-type SheetHeaderProps = React.ComponentProps<typeof Box>;
-const SheetHeader = React.forwardRef<SheetHeaderRef, SheetHeaderProps>(
-  (props, ref) => {
-    const { style, px = 'xl', py = 'sm', ...restProps } = props;
-    return (
-      <Box
-        ref={ref}
-        px={px}
-        py={py}
-        style={[style]}
-        {...restProps}
-      />
-    );
-  }
-);
-
-type SheetContentRef = React.ComponentRef<typeof Scroll>;
-type SheetContentProps = React.ComponentProps<typeof Scroll>;
-const SheetContent = React.forwardRef<SheetContentRef, SheetContentProps>(
-  (props, ref) => {
-    const { style, contentContainerStyle, px = 'xl', ...restProps } = props;
-    return (
-      <Scroll
-        ref={ref}
-        px={px}
-        contentContainerStyle={[style]}
-        {...restProps}
-      />
-    );
-  }
-);
-
-type SheetFooterRef = React.ComponentRef<typeof Box>;
-type SheetFooterProps = React.ComponentProps<typeof Box>;
-const SheetFooter = React.forwardRef<SheetFooterRef, SheetFooterProps>(
-  (props, ref) => {
-    const {
-      style,
-      px = 'xl',
-      pb = '4xl',
-      pt = 'base',
-      bg = 'bg.base',
-      ...restProps
-    } = props;
-
-    const colors = useThemeColors();
-    return (
-      <Box
-        ref={ref}
-        px={px}
-        pt={pt}
-        pb={pb}
-        bg={bg}
-        style={[
-          {
-            bottom: 0,
-            width: '100%',
-            borderTopWidth: 1,
-            position: 'absolute',
-            borderTopColor: colors.getColor('border.soft'),
-          },
-          style,
-        ]}
-        {...restProps}
-      />
-    );
-  }
-);
-
 const Overlay = {
   Provider,
   Root,
   Trigger,
   Modal,
+  useConfig,
+  use,
   Sheet,
   SheetTrigger,
-  SheetHeader,
-  SheetContent,
-  SheetFooter,
 };
 
 export default Overlay;
