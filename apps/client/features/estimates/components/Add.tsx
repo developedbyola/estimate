@@ -13,9 +13,7 @@ export const Add = () => {
   const { mutate: create } = useCreateEstimate();
   const { mutate: update } = useUpdateEstimate();
   const { estimateId } = useLocalSearchParams<{ estimateId: string }>();
-
   const { estimates } = useEstimates();
-
   const estimate = estimates.find((estimate) => estimate.id === estimateId);
 
   const form = useForm({
