@@ -18,6 +18,47 @@ import {
 import { Farms } from '@/features/farms';
 import { excerpt } from '@/utils/excerpt';
 
+const Edit = () => {
+  const router = useRouter();
+  const colors = useThemeColors();
+
+  return (
+    <Overlay.Sheet snapPoints={['65%', '80%']}>
+      <Overlay.SheetContent style={{ flex: 1 }}>
+        <Field.Root
+          mt='2xl'
+          name='title'
+          style={{
+            gap: 8,
+            paddingBottom: 12,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.getColor('border.base'),
+          }}
+          control={form.control as any}
+        >
+          <Field.Container
+            style={{
+              height: 36,
+              borderRadius: 8,
+            }}
+          >
+            <Field.Row>
+              <Field.TextInput placeholder='e.g October estimate' />
+            </Field.Row>
+          </Field.Container>
+        </Field.Root>
+
+        <Box
+          py='xl'
+          style={{ flex: 1 }}
+        >
+          <Farms.List isSelect />
+        </Box>
+      </Overlay.SheetContent>
+    </Overlay.Sheet>
+  );
+};
+
 const Type = () => {
   return (
     <React.Fragment>
@@ -52,93 +93,58 @@ export const Add = () => {
   return (
     <React.Fragment>
       <FormProvider {...form}>
-        <Stack.Screen
-          options={{
-            headerTitle: excerpt(title || 'Title', 20),
-            headerTitleStyle: {
-              fontSize: 16,
-              fontWeight: '600',
-              color: colors.getColor(title ? 'text.strong' : 'text.soft'),
-            },
-            headerRight: () => {
-              const router = useRouter();
-
-              return (
-                <Overlay.Root>
+        <Overlay.Root>
+          <Stack.Screen
+            options={{
+              headerTitle: excerpt(title || 'Title', 20),
+              headerTitleStyle: {
+                fontSize: 16,
+                fontWeight: '600',
+                color: colors.getColor(title ? 'text.strong' : 'text.soft'),
+              },
+              headerRight: () => {
+                return (
                   <Overlay.SheetTrigger>
                     <Button title='Edit' />
                   </Overlay.SheetTrigger>
-                  <Overlay.Sheet snapPoints={['65%', '80%']}>
-                    <Overlay.SheetContent style={{ flex: 1 }}>
-                      <Field.Root
-                        mt='2xl'
-                        name='title'
-                        style={{
-                          gap: 8,
-                          paddingBottom: 12,
-                          borderBottomWidth: 1,
-                          borderBottomColor: colors.getColor('border.base'),
-                        }}
-                        control={form.control as any}
-                      >
-                        <Field.Container
-                          style={{
-                            height: 36,
-                            borderRadius: 8,
-                          }}
-                        >
-                          <Field.Row>
-                            <Field.TextInput placeholder='e.g October estimate' />
-                          </Field.Row>
-                        </Field.Container>
-                      </Field.Root>
-
-                      <Box
-                        py='xl'
-                        style={{ flex: 1 }}
-                      >
-                        <Farms.List isSelect />
-                      </Box>
-                    </Overlay.SheetContent>
-                  </Overlay.Sheet>
-                </Overlay.Root>
-              );
-            },
-          }}
-        />
-        <Box
-          mt='3xl'
-          pb='xl'
-          px='xl'
-          style={{ flex: 1 }}
-        >
-          <Type />
-        </Box>
-
-        <Box
-          px='xl'
-          py='xl'
-          bg='bg.soft'
-          style={{ minHeight: 102 }}
-        >
-          <Action.Root
-            size='lg'
-            onPress={() => mutate(form.getValues())}
-            loading={form.formState.isSubmitting}
-            disabled={!form.formState.isValid || form.formState.isSubmitting}
-            style={{
-              backgroundColor: colors.getColor('bg.strong'),
+                );
+              },
             }}
+          />
+          <Box
+            mt='3xl'
+            pb='xl'
+            px='xl'
+            style={{ flex: 1 }}
           >
-            <Action.Loader />
-            <Action.Label
-              color='text.base'
-              style={{ fontSize: 16, lineHeight: 18, fontWeight: '600' }}
+            <Type />
+          </Box>
+
+          <Box
+            px='xl'
+            py='xl'
+            bg='bg.soft'
+            style={{ minHeight: 102 }}
+          >
+            <Action.Root
+              size='lg'
+              onPress={() => mutate(form.getValues())}
+              loading={form.formState.isSubmitting}
+              disabled={!form.formState.isValid || form.formState.isSubmitting}
+              style={{
+                backgroundColor: colors.getColor('bg.strong'),
+              }}
             >
-              Create estimate
-            </Action.Label>
-          </Action.Root>
-        </Box>
+              <Action.Loader />
+              <Action.Label
+                color='text.base'
+                style={{ fontSize: 16, lineHeight: 18, fontWeight: '600' }}
+              >
+                Create estimate
+              </Action.Label>
+            </Action.Root>
+          </Box>
+        </Overlay.Root>
       </FormProvider>
     </React.Fragment>
   );
