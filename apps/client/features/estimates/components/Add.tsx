@@ -33,7 +33,7 @@ const Edit = () => {
           <Field.Container
             style={{
               height: 36,
-              borderRadius: 8,
+              borderRadius: 12,
             }}
           >
             <Field.Row>
@@ -46,6 +46,8 @@ const Edit = () => {
           </Field.Container>
         </Field.Root>
       </Box>
+
+      <Box style={{ height: 1, marginBlock: 12 }} />
 
       <Box
         py='xl'
