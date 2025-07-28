@@ -40,7 +40,8 @@ const useConfig = (params?: UseConfigParams): OverlayContext => {
   const bottomSheetRef = React.useRef<BottomSheet>(null);
   const [internalOpen, setInternalOpen] = React.useState(false);
 
-  const isControlled = externalOpen !== undefined;
+  const isControlled =
+    externalOpen !== undefined && setExternalOpen !== undefined;
 
   const open = isControlled ? externalOpen : internalOpen;
 
