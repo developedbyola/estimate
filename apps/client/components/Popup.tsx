@@ -34,7 +34,7 @@ const useConfig = () => {
     variant: 'success',
   });
 
-  const overlay = Overlay.useConfig({ open: true });
+  const overlay = Overlay.useConfig();
 
   const open = (newConfig: Config) => {
     Keyboard.dismiss();

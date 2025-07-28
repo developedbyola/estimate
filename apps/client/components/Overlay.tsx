@@ -33,7 +33,7 @@ type UseConfigParams = {
   onOpenChange?: (open: boolean) => void;
 };
 
-const useConfig = (params: UseConfigParams): OverlayContext => {
+const useConfig = (params?: UseConfigParams): OverlayContext => {
   const { open: externalOpen = false, onOpenChange: setExternalOpen } =
     params || {};
 
@@ -44,16 +44,13 @@ const useConfig = (params: UseConfigParams): OverlayContext => {
 
   const open = isControlled ? externalOpen : internalOpen;
 
-  const onToggle = React.useCallback(
-    (open: boolean) => {
-      if (isControlled) {
-        setExternalOpen?.(open);
-      } else {
-        setInternalOpen(open);
-      }
-    },
-    [isControlled, setExternalOpen]
-  );
+  const onToggle = (open: boolean) => {
+    if (isControlled) {
+      setExternalOpen?.(open);
+    } else {
+      setInternalOpen(open);
+    }
+  };
 
   const bottomSheet = {
     ref: bottomSheetRef,
