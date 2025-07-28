@@ -111,7 +111,7 @@ export const Add = () => {
           headerTitle: excerpt(title || 'Title', 20),
           headerTitleStyle: {
             fontSize: 16,
-            fontWeight: '600',
+            fontWeight: title ? '600' : '400',
             color: colors.getColor(title ? 'text.strong' : 'text.soft'),
           },
           headerRight: () => {
@@ -128,8 +128,8 @@ export const Add = () => {
       />
       <FormProvider {...form}>
         <Overlay.Provider
-          style={{ flex: 1 }}
           value={overlay}
+          style={{ flex: 1 }}
         >
           <Edit />
           <Box
