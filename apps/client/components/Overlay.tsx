@@ -56,11 +56,11 @@ const useConfig = (params?: UseConfigParams): OverlayContext => {
     ref: bottomSheetRef,
     open: () => {
       onToggle(true);
-      bottomSheetRef.current?.collapse();
+      bottomSheetRef.current?.expand();
     },
     close: () => {
       onToggle(false);
-      bottomSheetRef.current?.expand();
+      bottomSheetRef.current?.collapse();
     },
   };
 
