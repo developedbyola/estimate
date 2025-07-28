@@ -15,37 +15,35 @@ const Edit = () => {
 
   return (
     <Overlay.Sheet snapPoints={['65%', '80%']}>
-      <Overlay.SheetContent style={{ flex: 1 }}>
-        <Field.Root
-          mt='2xl'
-          name='title'
+      <Field.Root
+        mt='2xl'
+        name='title'
+        style={{
+          gap: 8,
+          paddingBottom: 12,
+          borderBottomWidth: 1,
+          borderBottomColor: colors.getColor('border.base'),
+        }}
+        control={form.control as any}
+      >
+        <Field.Container
           style={{
-            gap: 8,
-            paddingBottom: 12,
-            borderBottomWidth: 1,
-            borderBottomColor: colors.getColor('border.base'),
+            height: 36,
+            borderRadius: 8,
           }}
-          control={form.control as any}
         >
-          <Field.Container
-            style={{
-              height: 36,
-              borderRadius: 8,
-            }}
-          >
-            <Field.Row>
-              <Field.TextInput placeholder='e.g October estimate' />
-            </Field.Row>
-          </Field.Container>
-        </Field.Root>
+          <Field.Row>
+            <Field.TextInput placeholder='e.g October estimate' />
+          </Field.Row>
+        </Field.Container>
+      </Field.Root>
 
-        <Box
-          py='xl'
-          style={{ flex: 1 }}
-        >
-          <Farms.List isSelect />
-        </Box>
-      </Overlay.SheetContent>
+      <Box
+        py='xl'
+        style={{ flex: 1 }}
+      >
+        <Farms.List isSelect />
+      </Box>
     </Overlay.Sheet>
   );
 };

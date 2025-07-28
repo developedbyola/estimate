@@ -13,8 +13,8 @@ import AsChild from './AsChild';
 import { MotiView } from 'moti';
 import { Border } from '@/constants';
 import { StatusBar } from 'expo-status-bar';
-import { FullWindowOverlay } from 'react-native-screens';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { FullWindowOverlay } from 'react-native-screens';
 
 type OverlayContext = {
   open: boolean;
@@ -288,7 +288,7 @@ const Sheet = React.forwardRef<SheetRef, SheetProps>((props, _) => {
   );
 });
 
-const Overlay = {
+export const Overlay = {
   use,
   Root,
   Modal,
@@ -298,5 +298,3 @@ const Overlay = {
   useConfig,
   SheetTrigger,
 };
-
-export default Overlay;

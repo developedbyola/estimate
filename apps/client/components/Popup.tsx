@@ -92,7 +92,7 @@ const PopupComponent = ({
       onDismiss={close}
       snapPoints={['45%']}
     >
-      <Overlay.SheetContent
+      <Scroll
         mt='3xl'
         style={{
           flex: 1,
@@ -134,7 +134,7 @@ const PopupComponent = ({
         >
           {config.message}
         </Text>
-      </Overlay.SheetContent>
+      </Scroll>
       <Overlay.SheetFooter>
         {config.actions?.map((action, index) => (
           <Action.Root
