@@ -10,7 +10,6 @@ import { useCreateEstimate } from '../hooks/useCreateEstimate';
 import { Box, Field, Action, Overlay, SegmentedControl } from '@/components';
 
 const Edit = () => {
-  const router = useRouter();
   const form = useFormContext();
   const colors = useThemeColors();
 
