@@ -1,11 +1,11 @@
 import React from 'react';
 import { Estimate } from '../types';
-import { Pressable } from 'react-native';
-import { ActivityIndicator, Box, Scroll, Text } from '@/components';
-import { useListEstimates } from '../hooks/useListEstimates';
-import { useThemeColors } from '@/hooks/useThemeColors';
 import { Border } from '@/constants';
 import { useRouter } from 'expo-router';
+import { Pressable } from 'react-native';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { useListEstimates } from '../hooks/useListEstimates';
+import { ActivityIndicator, Box, Scroll, Text } from '@/components';
 
 const DefaultError = ({ refetch }: { refetch: () => void }) => {
   return (
@@ -95,7 +95,13 @@ const Loader = () => {
 };
 
 const Item = ({ estimate }: { estimate: Estimate }) => {
-  return <Box></Box>;
+  const router = useRouter();
+
+  return (
+    <Pressable>
+      <Text>{estimate.title}</Text>
+    </Pressable>
+  );
 };
 
 type ListProps = {
