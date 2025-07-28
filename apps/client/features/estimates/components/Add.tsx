@@ -1,25 +1,17 @@
 import React from 'react';
 import { Form } from './Form';
-import { Stack, useRouter } from 'expo-router';
 import { Button } from 'react-native';
-import { FormProvider } from 'react-hook-form';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { useCreateEstimate } from '../hooks/useCreateEstimate';
-import {
-  Box,
-  Text,
-  Field,
-  Action,
-  Overlay,
-  SegmentedControl,
-  ActivityIndicator,
-  RadioGroup,
-} from '@/components';
 import { Farms } from '@/features/farms';
 import { excerpt } from '@/utils/excerpt';
+import { Stack, useRouter } from 'expo-router';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { FormProvider, useFormContext } from 'react-hook-form';
+import { useCreateEstimate } from '../hooks/useCreateEstimate';
+import { Box, Field, Action, Overlay, SegmentedControl } from '@/components';
 
 const Edit = () => {
   const router = useRouter();
+  const form = useFormContext();
   const colors = useThemeColors();
 
   return (
@@ -94,6 +86,7 @@ export const Add = () => {
     <React.Fragment>
       <FormProvider {...form}>
         <Overlay.Root>
+          <Edit />
           <Stack.Screen
             options={{
               headerTitle: excerpt(title || 'Title', 20),
