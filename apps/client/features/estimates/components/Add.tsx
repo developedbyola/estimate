@@ -47,10 +47,12 @@ const Edit = () => {
         </Field.Root>
       </Box>
 
-      <Box style={{ height: 1, marginBlock: 12 }} />
+      <Box
+        bg='border.base'
+        style={{ height: 1, marginBlock: 12 }}
+      />
 
       <Box
-        py='xl'
         px='xl'
         style={{ flex: 1, gap: 8 }}
       >
