@@ -15,6 +15,7 @@ import {
   Overlay,
   SegmentedControl,
   Text,
+  Scroll,
 } from '@/components';
 
 const Edit = () => {
@@ -63,7 +64,9 @@ const Edit = () => {
         >
           Farms
         </Text>
-        <Farms.List isSelect />
+        <Scroll showsVerticalScrollIndicator={false}>
+          <Farms.List isSelect />
+        </Scroll>
       </Box>
     </Overlay.Sheet>
   );
