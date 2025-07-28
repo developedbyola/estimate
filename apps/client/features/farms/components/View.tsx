@@ -29,7 +29,7 @@ export const View = () => {
   if (!farm) return null;
 
   return (
-    <Scroll style={{ flex: 1 }}>
+    <Scroll contentContainerStyle={{ flex: 1 }}>
       <Box px='xl'>
         <Box
           bg='bg.subtle'

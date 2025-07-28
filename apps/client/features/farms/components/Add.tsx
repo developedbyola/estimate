@@ -44,7 +44,7 @@ export const Add = () => {
 
   return (
     <Safe style={{ flex: 1 }}>
-      <Scroll style={{ flex: 1 }}>
+      <Scroll contentContainerStyle={{ flex: 1 }}>
         <Box
           px='xl'
           mt='4xl'
