@@ -8,45 +8,57 @@ import { StatusBar } from 'expo-status-bar';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { useCreateEstimate } from '../hooks/useCreateEstimate';
-import { Box, Field, Action, Overlay, SegmentedControl } from '@/components';
+import {
+  Box,
+  Field,
+  Action,
+  Overlay,
+  SegmentedControl,
+  Text,
+} from '@/components';
 
 const Edit = () => {
   const form = useFormContext();
-  const colors = useThemeColors();
 
   return (
     <Overlay.Sheet snapPoints={['65%', '80%']}>
-      <Field.Root
+      <Box
         mt='2xl'
-        name='title'
-        style={{
-          gap: 8,
-          paddingBottom: 12,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.getColor('border.base'),
-        }}
-        control={form.control as any}
+        px='xl'
       >
-        <Field.Container
-          style={{
-            height: 36,
-            borderRadius: 8,
-          }}
+        <Field.Root
+          name='title'
+          control={form.control as any}
         >
-          <Field.Row>
-            <Field.Label>Title</Field.Label>
-            <Field.TextInput
-              style={{ textAlign: 'right' }}
-              placeholder='e.g October estimate'
-            />
-          </Field.Row>
-        </Field.Container>
-      </Field.Root>
+          <Field.Container
+            style={{
+              height: 36,
+              borderRadius: 8,
+            }}
+          >
+            <Field.Row>
+              <Field.Label>Title</Field.Label>
+              <Field.TextInput
+                style={{ textAlign: 'right' }}
+                placeholder='e.g October estimate'
+              />
+            </Field.Row>
+          </Field.Container>
+        </Field.Root>
+      </Box>
 
       <Box
         py='xl'
-        style={{ flex: 1 }}
+        px='xl'
+        style={{ flex: 1, gap: 8 }}
       >
+        <Text
+          size='xl'
+          style={{ fontWeight: '600' }}
+          color='text.strong'
+        >
+          Farms
+        </Text>
         <Farms.List isSelect />
       </Box>
     </Overlay.Sheet>
