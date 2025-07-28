@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useCategories } from '../components/Provider';
 
 export const useCreateCategory = () => {
-  const popup = Popup.usePopup();
+  const popup = Popup.use();
   const router = useRouter();
   const { setCategories } = useCategories();
 

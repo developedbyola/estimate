@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 export const useRegister = () => {
   const router = useRouter();
-  const popup = Popup.usePopup();
+  const popup = Popup.use();
   const form = useForm({
     mode: 'all',
     resolver: zodResolver(registerSchema),

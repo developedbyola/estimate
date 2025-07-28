@@ -4,7 +4,7 @@ import { Trpc } from '@/features/trpc';
 import { useFarms } from '../components/Provider';
 
 export const useCreateFarm = () => {
-  const popup = Popup.usePopup();
+  const popup = Popup.use();
   const { setFarms } = useFarms();
 
   const create = Trpc.client.farms.me.create.useMutation({

@@ -3,7 +3,7 @@ import { Trpc } from '@/features/trpc';
 import { useLocalSearchParams } from 'expo-router';
 
 export const useGetFarm = () => {
-  const popup = Popup.usePopup();
+  const popup = Popup.use();
   const { farmId } = useLocalSearchParams<{ farmId: string }>();
 
   const query = Trpc.client.farms.me.get.useQuery({ farmId });

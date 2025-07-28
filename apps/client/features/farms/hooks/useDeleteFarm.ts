@@ -5,7 +5,7 @@ import { useFarms } from '../components/Provider';
 
 export const useDeleteFarm = () => {
   const router = useRouter();
-  const popup = Popup.usePopup();
+  const popup = Popup.use();
   const { setFarms } = useFarms();
 
   const remove = Trpc.client.farms.me.delete.useMutation({
