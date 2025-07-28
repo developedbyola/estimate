@@ -33,7 +33,7 @@ const Select = () => {
         return (
           <RadioGroup.Root
             value={field.value}
-            onValueChange={(value) => field.onChange({ value })}
+            onValueChange={({ value }) => field.onChange(value)}
             style={{ flexDirection: 'row', flexWrap: 'wrap' }}
           >
             {farms.map((farm) => {
@@ -59,20 +59,21 @@ const Select = () => {
                       style={{
                         top: 14,
                         right: 14,
-                        width: 16,
                         height: 16,
                         aspectRatio: 1,
                         borderRadius: 999,
                         position: 'absolute',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         backgroundColor: colors.getColor('bg.strong'),
                       }}
-                    />
-                    {/* <Ionicons
-                        size={16}
+                    >
+                      <Ionicons
+                        size={12}
                         name='checkmark'
-                        color={colors.getColor('icon.strong')}
-                      /> */}
-                    {/* </RadioGroup.Indicator> */}
+                        color={colors.getColor('icon.base')}
+                      />
+                    </RadioGroup.Indicator>
                     <Text style={{ fontSize: 24 }}>{farm.category.icon}</Text>
                     <Text
                       color='text.strong'
