@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form } from './Form';
+import { Stack } from 'expo-router';
 import { Button } from 'react-native';
 import { Farms } from '@/features/farms';
 import { excerpt } from '@/utils/excerpt';
-import { Stack, useRouter } from 'expo-router';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { useCreateEstimate } from '../hooks/useCreateEstimate';
@@ -75,6 +75,7 @@ const Type = () => {
 
 export const Add = () => {
   const colors = useThemeColors();
+  const overlay = Overlay.use();
   const { form, mutate } = useCreateEstimate();
 
   const title = form.watch('title');
@@ -82,7 +83,7 @@ export const Add = () => {
   return (
     <React.Fragment>
       <FormProvider {...form}>
-        <Overlay.Root>
+        <Overlay.Provider value={overlay}>
           <Edit />
           <Stack.Screen
             options={{
@@ -94,9 +95,12 @@ export const Add = () => {
               },
               headerRight: () => {
                 return (
-                  <Overlay.SheetTrigger>
-                    <Button title='Edit' />
-                  </Overlay.SheetTrigger>
+                  <Button
+                    title='Edit'
+                    onPress={() => {
+                      overlay.bottomSheet.open();
+                    }}
+                  />
                 );
               },
             }}
@@ -134,7 +138,7 @@ export const Add = () => {
               </Action.Label>
             </Action.Root>
           </Box>
-        </Overlay.Root>
+        </Overlay.Provider>
       </FormProvider>
     </React.Fragment>
   );
