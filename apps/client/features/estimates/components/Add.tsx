@@ -7,20 +7,24 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useCreateEstimate } from '../hooks/useCreateEstimate';
 import { useUpdateEstimate } from '../hooks/useUpdateEstimate';
 import { useLocalSearchParams } from 'expo-router';
+import { useEstimates } from './Provider';
 
 export const Add = () => {
   const { mutate: create } = useCreateEstimate();
   const { mutate: update } = useUpdateEstimate();
-
   const { estimateId } = useLocalSearchParams<{ estimateId: string }>();
+
+  const { estimates } = useEstimates();
+
+  const estimate = estimates.find((estimate) => estimate.id === estimateId);
 
   const form = useForm({
     mode: 'onBlur',
     resolver: zodResolver(estimateSchema),
     defaultValues: {
-      title: '',
-      farmId: '',
-      calculations: [
+      title: estimate?.title || '',
+      farmId: estimate?.farmId || '',
+      calculations: estimate?.calculations || [
         {
           price: '0',
           quantity: '1',
