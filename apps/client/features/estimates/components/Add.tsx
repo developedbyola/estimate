@@ -53,7 +53,7 @@ export const Add = () => {
         </Box>
         <Box
           px='xl'
-          py={'lg'}
+          pt='lg'
         >
           <Action.Root
             size='lg'
