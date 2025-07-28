@@ -53,9 +53,10 @@ const Edit = () => {
         style={{ height: 1, marginBlock: 12 }}
       />
 
-      <Box
+      <Scroll
         px='xl'
-        style={{ flex: 1, gap: 8 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flex: 1, gap: 8 }}
       >
         <Text
           size='xl'
@@ -64,10 +65,8 @@ const Edit = () => {
         >
           Farms
         </Text>
-        <Scroll showsVerticalScrollIndicator={false}>
-          <Farms.List isSelect />
-        </Scroll>
-      </Box>
+        <Farms.List isSelect />
+      </Scroll>
     </Overlay.Sheet>
   );
 };
