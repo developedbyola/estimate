@@ -46,6 +46,16 @@ const EstimatesLayout = () => {
           headerLeft: HeaderLeft,
         }}
       />
+      <Stack.Screen
+        name='update'
+        options={{
+          title: 'Update estimate',
+          contentStyle: {
+            backgroundColor: colors.getColor('bg.base'),
+          },
+          headerLeft: HeaderLeft,
+        }}
+      />
     </Stack>
   );
 };

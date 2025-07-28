@@ -1,13 +1,13 @@
 import React from 'react';
 import { Form } from './Form';
+import { useEstimates } from './Provider';
 import { Action, Box } from '@/components';
 import { estimateSchema } from '../schemas';
+import { useLocalSearchParams } from 'expo-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useCreateEstimate } from '../hooks/useCreateEstimate';
 import { useUpdateEstimate } from '../hooks/useUpdateEstimate';
-import { useLocalSearchParams } from 'expo-router';
-import { useEstimates } from './Provider';
 
 export const Add = () => {
   const { mutate: create } = useCreateEstimate();
@@ -51,6 +51,13 @@ export const Add = () => {
         </Box>
         <Action.Root
           size='lg'
+          onPress={form.handleSubmit(async (data) => {
+            if (estimate) {
+              await update({ estimateId, ...data });
+              return;
+            }
+            await create(data);
+          })}
           loading={form.formState.isSubmitting}
           disabled={!form.formState.isValid || form.formState.isSubmitting}
         >
