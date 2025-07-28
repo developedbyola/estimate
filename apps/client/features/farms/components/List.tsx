@@ -65,11 +65,11 @@ const Select = () => {
                         backgroundColor: colors.getColor('bg.strong'),
                       }}
                     >
-                      <Ionicons
+                      {/* <Ionicons
                         size={16}
                         name='checkmark'
                         color={colors.getColor('icon.strong')}
-                      />
+                      /> */}
                     </RadioGroup.Indicator>
                     <Text style={{ fontSize: 24 }}>{farm.category.icon}</Text>
                     <Text

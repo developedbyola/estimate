@@ -80,7 +80,6 @@ export const Add = () => {
   const { form, mutate } = useCreateEstimate();
 
   const title = form.watch('title');
-  console.log({ overlay });
 
   return (
     <React.Fragment>
