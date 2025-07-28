@@ -4,11 +4,11 @@ import { Stack } from 'expo-router';
 import { Button } from 'react-native';
 import { Farms } from '@/features/farms';
 import { excerpt } from '@/utils/excerpt';
+import { StatusBar } from 'expo-status-bar';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { useCreateEstimate } from '../hooks/useCreateEstimate';
 import { Box, Field, Action, Overlay, SegmentedControl } from '@/components';
-import { StatusBar } from 'expo-status-bar';
 
 const Edit = () => {
   const form = useFormContext();
