@@ -6,16 +6,17 @@ import { FormProvider } from 'react-hook-form';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { useCreateEstimate } from '../hooks/useCreateEstimate';
 import {
-  Action,
-  ActivityIndicator,
   Box,
-  Field,
-  Overlay,
-  Scroll,
-  SegmentedControl,
   Text,
+  Field,
+  Action,
+  Overlay,
+  SegmentedControl,
+  ActivityIndicator,
+  RadioGroup,
 } from '@/components';
 import { Farms } from '@/features/farms';
+import { excerpt } from '@/utils/excerpt';
 
 const Type = () => {
   return (
@@ -44,7 +45,7 @@ const Type = () => {
 
 export const Add = () => {
   const colors = useThemeColors();
-  const { form } = useCreateEstimate();
+  const { form, mutate } = useCreateEstimate();
 
   const title = form.watch('title');
 
@@ -53,9 +54,14 @@ export const Add = () => {
       <FormProvider {...form}>
         <Stack.Screen
           options={{
+            headerTitle: excerpt(title || 'Title', 20),
+            headerTitleStyle: {
+              fontSize: 16,
+              fontWeight: '600',
+              color: colors.getColor(title ? 'text.strong' : 'text.soft'),
+            },
             headerRight: () => {
               const router = useRouter();
-              const { farms, loading } = Farms.useFarms();
 
               return (
                 <Overlay.Root>
@@ -77,8 +83,8 @@ export const Add = () => {
                       >
                         <Field.Container
                           style={{
-                            height: 40,
-                            borderRadius: 10,
+                            height: 36,
+                            borderRadius: 8,
                           }}
                         >
                           <Field.Row>
@@ -88,44 +94,16 @@ export const Add = () => {
                       </Field.Root>
 
                       <Box
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
+                        py='xl'
+                        style={{ flex: 1 }}
                       >
-                        {loading ? <ActivityIndicator /> : null}
-                        {farms.length === 0 ? (
-                          <React.Fragment>
-                            <Text
-                              style={{
-                                maxWidth: 200,
-                                textAlign: 'center',
-                                marginInline: 'auto',
-                              }}
-                            >
-                              No farms found, create one to view a list of
-                              available farms
-                            </Text>
-                            <Overlay.SheetTrigger
-                              onPress={() => router.navigate('/farms/create')}
-                            >
-                              <Button title='Create farm' />
-                            </Overlay.SheetTrigger>
-                          </React.Fragment>
-                        ) : null}
+                        <Farms.List isSelect />
                       </Box>
                     </Overlay.SheetContent>
                   </Overlay.Sheet>
                 </Overlay.Root>
               );
             },
-            headerTitleStyle: {
-              fontSize: 16,
-              fontWeight: '600',
-              color: colors.getColor(title ? 'text.strong' : 'text.soft'),
-            },
-            headerTitle: title || 'Title',
           }}
         />
         <Box
@@ -145,6 +123,7 @@ export const Add = () => {
         >
           <Action.Root
             size='lg'
+            onPress={() => mutate(form.getValues())}
             loading={form.formState.isSubmitting}
             disabled={!form.formState.isValid || form.formState.isSubmitting}
             style={{

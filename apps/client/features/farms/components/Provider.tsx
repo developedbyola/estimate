@@ -12,12 +12,8 @@ type Action =
       payload: { farms: Farm[] };
     }
   | {
-      type: 'SET_FARM';
-      payload: { farm: Farm | null };
-    }
-  | {
       type: 'ADD_FARM';
-      payload: { farm: Omit<Farm, 'estimates'> };
+      payload: { farm: Farm };
     }
   | {
       type: 'REMOVE_FARM';
@@ -25,7 +21,7 @@ type Action =
     }
   | {
       type: 'UPDATE_FARM';
-      payload: { farm: Omit<Farm, 'estimates'> };
+      payload: { farm: Farm };
     }
   | {
       type: 'ERROR';

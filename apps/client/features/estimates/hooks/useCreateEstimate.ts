@@ -12,20 +12,21 @@ export const useCreateEstimate = () => {
     resolver: zodResolver(estimateSchema),
     defaultValues: {
       title: '',
+      farmId: '',
       calculations: [
         {
-          id: String(Date.now()),
+          price: '0',
+          quantity: '1',
           description: '',
           type: 'expense',
-          quantity: '1',
-          price: '0',
+          id: String(Date.now()),
         },
         {
-          id: String(Date.now()),
-          description: '',
-          type: 'income',
-          quantity: '1',
           price: '0',
+          quantity: '1',
+          type: 'income',
+          description: '',
+          id: String(Date.now()),
         },
       ],
     },

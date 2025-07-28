@@ -7,9 +7,91 @@ import { excerpt } from '@/utils/excerpt';
 import { Border, Space } from '@/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
+import { Controller, useFormContext } from 'react-hook-form';
 import { useGetFarms } from '../hooks/useGetFarms';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { Box, Heading, Text, ActivityIndicator, Action } from '@/components';
+import {
+  Box,
+  Heading,
+  Text,
+  ActivityIndicator,
+  Action,
+  RadioGroup,
+} from '@/components';
+
+const Select = () => {
+  const { farms } = useFarms();
+  const form = useFormContext();
+  const colors = useThemeColors();
+
+  return (
+    <Controller
+      name='farmId'
+      control={form.control}
+      render={({ field }) => {
+        return (
+          <RadioGroup.Root
+            value={field.value}
+            onValueChange={(value) => field.onChange(value)}
+            style={{ flexDirection: 'row', flexWrap: 'wrap' }}
+          >
+            {farms.map((farm) => {
+              return (
+                <Box
+                  key={farm.id}
+                  style={{ width: '50%', padding: Space['xs'] }}
+                >
+                  <RadioGroup.Item
+                    bg='bg.subtle'
+                    value={farm.id}
+                    style={{
+                      padding: 16,
+                      minHeight: 124,
+                      borderRadius: 20,
+                      overflow: 'hidden',
+                      position: 'relative',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <RadioGroup.Indicator
+                      value={farm.id}
+                      style={{
+                        top: 14,
+                        right: 14,
+                        height: 16,
+                        aspectRatio: 1,
+                        borderRadius: 999,
+                        position: 'absolute',
+                        backgroundColor: colors.getColor('bg.strong'),
+                      }}
+                    >
+                      <Ionicons
+                        size={16}
+                        name='checkmark'
+                        color={colors.getColor('icon.strong')}
+                      />
+                    </RadioGroup.Indicator>
+                    <Text style={{ fontSize: 24 }}>{farm.category.icon}</Text>
+                    <Text
+                      color='text.strong'
+                      style={{
+                        fontSize: 16,
+                        lineHeight: 18,
+                        fontWeight: '600',
+                      }}
+                    >
+                      {farm.name}
+                    </Text>
+                  </RadioGroup.Item>
+                </Box>
+              );
+            })}
+          </RadioGroup.Root>
+        );
+      }}
+    />
+  );
+};
 
 const Loader = () => {
   return (
@@ -153,17 +235,20 @@ const Item = (props: ItemProps) => {
 };
 
 type ListProps = {
+  isSelect?: boolean;
   Empty?: React.ReactNode;
 };
 
-export const List = ({ Empty }: ListProps) => {
+export const List = ({ isSelect, Empty }: ListProps) => {
   const _ = useGetFarms();
   const { farms, loading } = useFarms();
 
   if (loading) return <Loader />;
   if (farms.length === 0) return Empty ? Empty : <DefaultEmpty />;
 
-  return (
+  return isSelect ? (
+    <Select />
+  ) : (
     <Box
       style={{
         flex: 1,

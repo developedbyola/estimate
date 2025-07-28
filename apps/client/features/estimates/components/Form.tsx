@@ -24,7 +24,9 @@ export const Form = ({ type }: FormProps) => {
   const fields = fieldArray.fields
     .map((field, i) => ({ ...field, index: i }))
     .filter((field) => field.type === type);
-  const [total, filteredTotal] = useWatchTotal({ type });
+  const [_, income] = useWatchTotal({ type: 'income' });
+  const [__, expense] = useWatchTotal({ type: 'expense' });
+  const total = income - expense;
 
   return (
     <React.Fragment>
@@ -123,6 +125,9 @@ export const Form = ({ type }: FormProps) => {
       <Box
         py='lg'
         style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           borderBottomWidth: Border.width['xs'],
           borderColor: colors.getColor('border.base'),
         }}
@@ -131,7 +136,13 @@ export const Form = ({ type }: FormProps) => {
           color='text.inactive'
           style={{ fontSize: 20, fontWeight: '500' }}
         >
-          Summary
+          {type === 'income' ? 'Income' : 'Expenses'}
+        </Text>
+        <Text
+          color='text.inactive'
+          style={{ fontSize: 20, fontWeight: '500' }}
+        >
+          {type === 'income' ? income : expense}
         </Text>
       </Box>
       <Box
@@ -142,25 +153,18 @@ export const Form = ({ type }: FormProps) => {
           justifyContent: 'space-between',
         }}
       >
-        <Box style={{ gap: Space['sm'] }}>
+        <Box style={{ gap: Space['xs'] }}>
           <Text
             color='text.strong'
             style={{ lineHeight: 24, fontSize: 24, fontWeight: '600' }}
           >
             Total: {total}
           </Text>
-          <Text
-            color='text.soft'
-            style={{ lineHeight: 16 }}
-          >
-            Sum {type === 'expense' ? 'of expenses' : 'of income'}:{' '}
-            {filteredTotal}
-          </Text>
         </Box>
         <TouchableOpacity
           hitSlop={20}
           style={{
-            height: 32,
+            height: 28,
             aspectRatio: 1,
             alignItems: 'center',
             justifyContent: 'center',

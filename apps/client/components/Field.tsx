@@ -158,7 +158,12 @@ const TextInput = React.forwardRef<TextInputRef, TextInputProps>(
         onChangeText={onChangeText}
         secureTextEntry={isTextHidden}
         style={[
-          { paddingInline: 0, fontSize: 16, backgroundColor: 'transparent' },
+          {
+            fontSize: 16,
+            paddingInline: 0,
+            backgroundColor: 'transparent',
+            fontWeight: field.value ? '600' : '400',
+          },
           style,
         ]}
         {...restProps}

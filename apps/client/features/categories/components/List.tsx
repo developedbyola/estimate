@@ -148,7 +148,11 @@ export const List = ({ pickerOnly = false, Empty }: ListProps) => {
       ) : (
         <Scroll
           showsVerticalScrollIndicator={false}
-          style={{ flex: 1, paddingBlock: 12 }}
+          style={{
+            flex: 1,
+            width: '100%',
+            paddingBlock: 12,
+          }}
         >
           {categories.map((category, index) => {
             return (

@@ -25,6 +25,7 @@ export type Calculations = z.infer<typeof calculationsSchema>;
 
 export const estimateSchema = z.object({
   title: z.string().min(3, 'Estimate title is required'),
+  farmId: z.string().uuid('Please select a valid farm'),
   calculations: z
     .array(calculationSchema)
     .nonempty('At least one item is required'),

@@ -1,11 +1,9 @@
 import { Popup } from '@/components';
 import { Trpc } from '@/features/trpc';
-import { useFarms } from '../components/Provider';
 import { useLocalSearchParams } from 'expo-router';
 
 export const useGetFarm = () => {
   const popup = Popup.usePopup();
-  const { setFarms } = useFarms();
   const { farmId } = useLocalSearchParams<{ farmId: string }>();
 
   const query = Trpc.client.farms.me.get.useQuery({ farmId });
@@ -26,9 +24,6 @@ export const useGetFarm = () => {
           },
         ],
       });
-    },
-    onSuccess: (data) => {
-      setFarms({ type: 'SET_FARM', payload: { farm: data?.farm } });
     },
   });
 

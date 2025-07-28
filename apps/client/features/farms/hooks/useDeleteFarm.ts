@@ -15,9 +15,9 @@ export const useDeleteFarm = () => {
     },
     onError: (err, input) => {
       popup.open({
-        title: 'We couldn’t delete the farm',
         message: err.message,
         variant: 'destructive',
+        title: 'We couldn’t delete the farm',
         actions: [
           {
             text: 'Retry',

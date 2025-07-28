@@ -7,6 +7,8 @@ export type Farm = {
   city: string;
   state: string;
   address: string;
+  createdAt: string;
+  updatedAt: string;
   categoryId: string;
   category: Omit<Category, 'created_at'>;
   sizeUnit: 'hectares' | 'acres' | 'square meters';
