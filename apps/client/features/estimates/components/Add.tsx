@@ -79,11 +79,15 @@ export const Add = () => {
   const { form, mutate } = useCreateEstimate();
 
   const title = form.watch('title');
+  console.log({ overlay });
 
   return (
     <React.Fragment>
       <FormProvider {...form}>
-        <Overlay.Provider value={overlay}>
+        <Overlay.Provider
+          style={{ flex: 1 }}
+          value={overlay}
+        >
           <Edit />
           <Stack.Screen
             options={{
