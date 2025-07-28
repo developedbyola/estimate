@@ -29,7 +29,6 @@ const Select = () => {
       name='farmId'
       control={form.control}
       render={({ field }) => {
-        console.log(field.value);
         return (
           <RadioGroup.Root
             value={field.value}
@@ -40,7 +39,7 @@ const Select = () => {
               return (
                 <Box
                   key={farm.id}
-                  style={{ width: '33.33%', padding: Space['2xs'] }}
+                  style={{ width: '50%', padding: Space['2xs'] }}
                 >
                   <RadioGroup.Item
                     bg='bg.subtle'
@@ -78,7 +77,7 @@ const Select = () => {
                     <Text
                       color='text.strong'
                       style={{
-                        fontSize: 13,
+                        fontSize: 14,
                         lineHeight: 16,
                         fontWeight: '600',
                       }}
