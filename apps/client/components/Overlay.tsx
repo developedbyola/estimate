@@ -59,14 +59,14 @@ const useConfig = (params?: UseConfigParams): OverlayContext => {
 
   const bottomSheet = {
     ref: bottomSheetRef,
-    open: () => {
+    open: React.useCallback(() => {
       onToggle(true);
       bottomSheetRef.current?.expand();
-    },
-    close: () => {
+    }, [onToggle, bottomSheetRef]),
+    close: React.useCallback(() => {
       onToggle(false);
       bottomSheetRef.current?.collapse();
-    },
+    }, [onToggle, bottomSheetRef]),
   };
 
   return {
@@ -188,7 +188,6 @@ const Modal = React.forwardRef<ModalRef, ModalProps>((props, ref) => {
   } = props;
 
   const colors = useThemeColors();
-  const theme = useColorScheme() ?? 'light';
   const { open } = use();
 
   return (
