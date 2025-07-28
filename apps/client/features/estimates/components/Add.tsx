@@ -1,11 +1,19 @@
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Form } from './Form';
+import { Action, Box } from '@/components';
 import { estimateSchema } from '../schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Action, Box } from '@/components';
-import { Form } from './Form';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useCreateEstimate } from '../hooks/useCreateEstimate';
+import { useUpdateEstimate } from '../hooks/useUpdateEstimate';
+import { useLocalSearchParams } from 'expo-router';
 
 export const Add = () => {
+  const { mutate: create } = useCreateEstimate();
+  const { mutate: update } = useUpdateEstimate();
+
+  const { estimateId } = useLocalSearchParams<{ estimateId: string }>();
+
   const form = useForm({
     mode: 'onBlur',
     resolver: zodResolver(estimateSchema),
@@ -37,7 +45,12 @@ export const Add = () => {
         <Box>
           <Form />
         </Box>
-        <Action.Root size='lg'>
+        <Action.Root
+          size='lg'
+          loading={form.formState.isSubmitting}
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
+        >
+          <Action.Loader />
           <Action.Label>Create estimate</Action.Label>
         </Action.Root>
       </Box>
