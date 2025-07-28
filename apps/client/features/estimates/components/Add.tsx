@@ -83,32 +83,32 @@ export const Add = () => {
 
   return (
     <React.Fragment>
+      <Stack.Screen
+        options={{
+          headerTitle: excerpt(title || 'Title', 20),
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: '600',
+            color: colors.getColor(title ? 'text.strong' : 'text.soft'),
+          },
+          headerRight: () => {
+            return (
+              <Button
+                title='Edit'
+                onPress={() => {
+                  overlay.bottomSheet.open();
+                }}
+              />
+            );
+          },
+        }}
+      />
       <FormProvider {...form}>
         <Overlay.Provider
           style={{ flex: 1 }}
           value={overlay}
         >
           <Edit />
-          <Stack.Screen
-            options={{
-              headerTitle: excerpt(title || 'Title', 20),
-              headerTitleStyle: {
-                fontSize: 16,
-                fontWeight: '600',
-                color: colors.getColor(title ? 'text.strong' : 'text.soft'),
-              },
-              headerRight: () => {
-                return (
-                  <Button
-                    title='Edit'
-                    onPress={() => {
-                      overlay.bottomSheet.open();
-                    }}
-                  />
-                );
-              },
-            }}
-          />
           <Box
             mt='3xl'
             pb='xl'

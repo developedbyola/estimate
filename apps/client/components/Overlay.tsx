@@ -30,15 +30,19 @@ const overlayContext = React.createContext<OverlayContext | null>(null);
 
 type UseConfigParams = {
   open?: boolean;
+  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
 
 const useConfig = (params?: UseConfigParams): OverlayContext => {
-  const { open: externalOpen = false, onOpenChange: setExternalOpen } =
-    params || {};
+  const {
+    defaultOpen = false,
+    open: externalOpen = false,
+    onOpenChange: setExternalOpen,
+  } = params || {};
 
   const bottomSheetRef = React.useRef<BottomSheet>(null);
-  const [internalOpen, setInternalOpen] = React.useState(false);
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
 
   const isControlled =
     externalOpen !== undefined && setExternalOpen !== undefined;
@@ -100,8 +104,14 @@ const Provider = React.forwardRef<ProviderRef, ProviderProps>((props, ref) => {
 type RootRef = React.ComponentRef<typeof MotiView>;
 type RootProps = React.ComponentProps<typeof MotiView> & UseConfigParams;
 const Root = React.forwardRef<RootRef, RootProps>((props, ref) => {
-  const { style, open = false, onOpenChange, ...restProps } = props;
-  const context = useConfig({ open, onOpenChange });
+  const {
+    style,
+    open = false,
+    defaultOpen = false,
+    onOpenChange,
+    ...restProps
+  } = props;
+  const context = useConfig({ open, defaultOpen, onOpenChange });
 
   return (
     <Provider value={context}>
