@@ -98,7 +98,14 @@ const Item = ({ estimate }: { estimate: Estimate }) => {
   const router = useRouter();
 
   return (
-    <Pressable>
+    <Pressable
+      onPress={() => {
+        router.navigate({
+          pathname: '/estimates/update',
+          params: { estimateId: estimate.id },
+        });
+      }}
+    >
       <Text>{estimate.title}</Text>
     </Pressable>
   );
