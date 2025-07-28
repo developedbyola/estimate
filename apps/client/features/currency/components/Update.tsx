@@ -4,7 +4,7 @@ import { Provider, useCurrency } from './Provider';
 import { Picker } from '@react-native-picker/picker';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Action, Box, Heading, Overlay, useOverlayContext } from '@/components';
+import { Action, Box, Heading, Overlay } from '@/components';
 
 type SwitchProps = {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ export const Update = ({ children }: SwitchProps) => {
   });
 
   const Footer = () => {
-    const { bottomSheet } = useOverlayContext();
+    const { bottomSheet } = Overlay.use();
 
     return (
       <Box

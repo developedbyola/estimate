@@ -74,7 +74,7 @@ const useConfig = (params?: UseConfigParams): OverlayContext => {
 const use = () => {
   const context = React.useContext(overlayContext);
   if (!context) {
-    throw new Error('useOverlayContext must be used within an Overlay.Root');
+    throw new Error('use must be used within an Overlay.Provider');
   }
   return context;
 };
