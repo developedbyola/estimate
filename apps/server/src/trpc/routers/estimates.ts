@@ -2,6 +2,8 @@ import z from 'zod';
 import { router } from '../context';
 import { procedures } from '../procedures';
 
+const select = '*, farm:farm_id(*)';
+
 export const estimatesRouter = router({
   me: {
     list: procedures.protected
@@ -14,7 +16,7 @@ export const estimatesRouter = router({
         try {
           let query = ctx.supabase
             .from('estimates')
-            .select('*')
+            .select(select)
             .eq('user_id', ctx.actor.user.id);
 
           if (input.farmId) {
@@ -38,9 +40,23 @@ export const estimatesRouter = router({
               id: estimate.id,
               title: estimate.title,
               farmId: estimate.farm_id,
+              userId: estimate.user_id,
               updatedAt: estimate.updated_at,
               createdAt: estimate.created_at,
               calculations: estimate.calculations,
+              farm: {
+                id: estimate.farm.id,
+                name: estimate.farm.name,
+                size: estimate.farm.size,
+                city: estimate.farm.city,
+                state: estimate.farm.state,
+                address: estimate.farm.address,
+                sizeUnit: estimate.farm.size_unit,
+                categoryId: estimate.farm.category_id,
+                createdAt: estimate.farm.created_at,
+                updatedAt: estimate.farm.updated_at,
+                userId: estimate.farm.user_id,
+              },
             })),
           });
         } catch (err) {
@@ -53,7 +69,7 @@ export const estimatesRouter = router({
         try {
           const estimate = await ctx.supabase
             .from('estimates')
-            .select('*')
+            .select(select)
             .eq('id', input.estimateId)
             .eq('user_id', ctx.actor.user.id)
             .single();
@@ -75,6 +91,19 @@ export const estimatesRouter = router({
               updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
               calculations: estimate.data.calculations,
+              farm: {
+                id: estimate.data.farm.id,
+                name: estimate.data.farm.name,
+                size: estimate.data.farm.size,
+                city: estimate.data.farm.city,
+                state: estimate.data.farm.state,
+                address: estimate.data.farm.address,
+                sizeUnit: estimate.data.farm.size_unit,
+                categoryId: estimate.data.farm.category_id,
+                createdAt: estimate.data.farm.created_at,
+                updatedAt: estimate.data.farm.updated_at,
+                userId: estimate.data.farm.user_id,
+              },
             },
           });
         } catch (err) {
@@ -104,7 +133,7 @@ export const estimatesRouter = router({
               calculations: input.calculations,
               user_id: ctx.actor.user.id,
             })
-            .select('*')
+            .select(select)
             .single();
 
           if (!estimate.data) {
@@ -124,6 +153,19 @@ export const estimatesRouter = router({
               updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
               calculations: estimate.data.calculations,
+              farm: {
+                id: estimate.data.farm.id,
+                name: estimate.data.farm.name,
+                size: estimate.data.farm.size,
+                city: estimate.data.farm.city,
+                state: estimate.data.farm.state,
+                address: estimate.data.farm.address,
+                sizeUnit: estimate.data.farm.size_unit,
+                categoryId: estimate.data.farm.category_id,
+                createdAt: estimate.data.farm.created_at,
+                updatedAt: estimate.data.farm.updated_at,
+                userId: estimate.data.farm.user_id,
+              },
             },
           });
         } catch (err) {
@@ -155,7 +197,7 @@ export const estimatesRouter = router({
               updated_at: new Date().toISOString(),
             })
             .eq('id', input.estimateId)
-            .select('*')
+            .select(select)
             .single();
 
           if (!estimate.data) {
@@ -175,6 +217,19 @@ export const estimatesRouter = router({
               updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
               calculations: estimate.data.calculations,
+              farm: {
+                id: estimate.data.farm.id,
+                name: estimate.data.farm.name,
+                size: estimate.data.farm.size,
+                city: estimate.data.farm.city,
+                state: estimate.data.farm.state,
+                address: estimate.data.farm.address,
+                sizeUnit: estimate.data.farm.size_unit,
+                categoryId: estimate.data.farm.category_id,
+                createdAt: estimate.data.farm.created_at,
+                updatedAt: estimate.data.farm.updated_at,
+                userId: estimate.data.farm.user_id,
+              },
             },
           });
         } catch (err) {
@@ -193,7 +248,7 @@ export const estimatesRouter = router({
             .from('estimates')
             .delete()
             .eq('id', input.estimateId)
-            .select('*')
+            .select(select)
             .single();
 
           if (!estimate.data) {
@@ -213,6 +268,19 @@ export const estimatesRouter = router({
               updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
               calculations: estimate.data.calculations,
+              farm: {
+                id: estimate.data.farm.id,
+                name: estimate.data.farm.name,
+                size: estimate.data.farm.size,
+                city: estimate.data.farm.city,
+                state: estimate.data.farm.state,
+                address: estimate.data.farm.address,
+                sizeUnit: estimate.data.farm.size_unit,
+                categoryId: estimate.data.farm.category_id,
+                createdAt: estimate.data.farm.created_at,
+                updatedAt: estimate.data.farm.updated_at,
+                userId: estimate.data.farm.user_id,
+              },
             },
           });
         } catch (err) {
