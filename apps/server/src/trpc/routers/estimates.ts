@@ -71,6 +71,7 @@ export const estimatesRouter = router({
               id: estimate.data.id,
               title: estimate.data.title,
               farmId: estimate.data.farm_id,
+              userId: estimate.data.user_id,
               updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
               calculations: estimate.data.calculations,
@@ -119,6 +120,7 @@ export const estimatesRouter = router({
               id: estimate.data.id,
               title: estimate.data.title,
               farmId: estimate.data.farm_id,
+              userId: estimate.data.user_id,
               updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
               calculations: estimate.data.calculations,
@@ -168,6 +170,7 @@ export const estimatesRouter = router({
             estimate: {
               id: estimate.data.id,
               title: estimate.data.title,
+              userId: estimate.data.user_id,
               farmId: estimate.data.farm_id,
               updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,
@@ -205,6 +208,7 @@ export const estimatesRouter = router({
             estimate: {
               id: estimate.data.id,
               title: estimate.data.title,
+              userId: estimate.data.user_id,
               farmId: estimate.data.farm_id,
               updatedAt: estimate.data.updated_at,
               createdAt: estimate.data.created_at,

@@ -6,6 +6,7 @@ export type Farm = {
   name: string;
   city: string;
   state: string;
+  userId: string;
   address: string;
   createdAt: string;
   updatedAt: string;
